@@ -42,6 +42,9 @@ public class CotacaoService {
 				ultimaCotacao = Cotacao.builder().ativo(ativo).data(LocalDateTime.now())
 						.valor(BigDecimal.valueOf(cotacao.getValor())).build();
 				repository.save(ultimaCotacao);
+			} else {
+				ultimaCotacao.setValor(BigDecimal.valueOf(cotacao.getValor()));
+				repository.save(ultimaCotacao);
 			}
 		}
 

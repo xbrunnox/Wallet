@@ -24,7 +24,11 @@ public class Carteira {
 	private int id;
 
 	private String nome;
-	
+
 	private BigDecimal saldo;
+
+	private BigDecimal aporteMensal;
+
+	private BigDecimal rendimentoEsperado;
 
 }

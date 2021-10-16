@@ -13,7 +13,15 @@
 		<version>2.3.0.RELEASE</version>
 		<relativePath />
 	</parent>
-
+<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 
 	<dependencies>
@@ -49,6 +57,16 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+		</dependency>
 
 
 		<dependency>
@@ -76,4 +94,7 @@
 		</dependency>
 
 	</dependencies>
+	<properties>
+		<start-class>br.app.grid.wallet.WalletApplication</start-class>
+	</properties>
 </project>

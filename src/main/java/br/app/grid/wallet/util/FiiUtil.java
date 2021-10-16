@@ -3,11 +3,10 @@ package br.app.grid.wallet.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -27,45 +26,16 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.opencsv.CSVReader;
+import br.app.grid.wallet.fii.FiiDividendo;
 
-import br.app.grid.wallet.cotacao.CotacaoVO;
+public class FiiUtil {
 
-/**
- * @author Brunno JosÃ© GuimarÃ£es de Almeida.
- * @since 31 de agosto de 2017.
- */
-public class HttpUtil {
-
-	public static void main2(String[] args) {
-		String csv = get(
-				"https://docs.google.com/spreadsheets/d/e/2PACX-1vQY5tf1PV7pmj8qZpURLxZzgnEbt53MRdPUB_W4didtSAXbp2lBv5gZDWfxWmfFLUMzduURXQeN3ewV/pub?output=csv");
-		System.out.println(csv);
-		List<CotacaoVO> cotacoes = new ArrayList<>();
-		int linha = 1;
-		try (CSVReader csvReader = new CSVReader(new StringReader(csv));) {
-			String[] values = null;
-			while ((values = csvReader.readNext()) != null) {
-				if (linha > 1 && values.length >= 2) {
-					if (!values[1].equals("#N/A"))
-						cotacoes.add(CotacaoVO.builder().codigo(values[0])
-								.valor(NumberFormat.getNumberInstance(Locale.FRANCE).parse(values[1]).doubleValue())
-								.build());
-				}
-				System.out.println(linha);
-				linha++;
-			}
-			System.out.println(cotacoes);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void main(String[] args) {
-		String ativo = "alzr11";
-		String csv = get("https://statusinvest.com.br/fundos-imobiliarios/"+ativo);
+	public static List<FiiDividendo> getHistorico(String ativo) {
+		String csv = get("https://statusinvest.com.br/fundos-imobiliarios/" + ativo);
 		Scanner sc = new Scanner(csv);
 		boolean imprimir = false;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		List<FiiDividendo> retorno = new ArrayList<>();
 		List<String> campos = new ArrayList<>();
 		System.out.println(ativo);
 		while (sc.hasNextLine()) {
@@ -79,100 +49,39 @@ public class HttpUtil {
 				if (linha.contains("</tr>")) {
 					if (campos.size() == 4) {
 						String saida = "{";
-						saida +="\"dataCom\"=\""+campos.get(1)+"\",";
-						saida +="\"dataPagamento\"=\""+campos.get(2)+"\",";
-						saida +="\"dividendo\"=\""+campos.get(3)+"\"}";
+						saida += "\"dataCom\"=\"" + campos.get(1) + "\",";
+						saida += "\"dataPagamento\"=\"" + campos.get(2) + "\",";
+						saida += "\"dividendo\"=\"" + campos.get(3) + "\"}";
 						System.out.println(saida);
+						retorno.add(FiiDividendo.builder().dataBase(LocalDate.parse(campos.get(1), formatter))
+								.dataPagamento(LocalDate.parse(campos.get(2), formatter))
+								.valor(Double.parseDouble(campos.get(3).replace(",", "."))).build());
 						campos.clear();
 					}
 				}
 				if (linha.contains("<td")) {
-					int inicio = linha.indexOf(">")+1;
-					int fim = linha.indexOf("</td>");
-					campos.add(linha.substring(inicio,fim)+"");
+					String leitura = linha;
+					while (!linha.contains("</td>")) {
+						linha = sc.nextLine();
+						leitura += linha;
+					}
+					int inicio = leitura.indexOf(">") + 1;
+					int fim = 0;
+					leitura = leitura.replace("<div>", "").replace("</div>", "");
+					if (leitura.contains("<i"))
+						fim = leitura.indexOf("<i");
+					else if (leitura.contains("</td>"))
+						fim = leitura.indexOf("</td>");
+					else {
+						System.out.println(leitura);
+						fim = leitura.length();
+					}
+					campos.add(leitura.substring(inicio, fim) + "");
 				}
 			}
 		}
 		sc.close();
-//		System.out.println(csv);
-
-
-	}
-
-	public static String getJson(String url) {
-		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-
-			int CONNECTION_TIMEOUT_MS = 15000; // Timeout in millis.
-
-			RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(CONNECTION_TIMEOUT_MS)
-					.setConnectTimeout(CONNECTION_TIMEOUT_MS).setSocketTimeout(CONNECTION_TIMEOUT_MS).build();
-
-			// HttpPost httpPost = new HttpPost(URL);
-			// httpPost.setConfig(requestConfig);
-
-			// use httpClient (no need to close it explicitly)
-			HttpGet getRequest = new HttpGet(url);
-			getRequest.setConfig(requestConfig);
-			getRequest.addHeader("accept", "text/plain");
-			getRequest.addHeader("charset", "UTF-8");
-
-			HttpResponse response = httpClient.execute(getRequest);
-
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
-				// System.out.println("Failed : HTTP error code : " +
-				// response.getStatusLine().getStatusCode());
-				// return null;
-			}
-			// response.setCharacterEncoding("UTF-8");
-
-			BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-
-			String output;
-			String saida = "";
-			System.out.println("Output from Server .... \n");
-			while ((output = br.readLine()) != null) {
-				saida += output;
-			}
-
-			// httpClient.getConnectionManager().shutdown();
-			return saida;
-
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-			// handle
-
-		}
-		return null;
-
-		// try {
-		// DefaultHttpClient httpClient = new DefaultHttpClient();
-		// HttpGet getRequest = new HttpGet(url);
-		// getRequest.addHeader("accept", "application/json");
-		//
-		// HttpResponse response = httpClient.execute(getRequest);
-		//
-		// if (response.getStatusLine().getStatusCode() != 200) {
-		// throw new RuntimeException("Failed : HTTP error code : " +
-		// response.getStatusLine().getStatusCode());
-		// }
-		//
-		// BufferedReader br = new BufferedReader(new
-		// InputStreamReader((response.getEntity().getContent())));
-		//
-		// String output;
-		// String saida = "";
-		// System.out.println("Output from Server .... \n");
-		// while ((output = br.readLine()) != null) {
-		// saida += output;
-		// }
-		//
-		// httpClient.getConnectionManager().shutdown();
-		// return saida;
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// return null;
+		return retorno;
 	}
 
 	public static String get(String url) {
@@ -372,9 +281,4 @@ public class HttpUtil {
 		}
 	}
 
-	public static String formatUrl(String string) {
-		string = string.replaceAll(" ", "%20");
-		return string;
-	}
 }
-

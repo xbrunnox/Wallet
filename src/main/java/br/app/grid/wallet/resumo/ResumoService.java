@@ -23,6 +23,7 @@ public class ResumoService {
 	private CotacaoService cotacaoService;
 
 	public Resumo getResumo(int idCarteira) {
+		System.out.println("Consultando resumo: "+idCarteira);
 		Resumo resumo = new Resumo();
 		Carteira carteira = carteiraService.get(idCarteira);
 		resumo.setIdCarteira(carteira.getId());

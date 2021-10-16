@@ -1,13 +1,18 @@
 package br.app.grid.wallet.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import br.app.grid.wallet.carteira.Carteira;
+import br.app.grid.wallet.carteira.CarteiraService;
 import br.app.grid.wallet.cotacao.service.CotacaoService;
+import br.app.grid.wallet.historico.Historico;
+import br.app.grid.wallet.historico.HistoricoService;
 import br.app.grid.wallet.resumo.Resumo;
 import br.app.grid.wallet.resumo.ResumoPosicao;
 import br.app.grid.wallet.resumo.ResumoService;
@@ -17,15 +22,21 @@ import br.app.grid.wallet.resumo.ResumoService;
  * @since 17 de julho de 2021.
  *
  */
-@RestController
+@Controller
 @RequestMapping("/wallet")
 public class WalletController {
+
+	@Autowired
+	private CarteiraService carteiraService;
 
 	@Autowired
 	private CotacaoService cotacaoService;
 
 	@Autowired
 	private ResumoService resumoService;
+
+	@Autowired
+	private HistoricoService historicoService;
 
 	@GetMapping("/atualizar")
 	public @ResponseBody String atualizar() {
@@ -34,7 +45,16 @@ public class WalletController {
 	}
 
 	@GetMapping("/resumo/{idCarteira}")
-	public @ResponseBody String getResumo(@PathVariable("idCarteira") int idCarteira) {
+	public ModelAndView resumo(@PathVariable("idCarteira") Integer idCarteira) {
+		Carteira carteira = carteiraService.get(idCarteira);
+		ModelAndView view = new ModelAndView("wallet/resumo");
+		view.addObject("carteira", carteira);
+		System.out.println("Retornou");
+		return view;
+	}
+
+	@GetMapping("/resumoJson/{idCarteira}")
+	public @ResponseBody String getResumoJson(@PathVariable("idCarteira") int idCarteira) {
 		Resumo resumo = resumoService.getResumo(idCarteira);
 		String html = "";
 		html += "<table width=\"100%\">";
@@ -84,4 +104,5 @@ public class WalletController {
 		return html;
 	}
 
+	
 }
