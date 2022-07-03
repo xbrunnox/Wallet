@@ -3,12 +3,16 @@ package br.app.grid.wallet.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,13 +35,13 @@ import br.app.grid.wallet.fii.FiiDividendo;
 public class FiiUtil {
 
 	public static List<FiiDividendo> getHistorico(String ativo) {
+		ativo = ativo.toUpperCase();
 		String csv = get("https://statusinvest.com.br/fundos-imobiliarios/" + ativo);
 		Scanner sc = new Scanner(csv);
 		boolean imprimir = false;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		List<FiiDividendo> retorno = new ArrayList<>();
 		List<String> campos = new ArrayList<>();
-		System.out.println(ativo);
 		while (sc.hasNextLine()) {
 			String linha = sc.nextLine();
 			if (linha.contains("Tipo do provento")) {
@@ -55,7 +59,8 @@ public class FiiUtil {
 						System.out.println(saida);
 						retorno.add(FiiDividendo.builder().dataBase(LocalDate.parse(campos.get(1), formatter))
 								.dataPagamento(LocalDate.parse(campos.get(2), formatter))
-								.valor(Double.parseDouble(campos.get(3).replace(",", "."))).build());
+								.valor(BigDecimal.valueOf(Double.parseDouble(campos.get(3).replace(",", "."))))
+								.build());
 						campos.clear();
 					}
 				}
@@ -97,6 +102,7 @@ public class FiiUtil {
 
 			// use httpClient (no need to close it explicitly)
 			HttpGet getRequest = new HttpGet(url);
+//			System.out.println(url);
 			getRequest.setConfig(requestConfig);
 			getRequest.addHeader("accept", "application/x-www-form-urlencoded");
 			// getRequest.addHeader("charset", "UTF-8");
@@ -115,7 +121,7 @@ public class FiiUtil {
 
 			String output;
 			String saida = "";
-			System.out.println("Output from Server .... \n");
+//			System.out.println("Output from Server .... \n");
 			while ((output = br.readLine()) != null) {
 				saida += output + "\n";
 			}
@@ -279,6 +285,123 @@ public class FiiUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static FiiDividendo getDividendo(String ativo) {
+		String csv = get("https://mundofii.com/fundos/" + ativo.toUpperCase());
+		Scanner sc = new Scanner(csv);
+		String saida = "";
+		boolean achouUltimoRendimento = true;
+		boolean coletando = false;
+		while (sc.hasNextLine()) {
+			String linha = sc.nextLine();
+			if (linha.contains("id=\"ULTIMO_RENDIMENTO\"")) {
+				achouUltimoRendimento = true;
+			} else if (achouUltimoRendimento && linha.contains("RENDIMENTO_52")) {
+				achouUltimoRendimento = false;
+				break;
+			} else if (achouUltimoRendimento && coletando) {
+				saida += linha + "\n";
+			} else if (achouUltimoRendimento && linha.contains("<table class=\"margin10\">")) {
+				coletando = true;
+			} else if (coletando && achouUltimoRendimento && linha.contains("</table")) {
+				coletando = false;
+			}
+		}
+		sc.close();
+//		System.out.println("------------");
+//		System.out.println(saida);
+		FiiDividendo dividendo = new FiiDividendo();
+		dividendo.setAtivo(ativo);
+		Scanner scSaida = new Scanner(saida);
+		while (scSaida.hasNextLine()) {
+			String linha = scSaida.nextLine();
+			if (linha.contains("menor")) {
+				String valorString = getValorDoDividendo(linha);
+				if (valorString != null && valorString.length() > 0) {
+					dividendo.setValor(BigDecimal.valueOf(Double.valueOf(valorString.replace(",", "."))));
+				}
+			} else if (linha.contains("t500")) {
+				String dataString = getData(linha);
+				if (dataString != null && dataString.length() > 0) {
+					LocalDate data = toData(dataString);
+					if (dividendo.getDataBase() == null)
+						dividendo.setDataBase(data);
+					else if (dividendo.getDataPagamento() == null)
+						dividendo.setDataPagamento(data);
+				}
+				String yieldString = getYield(linha);
+				if (yieldString != null) {
+					dividendo.setYield(new BigDecimal(yieldString.replace(",", ".").replace("%", "")));
+				}
+			}
+		}
+		scSaida.close();
+//		System.out.println("------------");
+		if (dividendo.getDataBase() == null && dividendo.getValor() == null)
+			return null;
+		return dividendo;
+	}
+
+	private static String getYield(String linha) {
+		Pattern pattern = Pattern.compile("[0-9]+,[0-9]+%");
+		String mydata = linha;
+
+		Matcher matcher = pattern.matcher(mydata);
+		if (matcher.find()) {
+			return matcher.group();
+		}
+		return null;
+	}
+
+	private static LocalDate toData(String dataString) {
+//		System.out.println("Data String: "+dataString);
+		LocalDate dataAtual = LocalDate.now();
+		Map<String, Integer> mapaData = new HashMap<>();
+		mapaData.put("jan", 1);
+		mapaData.put("fev", 2);
+		mapaData.put("mar", 3);
+		mapaData.put("abr", 4);
+		mapaData.put("mai", 5);
+		mapaData.put("jun", 6);
+		mapaData.put("jul", 7);
+		mapaData.put("ago", 8);
+		mapaData.put("set", 9);
+		mapaData.put("out", 10);
+		mapaData.put("nov", 11);
+		mapaData.put("dez", 12);
+		return LocalDate.of(dataAtual.getYear(), mapaData.get(dataString.substring(3).toLowerCase()),
+				Integer.parseInt(dataString.substring(0, 2)));
+	}
+
+	public static String getValorDoDividendo(String linha) {
+//		System.out.println(linha);
+		Pattern pattern = Pattern.compile("[0-9]+,[0-9]+");
+		String mydata = linha;
+
+		Matcher matcher = pattern.matcher(mydata);
+		if (matcher.find()) {
+			return matcher.group();
+		}
+		return null;
+	}
+
+	public static String getData(String linha) {
+//		System.out.println(linha);
+		Pattern pattern = Pattern.compile("[0-9]+/[a-zA-Z]+");
+		String mydata = linha;
+
+		Matcher matcher = pattern.matcher(mydata);
+		if (matcher.find()) {
+			return matcher.group();
+		}
+		return null;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(getDividendo("IRDM11"));
+		System.out.println(getDividendo("MXRF11"));
+		System.out.println(getDividendo("HCTR11"));
 	}
 
 }
