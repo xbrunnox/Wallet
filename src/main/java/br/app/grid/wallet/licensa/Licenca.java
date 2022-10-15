@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Licensa {
+public class Licenca {
 	
 	@Id
 	private String id;
@@ -27,7 +27,7 @@ public class Licensa {
 	
 	private Integer conta;
 	
-	private LocalDate vencimento;
+	private LocalDate dataDeVencimento;
 	
 	private LocalDateTime dataDeCadastro;
 

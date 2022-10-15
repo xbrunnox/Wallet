@@ -1,0 +1,183 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+<link rel="stylesheet" href="/css/bootstrap.css">
+<title>Wallet</title>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<h4 th:text="${{carteira.nome}}"></h4>
+			</div>
+		</div>
+		<input id="idCarteira" type="hidden" th:value="${{carteira.id}}">
+
+		<div class="row">
+			<div id="conteudo" class="col-12"></div>
+		</div>
+
+		<div class="row">
+			<div id="historico" class="col-12"></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+<script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script>
+	function consultar() {
+		var idCarteira = $('#idCarteira').val();
+		$
+				.ajax({
+					url : '/carteira/resumo/' + idCarteira,
+					success : function(resumo) {
+						var html = '';
+						html += '<table class="table table-striped table-condensed">';
+						html += '<thead>';
+						html += '<th>Ativo</th>';
+						html += '<th align="center">Qtd.</th>';
+						html += '<th align="center">Valor</th>';
+						html += '<th align="center">Strike</th>';
+						html += '<th align="right">Total</th>';
+						html += '</thead>';
+						html += '<tbody>';
+						$
+								.each(
+										resumo.posicoes,
+										function(index, posicao) {
+											html += '<tr>';
+											html += '<td>' + posicao.ativo
+													+ '</td>';
+											html += '<td align="right">'
+													+ formatarNumero(posicao.quantidade)
+													+ '</td>';
+											html += '<td align="right">'
+													+ formatarDecimal(posicao.valor)
+													+ '</td>';
+											html += '<td align="right">'
+													+ formatarDecimal(posicao.strike)
+													+ '</td>';
+											html += '<td align="right">'
+													+ formatarDecimal(posicao.total)
+													+ '</td>';
+											html += '</tr>';
+										});
+						html += '<tr>';
+						html += '<td>Saldo</td>';
+						html += '<td align="right">-</td>';
+						html += '<td align="right">'
+								+ formatarDecimal(resumo.saldo) + '</td>';
+						html += '<td align="right">-</td>';
+						html += '<td align="right">'
+								+ formatarDecimal(resumo.saldo) + '</td>';
+						html += '</tr>';
+						html += '<tr>';
+						html += '<td colspan="4" align="right"><strong>Total</strong></td>';
+						html += '<td align="right"><strong>'
+								+ formatarDecimal(resumo.total)
+								+ '<strong></td>';
+						html += '</tr>';
+
+						html += '<tbody>';
+						html += '</table>';
+						$('#conteudo').html(html);
+						console.log(resumo);
+					}
+				});
+	}
+
+	function consultarHistorico() {
+		var idCarteira = $('#idCarteira').val();
+		$
+				.ajax({
+					url : '/carteira/historico/' + idCarteira,
+					success : function(historico) {
+						var html = '';
+						html += '<table class="table table-striped table-condensed table-bordered" style="font-size: smaller;">';
+						html += '<thead>';
+						html += '<th>Mês</th>';
+						html += '<th>Previsto</th>';
+						html += '<th align="center">Realizado</th>';
+						html += '<th align="center">Rendimento</th>';
+						html += '<th align="right">Aporte</th>';
+						html += '</thead>';
+						html += '<tbody>';
+						$
+								.each(
+										historico.itens,
+										function(index, item) {
+											html += '<tr>';
+											html += '<td>' + item.mes + '/'
+													+ item.ano + '</td>';
+											html += '<td align="right">'
+													+ formatarDecimal(
+															item.previsto, 2)
+													+ '</td>';
+											html += '<td align="right">'
+													+ formatarDecimal(
+															item.realizado, 2)
+													+ '</td>';
+											html += '<td align="right">'
+													+ formatarDecimal(
+															item.rendimento, 2)
+													+ '&nbsp;';
+											if (item.rendimento >= 0) {
+												html += '<span class="badge badge-success">'
+											} else {
+												html += '<span class="badge badge-danger">'
+											}
+											html += formatarDecimal(
+													item.rendimentoPercentual,
+													1)
+													+ '%';
+											html += '</span></td>';
+											html += '<td align="right">'
+													+ formatarDecimal(
+															item.aporte, 2)
+													+ '</td>';
+											html += '</tr>';
+										});
+						html += '<tbody>';
+						html += '</table>';
+						$('#historico').html(html);
+						console.log(historico);
+					}
+				});
+	}
+
+	function formatarNumero(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR'); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits : 2,
+			maximumFractionDigits : 2
+		}); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero, casasDecimais) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits : casasDecimais,
+			maximumFractionDigits : casasDecimais
+		}); // "9.876.543,21"
+	}
+
+	consultar();
+	consultarHistorico();
+	setInterval(consultar, 15000);
+</script>
+</html>
