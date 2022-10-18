@@ -1,4 +1,4 @@
-package br.app.grid.wallet.licensa;
+package br.app.grid.wallet.licenca;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

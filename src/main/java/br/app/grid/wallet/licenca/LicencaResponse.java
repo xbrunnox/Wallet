@@ -1,4 +1,4 @@
-package br.app.grid.wallet.licensa;
+package br.app.grid.wallet.licenca;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LicensaResponse {
+public class LicencaResponse {
 	
 	private String id;
 	

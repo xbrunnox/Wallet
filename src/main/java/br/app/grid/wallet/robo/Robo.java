@@ -24,9 +24,11 @@ public class Robo {
 	
 	private Double stop;
 	
+	private Double tolerancia;
+	
 	private int tentativas;
 
-	private int tempo;
+	private int timeframe;
 
 
 }
