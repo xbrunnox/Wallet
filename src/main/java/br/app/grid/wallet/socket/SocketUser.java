@@ -1,4 +1,4 @@
-package br.app.grid.wallet.licenca;
+package br.app.grid.wallet.socket;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,15 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class LicencaResponse {
+public class SocketUser {
 	
-	private String id;
-	
-	private Boolean ativo;
-	
+	private String licenca;
 	private String expiracao;
 
 }

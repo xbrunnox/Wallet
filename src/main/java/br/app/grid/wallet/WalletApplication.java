@@ -5,6 +5,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
+import br.app.grid.wallet.socket.DispatcherServer;
+
 @SpringBootApplication(scanBasePackages = "br.app.grid")
 @ComponentScan({ "br.app.grid.*" })
 public class WalletApplication {
@@ -13,6 +15,7 @@ public class WalletApplication {
 		SpringApplicationBuilder builder = new SpringApplicationBuilder(WalletApplication.class);
 		builder.headless(false);
 		ConfigurableApplicationContext context = builder.run(args);
+//		DispatcherServer.getInstance().aguardarConexao();
 	}
 
 }

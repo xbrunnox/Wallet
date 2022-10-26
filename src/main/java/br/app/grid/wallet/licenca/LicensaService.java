@@ -2,6 +2,7 @@ package br.app.grid.wallet.licenca;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ public class LicensaService {
 
 	@Autowired
 	private LicencaRepository repository;
+
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	public LicencaResponse autenticar(String nome, String corretora, Integer conta) {
 		LocalDate data = LocalDate.now();
@@ -26,6 +29,19 @@ public class LicensaService {
 		}
 		return LicencaResponse.builder().ativo(data.compareTo(licensa.getDataDeVencimento()) <= 0).id(licensa.getId())
 				.build();
+	}
+
+	public LicencaResponse autenticar(String licenceKey) {
+		LocalDate data = LocalDate.now();
+		Licenca licenca = repository.findById(licenceKey).get();
+		if (licenca == null) {
+			return LicencaResponse.builder().ativo(false).id(licenceKey).build();
+		}
+		if (licenca.getDataDeVencimento() == null) {
+			return LicencaResponse.builder().ativo(false).id(licenca.getId()).build();
+		}
+		return LicencaResponse.builder().ativo(data.compareTo(licenca.getDataDeVencimento()) <= 0).id(licenca.getId())
+				.expiracao(licenca.getDataDeVencimento().format(formatter)).build();
 	}
 
 	public Boolean isAtivo(String nome, String corretora, Integer conta) {
@@ -55,7 +71,7 @@ public class LicensaService {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("ID Gerado: "+id);
+		System.out.println("ID Gerado: " + id);
 		return id;
 	}
 
