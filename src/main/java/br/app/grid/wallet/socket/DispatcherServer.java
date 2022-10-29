@@ -3,12 +3,16 @@ package br.app.grid.wallet.socket;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.app.grid.wallet.licenca.LicensaService;
 
 public class DispatcherServer {
+
+	private final int porta = 22631;
 
 	private ServerSocket server;
 	private List<DispatchClient> onlineClients;
@@ -18,10 +22,14 @@ public class DispatcherServer {
 
 	private Router router;
 
+	private DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+	private long tempoEnvio;
+
 	private DispatcherServer() {
 		onlineClients = new ArrayList<>();
 		try {
-			server = new ServerSocket(7001);
+			server = new ServerSocket(porta);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -40,7 +48,7 @@ public class DispatcherServer {
 			@Override
 			public void run() {
 				try {
-					System.out.println("Aguardando conexão");
+					System.out.println("Aguardando conexão na porta: " + porta);
 					Socket socket = server.accept();
 					aguardarConexao();
 					gerenciar(socket);
@@ -67,25 +75,22 @@ public class DispatcherServer {
 		onlineClients.remove(client);
 	}
 
-	public void comprar(String ativo, String volume) {
-		for (DispatchClient client : onlineClients) {
-			try {
-				client.sendBuy(ativo, Integer.parseInt(volume));
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-	}
-
-	public void vender(String ativo, String volume) {
-		// TODO Auto-generated method stub
-
-	}
+//	public void comprar(String ativo, String volume) {
+//		long inicio = System.currentTimeMillis();
+//		for (DispatchClient client : onlineClients) {
+//			try {
+//				client.sendBuy(ativo, Integer.parseInt(volume));
+//			} catch (NumberFormatException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		tempoEnvio = System.currentTimeMillis() - inicio;
+//
+//	}
 
 	public LicensaService getLicencaService() {
 		return licencaService;
@@ -95,12 +100,27 @@ public class DispatcherServer {
 		this.licencaService = licencaService;
 	}
 
-	public List<SocketUser> getOnline() {
+	public Router getRouter() {
+		return router;
+	}
+
+	public List<SocketUser> getOnlineUsers() {
 		List<SocketUser> retorno = new ArrayList<>();
 		for (DispatchClient client : onlineClients) {
-			retorno.add(SocketUser.builder().expiracao(client.getExpiracao()).licenca(client.getLicenca()).build());
+			retorno.add(SocketUser.builder().expiracao(client.getExpiracao())
+					.dataDeConexao(formatador.format(client.getDataDeConexao())).ip(client.getIp())
+					.nome(client.getNome()).ultimaComunicacao(formatData(client.getUltimaComunicacao()))
+					.versao(client.getVersao()).licenca(client.getLicenca())
+					.tempoEnvio(client.getTempoEnvio())
+					.build());
 		}
 		return retorno;
+	}
+
+	private String formatData(LocalDateTime localDateTime) {
+		if (localDateTime == null)
+			return null;
+		return formatador.format(localDateTime);
 	}
 
 	public void setRouter(Router router) {
@@ -108,6 +128,7 @@ public class DispatcherServer {
 	}
 
 	public void sendBuy(String ativo, Double volume) {
+		long inicio = System.currentTimeMillis();
 		for (DispatchClient client : onlineClients) {
 			new Thread(new Runnable() {
 				@Override
@@ -121,9 +142,11 @@ public class DispatcherServer {
 				}
 			}).start();
 		}
+		tempoEnvio = System.currentTimeMillis() - inicio;
 	}
-	
+
 	public void sendSell(String ativo, Double volume) {
+		long inicio = System.currentTimeMillis();
 		for (DispatchClient client : onlineClients) {
 			new Thread(new Runnable() {
 				@Override
@@ -137,6 +160,15 @@ public class DispatcherServer {
 				}
 			}).start();
 		}
+		tempoEnvio = System.currentTimeMillis() - inicio;
+	}
+
+	public long getTempoEnvio() {
+		return tempoEnvio;
+	}
+
+	public void setTempoEnvio(long tempoEnvio) {
+		this.tempoEnvio = tempoEnvio;
 	}
 
 }

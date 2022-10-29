@@ -10,9 +10,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.time.LocalDateTime;
 
 import javax.swing.JButton;
@@ -23,6 +21,9 @@ import javax.swing.JTextField;
 public class DispatcherGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	private String sinalUrl = "cotacao.grid.app.br";
+	private int porta = 22341;
 
 	private JLabel textoAtivo;
 	private JLabel textoVolume;
@@ -70,7 +71,7 @@ public class DispatcherGUI extends JFrame {
 //		server = DispatcherServer.getInstance();
 //		server.aguardarConexao();
 		try {
-			socket = new Socket("cotacao.grid.app.br", 9001);
+			socket = new Socket(sinalUrl, porta);
 
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -107,7 +108,7 @@ public class DispatcherGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				textoHorario.setText(LocalDateTime.now().toString());
 				try {
-					writer.write("buy " + campoAtivo.getText() + " " + campoVolume.getText()+"\n");
+					writer.write("buy GUI " + campoAtivo.getText() + " " + campoVolume.getText()+"\n");
 					writer.flush();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -121,7 +122,7 @@ public class DispatcherGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				textoHorario.setText(LocalDateTime.now().toString());
 				try {
-					writer.write("sell " + campoAtivo.getText() + " " + campoVolume.getText()+"\n");
+					writer.write("sell GUI " + campoAtivo.getText() + " " + campoVolume.getText()+"\n");
 					writer.flush();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block

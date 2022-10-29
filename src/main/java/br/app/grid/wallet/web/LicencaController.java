@@ -35,6 +35,6 @@ public class LicencaController {
 	
 	@GetMapping("/online")
 	public List<SocketUser> online() {
-		return DispatcherServer.getInstance().getOnline();
+		return DispatcherServer.getInstance().getOnlineUsers();
 	}
 }

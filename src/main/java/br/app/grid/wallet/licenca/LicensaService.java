@@ -28,7 +28,7 @@ public class LicensaService {
 			return LicencaResponse.builder().ativo(false).id(licensa.getId()).build();
 		}
 		return LicencaResponse.builder().ativo(data.compareTo(licensa.getDataDeVencimento()) <= 0).id(licensa.getId())
-				.build();
+				.expiracao(formatter.format(licensa.getDataDeVencimento())).build();
 	}
 
 	public LicencaResponse autenticar(String licenceKey) {
@@ -73,6 +73,10 @@ public class LicensaService {
 		}
 		System.out.println("ID Gerado: " + id);
 		return id;
+	}
+
+	public Licenca get(String licenseKey) {
+		return repository.findById(licenseKey).get();
 	}
 
 }

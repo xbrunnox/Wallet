@@ -8,6 +8,8 @@ import java.util.List;
 
 public class SinalServer {
 	
+	private final int porta = 22341;
+	
 	private ServerSocket server;
 	
 	private static SinalServer instancia;
@@ -19,7 +21,7 @@ public class SinalServer {
 	private SinalServer() {
 		onlineClients = new ArrayList<>();
 		try {
-			server = new ServerSocket(9001);
+			server = new ServerSocket(porta);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

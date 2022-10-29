@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project default="deploy" basedir="." name="Wallet">
+	<target name="package">
+		<exec executable="mvn" vmlauncher="true">
+			<arg value="package" />
+		</exec>
+	</target>
+
+	<target name="deploy" depends="package" description="Gera o deploy no server">
+		<exec executable="rsync" vmlauncher="true">
+			<arg value="-avzhe" />
+			<arg value="ssh" />
+			<arg value="--progress" />
+			<arg value="target/wallet.war" />
+			<arg value="root@jampakart.com.br:/storage/jampakart" />
+		</exec>
+	</target>
+</project>

@@ -10,8 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SocketUser {
-	
+
 	private String licenca;
 	private String expiracao;
+	private String nome;
+	private String ip;
+	private String dataDeConexao;
+	private String ultimaComunicacao;
+	private String versao;
+	private String tempoEnvio;
 
 }

@@ -40,25 +40,28 @@ public class SinalClient {
 		}
 		while (linha != null) {
 			try {
-				System.out.println("Recebido: " + linha);
+				if (!linha.contains("ping"))
+					System.out.println("Recebido [Sinal]: " + linha);
 				if (linha.startsWith("buy")) {
 					String[] parts = linha.split(" ");
-					if (parts.length >= 3) {
-						String ativo = parts[1];
-						Double volume = Double.valueOf(parts[2]);
+					if (parts.length >= 4) {
+						String origem = parts[1];
+						String ativo = parts[2];
+						Double volume = Double.valueOf(parts[3]);
 						server.sendBuy(ativo, volume);
 					}
 				} else if (linha.startsWith("sell")) {
 					String[] parts = linha.split(" ");
-					if (parts.length >= 3) {
-						String ativo = parts[1];
-						Double volume = Double.valueOf(parts[2]);
+					if (parts.length >= 4) {
+						String origem = parts[1];
+						String ativo = parts[2];
+						Double volume = Double.valueOf(parts[3]);
 						server.sendSell(ativo, volume);
 					}
 				} else if (linha.equalsIgnoreCase("ping")) {
-					long inicio = System.currentTimeMillis();
+//					long inicio = System.currentTimeMillis();
 					sendPong();
-					System.out.println((System.currentTimeMillis() - inicio) + " ms");
+//					System.out.println((System.currentTimeMillis() - inicio) + " ms");
 				} else if (linha.startsWith("authenticate")) {
 					String[] parts = linha.split(" ");
 					if (parts.length >= 2) {
@@ -94,7 +97,8 @@ public class SinalClient {
 	}
 
 	private synchronized void send(String command) throws IOException {
-		System.out.println("Enviando: " + command);
+		if (!command.contains("pong"))
+			System.out.println("Enviando: " + command);
 		writer.write(command);
 		writer.flush();
 	}
