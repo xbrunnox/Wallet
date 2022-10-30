@@ -104,10 +104,10 @@ public class DispatcherServer {
 		return router;
 	}
 
-	public List<SocketUser> getOnlineUsers() {
-		List<SocketUser> retorno = new ArrayList<>();
+	public List<ClienteUser> getOnlineUsers() {
+		List<ClienteUser> retorno = new ArrayList<>();
 		for (DispatchClient client : onlineClients) {
-			retorno.add(SocketUser.builder().expiracao(client.getExpiracao())
+			retorno.add(ClienteUser.builder().expiracao(client.getExpiracao())
 					.dataDeConexao(formatador.format(client.getDataDeConexao())).ip(client.getIp())
 					.nome(client.getNome()).ultimaComunicacao(formatData(client.getUltimaComunicacao()))
 					.versao(client.getVersao()).licenca(client.getLicenca())

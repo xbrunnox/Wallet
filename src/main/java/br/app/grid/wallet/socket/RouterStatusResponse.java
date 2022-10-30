@@ -15,6 +15,8 @@ public class RouterStatusResponse {
 	
 	private String tempoEnvio;
 	
-	private List<SocketUser> onlineUsers;
+	private List<ClienteUser> onlineUsers;
+	
+	private List<ExpertUser> onlineExperts;
 
 }

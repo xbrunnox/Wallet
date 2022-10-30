@@ -6,19 +6,19 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SinalServer {
-	
+public class ExpertServer {
+
 	private final int porta = 22341;
-	
+
 	private ServerSocket server;
-	
-	private static SinalServer instancia;
-	
-	private List<SinalClient> onlineClients;
-	
+
+	private static ExpertServer instancia;
+
+	private List<ExpertClient> onlineClients;
+
 	private Router router;
-	
-	private SinalServer() {
+
+	private ExpertServer() {
 		onlineClients = new ArrayList<>();
 		try {
 			server = new ServerSocket(porta);
@@ -27,13 +27,13 @@ public class SinalServer {
 			e.printStackTrace();
 		}
 	}
-	
-	public static SinalServer getInstance() {
+
+	public static ExpertServer getInstance() {
 		if (instancia == null)
-			instancia = new SinalServer();
+			instancia = new ExpertServer();
 		return instancia;
 	}
-	
+
 	public void aguardarConexao() {
 		new Thread(new Runnable() {
 
@@ -54,9 +54,9 @@ public class SinalServer {
 		}).start();
 
 	}
-	
+
 	protected void gerenciar(Socket socket) {
-		SinalClient client = new SinalClient(this, socket);
+		ExpertClient client = new ExpertClient(this, socket);
 		onlineClients.add(client);
 		client.gerenciar();
 		onlineClients.remove(client);
@@ -65,14 +65,26 @@ public class SinalServer {
 	public void sendBuy(String ativo, Double volume) {
 		router.sendBuy(ativo, volume);
 	}
-	
+
 	public void sendSell(String ativo, Double volume) {
 		router.sendSell(ativo, volume);
 	}
 
 	public void setRouter(Router router) {
 		this.router = router;
-		
+	}
+
+	public List<ExpertUser> getOnline() {
+		List<ExpertUser> retorno = new ArrayList<>();
+		System.out.println("Sinais online: " + onlineClients.size());
+		for (ExpertClient client : onlineClients) {
+			retorno.add(ExpertUser.builder().dataDeConexao(DataConverter.formatarDateTimeBR(client.getDataDeConexao()))
+					.ip(client.getIp()).nome(client.getNome())
+					.ultimaComunicacao(DataConverter.formatarDateTimeBR(client.getUltimaComunicacao()))
+					.versao(client.getVersao()).licenca(client.getLicenca()).tempoEnvio(client.getTempoEnvio())
+					.expert(client.getExpert()).build());
+		}
+		return retorno;
 	}
 
 }

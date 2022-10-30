@@ -11,28 +11,40 @@ import java.time.temporal.ChronoUnit;
 
 import br.app.grid.wallet.licenca.Licenca;
 import br.app.grid.wallet.licenca.LicencaResponse;
-import br.app.grid.wallet.util.DataConverter;
+import lombok.Getter;
 
 public class DispatchClient {
 
-	private String licenca;
-
-	private String expiracao;
-
 	private Socket socket;
 
+	@Getter
+	private String licenca;
+
+	@Getter
+	private String expiracao;
+
+	@Getter
 	private LocalDateTime dataDeConexao;
 
+	@Getter
 	private LocalDateTime ultimaComunicacao;
 
+	@Getter
 	private String ip;
 
+	@Getter
+	private String expert;
+
+	@Getter
 	private String nome;
 
+	@Getter
 	private String versao;
 
+	@Getter
 	private String tempoEnvio;
 
+	@Getter
 	private boolean autenticado;
 
 	private BufferedReader reader;
@@ -63,22 +75,14 @@ public class DispatchClient {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					Thread.sleep(30000);
-				} catch (InterruptedException e) {
-				}
+				Util.sleep(30000);
 				while (ChronoUnit.SECONDS.between(ultimaComunicacao, LocalDateTime.now()) < 120) {
-					try {
-						Thread.sleep(30000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					Util.sleep(30000);
 				}
 				try {
 					if (!socket.isClosed()) {
 						System.out.println(
-								DataConverter.nowBr() + " [USER] " + licenca + " - Desconectando por inatividade.");
+								DataConverter.nowBr() + " [USER] Desconectando por inatividade. [" + licenca + "]");
 						socket.close();
 					}
 				} catch (IOException e) {
@@ -90,7 +94,7 @@ public class DispatchClient {
 	public void gerenciar() {
 		if (reader == null || writer == null)
 			return;
-		System.out.println("Aguardando");
+		System.out.println(DataConverter.nowBr() + " [USER] Aguardando conexão");
 		String linha;
 		try {
 			linha = reader.readLine();
@@ -106,25 +110,11 @@ public class DispatchClient {
 					if (linha.equalsIgnoreCase("ping")) {
 						sendPong();
 					} else if (linha.startsWith("authenticate")) {
-						String[] parts = linha.split(" ");
-						if (parts.length >= 2) {
-							authenticate(parts[1]);
-							if (parts.length >= 3)
-								versao = parts[2];
-						} else {
-							sendDisconnect("License Key nao informada.");
-						}
+						autenticar(linha);
 					}
 				} else {
 					if (linha.startsWith("authenticate")) {
-						String[] parts = linha.split(" ");
-						if (parts.length >= 2) {
-							authenticate(parts[1]);
-							if (parts.length >= 3)
-								versao = parts[2];
-						} else {
-							sendDisconnect("License Key nao informada.");
-						}
+						autenticar(linha);
 					} else {
 						System.out.println(DataConverter.nowBr() + " [USER] Desconectando intruso: " + ip);
 						socket.close();
@@ -136,6 +126,19 @@ public class DispatchClient {
 				e.printStackTrace();
 				return;
 			}
+		}
+	}
+
+	private void autenticar(String linha) throws IOException {
+		String[] parts = linha.split(" ");
+		if (parts.length >= 2) {
+			authenticate(parts[1]);
+			if (parts.length >= 3)
+				expert = parts[2];
+			if (parts.length >= 4)
+				versao = parts[3];
+		} else {
+			sendDisconnect("License Key nao informada.");
 		}
 	}
 
@@ -177,22 +180,6 @@ public class DispatchClient {
 		tempoEnvio = (System.currentTimeMillis() - inicio) + " ms";
 	}
 
-	public String getLicenca() {
-		return licenca;
-	}
-
-	public String getExpiracao() {
-		return expiracao;
-	}
-
-	public LocalDateTime getDataDeConexao() {
-		return dataDeConexao;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
 	public void sendBuy(String ativo, Double volume) throws IOException {
 		send("buy " + ativo + " " + volume + "#");
 	}
@@ -200,21 +187,4 @@ public class DispatchClient {
 	public void sendSell(String ativo, Double volume) throws IOException {
 		send("sell " + ativo + " " + volume + "#");
 	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public LocalDateTime getUltimaComunicacao() {
-		return ultimaComunicacao;
-	}
-
-	public String getVersao() {
-		return versao;
-	}
-
-	public String getTempoEnvio() {
-		return tempoEnvio;
-	}
-
 }

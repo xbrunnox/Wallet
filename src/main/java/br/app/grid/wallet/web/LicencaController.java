@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.app.grid.wallet.licenca.LicencaResponse;
 import br.app.grid.wallet.licenca.LicensaService;
 import br.app.grid.wallet.socket.DispatcherServer;
-import br.app.grid.wallet.socket.SocketUser;
+import br.app.grid.wallet.socket.ClienteUser;
 import br.app.grid.wallet.web.request.AutenticarRequest;
 
 @RestController
@@ -34,7 +34,7 @@ public class LicencaController {
 	}
 	
 	@GetMapping("/online")
-	public List<SocketUser> online() {
+	public List<ClienteUser> online() {
 		return DispatcherServer.getInstance().getOnlineUsers();
 	}
 }

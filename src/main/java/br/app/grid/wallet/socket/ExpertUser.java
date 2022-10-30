@@ -6,17 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class SocketUser {
-
+public class ExpertUser {
+	
 	private String licenca;
 	private String expiracao;
 	private String nome;
 	private String ip;
 	private String dataDeConexao;
 	private String ultimaComunicacao;
+	private String expert;
 	private String versao;
 	private String tempoEnvio;
 

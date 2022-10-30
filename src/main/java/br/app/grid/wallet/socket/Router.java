@@ -8,13 +8,13 @@ public class Router {
 
 	public static Router router;
 
-	private SinalServer sinalServer;
+	private ExpertServer sinalServer;
 	private DispatcherServer dispatcherServer;
 
 	private LicensaService licencaService;
 
 	private Router() {
-		sinalServer = SinalServer.getInstance();
+		sinalServer = ExpertServer.getInstance();
 		dispatcherServer = DispatcherServer.getInstance();
 		sinalServer.setRouter(this);
 		dispatcherServer.setRouter(this);
@@ -49,8 +49,9 @@ public class Router {
 	}
 
 	public RouterStatusResponse getStatus() {
-		List<SocketUser> onlineUser = dispatcherServer.getOnlineUsers();
-		return RouterStatusResponse.builder().onlineUsers(onlineUser).tempoEnvio(dispatcherServer.getTempoEnvio() + " ms")
-				.build();
+		List<ClienteUser> onlineUser = dispatcherServer.getOnlineUsers();
+		List<ExpertUser> onlineExperts = sinalServer.getOnline();
+		return RouterStatusResponse.builder().onlineUsers(onlineUser)
+				.tempoEnvio(dispatcherServer.getTempoEnvio() + " ms").onlineExperts(onlineExperts).build();
 	}
 }
