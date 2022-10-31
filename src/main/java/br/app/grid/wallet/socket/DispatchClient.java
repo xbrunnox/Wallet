@@ -9,8 +9,8 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import br.app.grid.wallet.licenca.Licenca;
-import br.app.grid.wallet.licenca.LicencaResponse;
+import br.app.grid.wallet.licenca.Conta;
+import br.app.grid.wallet.licenca.ContaResponse;
 import lombok.Getter;
 
 public class DispatchClient {
@@ -143,11 +143,11 @@ public class DispatchClient {
 	}
 
 	private void authenticate(String licenseKey) throws IOException {
-		LicencaResponse licencaResponse = server.getLicencaService().autenticar(licenseKey);
+		ContaResponse licencaResponse = server.getLicencaService().autenticar(licenseKey);
 		licenca = licencaResponse.getId();
 		expiracao = licencaResponse.getExpiracao();
 
-		Licenca licenca = server.getLicencaService().get(licenseKey);
+		Conta licenca = server.getLicencaService().get(licenseKey);
 
 		if (licencaResponse.getAtivo()) {
 			nome = licenca.getNome();

@@ -9,50 +9,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LicensaService {
+public class ContaService {
 
 	@Autowired
-	private LicencaRepository repository;
+	private ContaRepository repository;
 
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-	public LicencaResponse autenticar(String nome, String corretora, Integer conta) {
+	public ContaResponse autenticar(String nome, String corretora, Integer conta) {
 		LocalDate data = LocalDate.now();
-		Licenca licensa = repository.get(corretora, conta);
+		Conta licensa = repository.get(corretora, conta);
 		if (licensa == null) {
-			licensa = Licenca.builder().conta(conta).corretora(corretora).nome(nome).id(gerarId())
+			licensa = Conta.builder().conta(conta).corretora(corretora).nome(nome).id(gerarId())
 					.dataDeCadastro(LocalDateTime.now()).build();
 			repository.save(licensa);
 		}
 		if (licensa.getDataDeVencimento() == null) {
-			return LicencaResponse.builder().ativo(false).id(licensa.getId()).build();
+			return ContaResponse.builder().ativo(false).id(licensa.getId()).build();
 		}
-		return LicencaResponse.builder().ativo(data.compareTo(licensa.getDataDeVencimento()) <= 0).id(licensa.getId())
+		return ContaResponse.builder().ativo(data.compareTo(licensa.getDataDeVencimento()) <= 0).id(licensa.getId())
 				.expiracao(formatter.format(licensa.getDataDeVencimento())).build();
 	}
 
-	public LicencaResponse autenticar(String licenceKey) {
+	public ContaResponse autenticar(String licenceKey) {
 		LocalDate data = LocalDate.now();
-		Licenca licenca = repository.findById(licenceKey).get();
+		Conta licenca = repository.findById(licenceKey).get();
 		if (licenca == null) {
-			return LicencaResponse.builder().ativo(false).id(licenceKey).build();
+			return ContaResponse.builder().ativo(false).id(licenceKey).build();
 		}
 		if (licenca.getDataDeVencimento() == null) {
-			return LicencaResponse.builder().ativo(false).id(licenca.getId()).build();
+			return ContaResponse.builder().ativo(false).id(licenca.getId()).build();
 		}
-		return LicencaResponse.builder().ativo(data.compareTo(licenca.getDataDeVencimento()) <= 0).id(licenca.getId())
+		return ContaResponse.builder().ativo(data.compareTo(licenca.getDataDeVencimento()) <= 0).id(licenca.getId())
 				.expiracao(licenca.getDataDeVencimento().format(formatter)).build();
 	}
 
 	public Boolean isAtivo(String nome, String corretora, Integer conta) {
 		LocalDate data = LocalDate.now();
-		Licenca licensa = repository.get(corretora, conta);
+		Conta licensa = repository.get(corretora, conta);
 		if (licensa != null) {
 			if (licensa.getDataDeVencimento() == null)
 				return null;
 			return (data.compareTo(licensa.getDataDeVencimento()) <= 0);
 		} else {
-			licensa = Licenca.builder().conta(conta).corretora(corretora).nome(nome).id(gerarId()).build();
+			licensa = Conta.builder().conta(conta).corretora(corretora).nome(nome).id(gerarId()).build();
 			repository.save(licensa);
 		}
 		return false;
@@ -75,8 +75,18 @@ public class LicensaService {
 		return id;
 	}
 
-	public Licenca get(String licenseKey) {
+	public Conta get(String licenseKey) {
 		return repository.findById(licenseKey).get();
+	}
+
+	public ContaInfoResponse info(String license) {
+		Conta licenca = get(license);
+		if (licenca == null) {
+			return ContaInfoResponse.builder().ativo(false).conta(license).build();
+		}
+		return ContaInfoResponse.builder().ativo(LocalDate.now().compareTo(licenca.getDataDeVencimento()) <= 0)
+				.conta(licenca.getId()).nome(licenca.getNome())
+				.expiracao(licenca.getDataDeVencimento().format(formatter)).build();
 	}
 
 }

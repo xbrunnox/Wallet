@@ -13,7 +13,7 @@
 			<arg value="ssh" />
 			<arg value="--progress" />
 			<arg value="target/wallet.war" />
-			<arg value="root@jampakart.com.br:/storage/jampakart" />
+			<arg value="root@137.184.197.128:/storage/metatrader" />
 		</exec>
 	</target>
 </project>

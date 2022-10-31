@@ -2,7 +2,7 @@ package br.app.grid.wallet.socket;
 
 import java.util.List;
 
-import br.app.grid.wallet.licenca.LicensaService;
+import br.app.grid.wallet.licenca.ContaService;
 
 public class Router {
 
@@ -11,7 +11,7 @@ public class Router {
 	private ExpertServer sinalServer;
 	private DispatcherServer dispatcherServer;
 
-	private LicensaService licencaService;
+	private ContaService licencaService;
 
 	private Router() {
 		sinalServer = ExpertServer.getInstance();
@@ -22,7 +22,7 @@ public class Router {
 		dispatcherServer.aguardarConexao();
 	}
 
-	public LicensaService getLicencaService() {
+	public ContaService getLicencaService() {
 		return licencaService;
 	}
 
@@ -33,7 +33,7 @@ public class Router {
 		return router;
 	}
 
-	public void setLicencaService(LicensaService licencaService) {
+	public void setLicencaService(ContaService licencaService) {
 		this.licencaService = licencaService;
 		dispatcherServer.setLicencaService(this.licencaService);
 	}

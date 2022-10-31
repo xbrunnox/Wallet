@@ -10,31 +10,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.app.grid.wallet.licenca.LicencaResponse;
-import br.app.grid.wallet.licenca.LicensaService;
-import br.app.grid.wallet.socket.DispatcherServer;
+import br.app.grid.wallet.licenca.ContaInfoResponse;
+import br.app.grid.wallet.licenca.ContaResponse;
+import br.app.grid.wallet.licenca.ContaService;
 import br.app.grid.wallet.socket.ClienteUser;
+import br.app.grid.wallet.socket.DispatcherServer;
 import br.app.grid.wallet.web.request.AutenticarRequest;
 
 @RestController
-@RequestMapping("/licenca")
-public class LicencaController {
+@RequestMapping("/conta")
+public class ContaController {
 
 	@Autowired
-	private LicensaService service;
+	private ContaService service;
 
 	@PostMapping("/autenticar")
-	public LicencaResponse autenticar(@RequestBody AutenticarRequest request) {
+	public ContaResponse autenticar(@RequestBody AutenticarRequest request) {
 		return service.autenticar(request.getNome(), request.getCorretora(), request.getConta());
 	}
 
 	@GetMapping("/check/{license}")
-	public LicencaResponse check(@PathVariable(name = "license", required = true) String license) {
+	public ContaResponse check(@PathVariable(name = "license", required = true) String license) {
 		return service.autenticar(license);
 	}
 	
 	@GetMapping("/online")
 	public List<ClienteUser> online() {
 		return DispatcherServer.getInstance().getOnlineUsers();
+	}
+	
+	@GetMapping("/info/{license}")
+	public ContaInfoResponse info(@PathVariable(name = "license", required = true) String license) {
+		return service.info(license);
 	}
 }

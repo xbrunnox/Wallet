@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LicencaResponse {
-	
-	private String id;
-	
+public class ContaInfoResponse {
+
+	private String conta;
+
+	private String nome;
+
 	private Boolean ativo;
-	
+
 	private String expiracao;
 
 }

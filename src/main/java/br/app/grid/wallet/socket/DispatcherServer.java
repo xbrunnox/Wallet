@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.app.grid.wallet.licenca.LicensaService;
+import br.app.grid.wallet.licenca.ContaService;
 
 public class DispatcherServer {
 
@@ -16,7 +16,7 @@ public class DispatcherServer {
 
 	private ServerSocket server;
 	private List<DispatchClient> onlineClients;
-	private LicensaService licencaService;
+	private ContaService licencaService;
 
 	private static DispatcherServer instancia;
 
@@ -92,11 +92,11 @@ public class DispatcherServer {
 //
 //	}
 
-	public LicensaService getLicencaService() {
+	public ContaService getLicencaService() {
 		return licencaService;
 	}
 
-	public void setLicencaService(LicensaService licencaService) {
+	public void setLicencaService(ContaService licencaService) {
 		this.licencaService = licencaService;
 	}
 

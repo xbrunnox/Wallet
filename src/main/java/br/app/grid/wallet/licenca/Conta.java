@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Licenca {
+public class Conta {
 	
 	@Id
 	private String id;
