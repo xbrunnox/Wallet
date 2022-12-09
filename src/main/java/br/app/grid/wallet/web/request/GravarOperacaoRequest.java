@@ -1,5 +1,6 @@
 package br.app.grid.wallet.web.request;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,26 +16,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GravarOperacaoRequest {
 
-	private String licenca;
+	private String conta;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime dataDeEntrada;
-
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime dataDeSaida;
+	private String expert;
 
 	private String ativo;
 
-	private Double volume;
+	private BigDecimal volume;
 
-	private Double entrada;
+	private Double preco;
 
-	private Double saida;
-
-	private Double pontos;
-
-	private Double valor;
-	
 	private String direcao;
+
+	private String tipo;
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime data;
 
 }

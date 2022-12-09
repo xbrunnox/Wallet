@@ -34,7 +34,7 @@ public class CotacaoService {
 		for (CotacaoVO cotacao : cotacoes) {
 			Ativo ativo = ativoService.get(cotacao.getCodigo());
 			if (ativo == null) {
-				ativo = Ativo.builder().codigo(cotacao.getCodigo()).nome(cotacao.getNome()).build();
+//				ativo = Ativo.builder().codigo(cotacao.getCodigo()).nome(cotacao.getNome()).build();
 				ativoService.salvar(ativo);
 			}
 			Cotacao ultimaCotacao = getUltimaCotacao(ativo);
@@ -51,7 +51,8 @@ public class CotacaoService {
 	}
 
 	public Cotacao getUltimaCotacao(Ativo ativo) {
-		return repository.findFirstByIdAtivo(ativo.getId());
+		return null;
+//		return repository.findFirstByIdAtivo(ativo.getId());
 	}
 
 	private List<CotacaoVO> consultarCotacoes() {

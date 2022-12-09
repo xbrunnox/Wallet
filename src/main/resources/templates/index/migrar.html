@@ -1,0 +1,143 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+<link rel="stylesheet" href="/css/bootstrap.css">
+<title>Migrar - Versátil I.A.</title>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+<link
+	href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
+	rel="stylesheet" />
+</head>
+<style>
+.fonte-tabela {
+	font-weight: 600;
+	font-size: 80%;
+}
+
+.dados-pessoais {
+	display: none;
+}
+
+.dados-pessoais-oculto {
+	display: block;
+}
+</style>
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
+			height="30" class="d-inline-block align-top" alt=""> <span
+			style="font-weight: 600">&nbsp;&nbsp;Migrar</span>
+		</a>
+	</nav>
+	<br>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<label>Origem:</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<select id="origem" th:field="*{contasList}" class="form-control">
+					<option th:each="conta : ${contasList}" th:value="${conta.id}"
+						th:text="${conta.id + ' - ' + conta.nome + ' - ' + conta.corretora}"></option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<label>Destino:</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<select id="destino" th:field="*{contasList}" class="form-control">
+					<option th:each="conta : ${contasList}" th:value="${conta.id}"
+						th:text="${conta.id + ' - ' + conta.nome + ' - ' + conta.corretora}"></option>
+				</select>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-6">
+				<button type="button" onclick="javascript:migrar();"
+					class="btn btn-primary">Migrar</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
+<script
+	src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+<script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.js"></script>
+<script>
+	function migrar() {
+		var origem = $('#origem').val();
+		var destino = $('#destino').val();
+		console.log("Migrando " + origem + " para " + destino);
+
+		$.ajax({
+			url : "/migrar/" + origem + "/" + destino,
+			success : function(retorno) {
+				alert("Migração de " + origem + " para " + destino
+						+ " realizada.");
+			}
+		});
+	}
+
+	function formatarNumero(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR'); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits : 2,
+			maximumFractionDigits : 2
+		}); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero, casasDecimais) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits : casasDecimais,
+			maximumFractionDigits : casasDecimais
+		}); // "9.876.543,21"
+	}
+
+	function exibirDados() {
+		var privacidade = $('#privacidade').val();
+		console.log(privacidade);
+		$('.handle').css('left', '300px')
+		$("#divP1").css("display", "none");
+		$("#divP2").css("display", "block");
+		$("#divP3").css("display", "block");
+		$("#divP4").css("display", "block");
+		$("#divP5").css("display", "block");
+		$("#divP6").css("display", "block");
+		$("#divP7").css("display", "block");
+	}
+
+	$('#customSwitch1').change(function() {
+		if (this.checked) {
+			$('.dados-pessoais').css('display', 'none');
+			$('.dados-pessoais-oculto').css('display', 'block');
+		} else {
+			$('.dados-pessoais').css('display', 'block');
+			$('.dados-pessoais-oculto').css('display', 'none');
+		}
+	});
+</script>
+</html>

@@ -29,7 +29,7 @@ public class DividendoService {
 			if (fiiDividendo != null) {
 				ativo = new Ativo();
 				ativo.setCodigo(codigoAtivo.toUpperCase());
-				ativo.setNome("");
+//				ativo.setNome("");
 				ativoRepository.save(ativo);
 			} else {
 				return null;

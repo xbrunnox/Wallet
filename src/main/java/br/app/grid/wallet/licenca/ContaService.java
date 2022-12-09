@@ -3,10 +3,15 @@ package br.app.grid.wallet.licenca;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import br.app.grid.wallet.assinatura.Assinatura;
+import br.app.grid.wallet.assinatura.repository.AssinaturaRepository;
+import br.app.grid.wallet.util.CorretoraUtil;
 
 @Service
 public class ContaService {
@@ -14,34 +19,52 @@ public class ContaService {
 	@Autowired
 	private ContaRepository repository;
 
+	@Autowired
+	private AssinaturaRepository assinaturaRepository;
+
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	public ContaResponse autenticar(String nome, String corretora, Integer conta) {
-		LocalDate data = LocalDate.now();
-		Conta licensa = repository.get(corretora, conta);
-		if (licensa == null) {
-			licensa = Conta.builder().conta(conta).corretora(corretora).nome(nome).id(gerarId())
+		Conta licenca = repository.get(corretora, conta);
+		if (licenca == null) {
+			licenca = repository.get(CorretoraUtil.format(corretora), conta);
+		}
+		if (licenca == null) {
+			licenca = Conta.builder().conta(conta).corretora(CorretoraUtil.format(corretora)).nome(nome).id(gerarId())
 					.dataDeCadastro(LocalDateTime.now()).build();
-			repository.save(licensa);
+			repository.save(licenca);
 		}
-		if (licensa.getDataDeVencimento() == null) {
-			return ContaResponse.builder().ativo(false).id(licensa.getId()).build();
-		}
-		return ContaResponse.builder().ativo(data.compareTo(licensa.getDataDeVencimento()) <= 0).id(licensa.getId())
-				.expiracao(formatter.format(licensa.getDataDeVencimento())).build();
+
+		System.out.println("Pesquisando: " + licenca.getId());
+		return autenticar(licenca.getId());
+
+//		List<Assinatura> assinaturas = assinaturaRepository.getListAtivas(licensa.getId(), LocalDate.now());
+//		if (assinaturas.size() == 0)
+//			return ContaResponse.builder().ativo(false).id(licensa.getId()).build();
+//
+//		LocalDate maiorVencimento = assinaturas.get(0).getDataVencimento();
+//		for (Assinatura assinatura : assinaturas) {
+//			if (assinatura.getDataVencimento().compareTo(maiorVencimento) > 0)
+//				maiorVencimento = assinatura.getDataVencimento();
+//		}
+//
+//		return ContaResponse.builder().ativo(true).id(licensa.getId()).expiracao(formatter.format(maiorVencimento))
+//				.servidor("srv1.versatil-ia.com.br").porta(22631).build();
 	}
 
 	public ContaResponse autenticar(String licenceKey) {
-		LocalDate data = LocalDate.now();
-		Conta licenca = repository.findById(licenceKey).get();
-		if (licenca == null) {
+		List<Assinatura> assinaturas = assinaturaRepository.getListAtivas(licenceKey, LocalDate.now());
+		if (assinaturas.size() == 0)
 			return ContaResponse.builder().ativo(false).id(licenceKey).build();
+
+		LocalDate maiorVencimento = assinaturas.get(0).getDataVencimento();
+		for (Assinatura assinatura : assinaturas) {
+			if (assinatura.getDataVencimento().compareTo(maiorVencimento) > 0)
+				maiorVencimento = assinatura.getDataVencimento();
 		}
-		if (licenca.getDataDeVencimento() == null) {
-			return ContaResponse.builder().ativo(false).id(licenca.getId()).build();
-		}
-		return ContaResponse.builder().ativo(data.compareTo(licenca.getDataDeVencimento()) <= 0).id(licenca.getId())
-				.expiracao(licenca.getDataDeVencimento().format(formatter)).build();
+
+		return ContaResponse.builder().ativo(true).id(licenceKey).expiracao(formatter.format(maiorVencimento))
+				.servidor("srv1.versatil-ia.com.br").porta(22631).build();
 	}
 
 	public Boolean isAtivo(String nome, String corretora, Integer conta) {
@@ -80,13 +103,40 @@ public class ContaService {
 	}
 
 	public ContaInfoResponse info(String license) {
-		Conta licenca = get(license);
-		if (licenca == null) {
-			return ContaInfoResponse.builder().ativo(false).conta(license).build();
+		Conta conta = get(license);
+		if (conta == null) {
+			return ContaInfoResponse.builder().ativo(false).conta(license).pausado(true).build();
 		}
-		return ContaInfoResponse.builder().ativo(LocalDate.now().compareTo(licenca.getDataDeVencimento()) <= 0)
-				.conta(licenca.getId()).nome(licenca.getNome())
-				.expiracao(licenca.getDataDeVencimento().format(formatter)).build();
+		List<Assinatura> assinaturas = assinaturaRepository.getListAtivas(license, LocalDate.now());
+		if (assinaturas.size() == 0)
+			return ContaInfoResponse.builder().ativo(false).conta(conta.getId()).nome(conta.getNome()).pausado(true)
+					.corretora(conta.getCorretora()).build();
+
+		LocalDate maiorVencimento = assinaturas.get(0).getDataVencimento();
+		Assinatura ass = assinaturas.get(0);
+		for (Assinatura assinatura : assinaturas) {
+			if (assinatura.getDataVencimento().compareTo(maiorVencimento) > 0) {
+				maiorVencimento = assinatura.getDataVencimento();
+				ass = assinatura;
+			}
+		}
+
+		return ContaInfoResponse.builder().ativo(true).conta(conta.getId()).nome(conta.getNome())
+				.corretora(conta.getCorretora()).pausado(ass.isPausado()).expiracao(maiorVencimento.format(formatter))
+				.build();
+	}
+
+	public List<ContaResultadoView> getListContaResultado() {
+		return repository.getListContaResultado();
+	}
+
+	public List<Conta> getList() {
+		return repository.getList();
+	}
+
+	public void excluir(String idConta) {
+		Conta conta = get(idConta);
+		repository.delete(conta);
 	}
 
 }

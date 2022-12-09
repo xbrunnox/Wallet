@@ -3,6 +3,8 @@
 <project default="deploy" basedir="." name="Wallet">
 	<target name="package">
 		<exec executable="mvn" vmlauncher="true">
+			<arg value="clean" />
+			<arg value="install" />
 			<arg value="package" />
 		</exec>
 	</target>
@@ -13,7 +15,7 @@
 			<arg value="ssh" />
 			<arg value="--progress" />
 			<arg value="target/wallet.war" />
-			<arg value="root@137.184.197.128:/storage/metatrader" />
+			<arg value="root@database.versatil-ia.com.br:/storage/metatrader" />
 		</exec>
 	</target>
 </project>

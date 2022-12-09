@@ -1,0 +1,96 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+<link rel="stylesheet" href="/css/bootstrap.css">
+<title>Status - Versátil I.A.</title>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+</head>
+<style>
+.fonte-tabela {
+	font-weight: 600;
+	font-size: 80%;
+}
+</style>
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
+			height="30" class="d-inline-block align-top" alt=""> <span
+			style="font-weight: 600">&nbsp;&nbsp;Status</span>
+		</a>
+	</nav>
+	<br>
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="col-12">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th class="fonte-tabela">Conta</th>
+							<th class="fonte-tabela">Nome / Corretora</th>
+							<th class="fonte-tabela">Expiração / IP</th>
+							<th class="fonte-tabela">U.C./Conexão</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user : ${status.onlineUsers}">
+							<td><span class="fonte-tabela" th:text="${user.licenca}"></span><br>
+								<small><span th:text="${user.versao}"></span><span
+									th:if="${user.pausado}">&nbsp;<i
+										class="bi bi-pause-fill"></i></span></small></td>
+							<td><span class="fonte-tabela" th:text="${user.nome}"></span><br>
+								<small><span th:text="${user.corretora}"></span></small></td>
+							<td align="right"><span class="fonte-tabela"
+								th:text="${user.expiracao}"></span><br> <small><span
+									th:text="${user.ip}"></span></small></td>
+							<td align="right"><span class="fonte-tabela"
+								th:text="${#temporals.format(user.ultimaComunicacao, 'HH:mm:ss')}"></span><br>
+								<small><span
+									th:text="${#temporals.format(user.dataDeConexao, 'dd/MM HH:mm:ss')}"></span></small></td>
+						</tr>
+						<tr>
+							<td colspan="4"><span th:text="${status.onlineUsers.size()}"></span></td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+<script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script>
+	function formatarNumero(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR'); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits : 2,
+			maximumFractionDigits : 2
+		}); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero, casasDecimais) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits : casasDecimais,
+			maximumFractionDigits : casasDecimais
+		}); // "9.876.543,21"
+	}
+</script>
+</html>

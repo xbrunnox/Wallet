@@ -16,5 +16,9 @@ public class ContaResponse {
 	private Boolean ativo;
 	
 	private String expiracao;
+	
+	private String servidor;
+	
+	private int porta;
 
 }

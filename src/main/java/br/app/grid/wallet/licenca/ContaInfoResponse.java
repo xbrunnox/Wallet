@@ -14,9 +14,13 @@ public class ContaInfoResponse {
 	private String conta;
 
 	private String nome;
+	
+	private String corretora;
 
 	private Boolean ativo;
 
 	private String expiracao;
+	
+	private Boolean pausado;
 
 }
