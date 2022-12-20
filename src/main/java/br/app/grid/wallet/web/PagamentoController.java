@@ -7,10 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.pagamento.Pagamento;
 import br.app.grid.wallet.pagamento.PagamentoService;
 import br.app.grid.wallet.usuario.UsuarioUtil;
@@ -21,6 +23,9 @@ public class PagamentoController {
 
 	@Autowired
 	private PagamentoService pagamentoService;
+	
+	@Autowired
+	private AssinaturaService assinaturaService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -48,5 +53,9 @@ public class PagamentoController {
 		view.addObject("pagamentosList", pagamentos);
 		return view;
 	}
-
+	
+	@GetMapping("/identificar/{idPagamento}")
+	public void identificar(@PathVariable(name = "idPagamento") Integer idPagamento) {
+		assinaturaService.identificarPagamento(idPagamento);
+	}
 }

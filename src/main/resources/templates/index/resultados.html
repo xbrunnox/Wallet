@@ -54,14 +54,14 @@
 					<tbody>
 						<tr th:each="conta : ${contasList}">
 							<td><div class="dados-pessoais">
-									<a th:href="@{'/trade/' + ${conta.id}}"> <span
+									<a th:href="@{'/detalhes/' + ${conta.id}}"> <span
 										class="fonte-tabela" th:text="${conta.id}"></span></a><br> <small><span
 										class="fonte-tabela"
 										th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small>
 
 								</div>
 								<div class="dados-pessoais-oculto">
-									<a th:href="@{'/trade/' + ${conta.id}}"><span
+									<a th:href="@{'/detalhes/' + ${conta.id}}"><span
 										class="fonte-tabela" th:text="${conta.id.substring(0,4)+'**'}"></span></a><br>
 									<small><span class="fonte-tabela"
 										th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small>

@@ -35,6 +35,12 @@ public class Assinatura {
 
 	private LocalDate dataVencimento;
 	
+	private String telefone;
+	
+	private String documentoPagamento;
+	
+	private String emailPagamento;
+	
 	private boolean pausado;
 
 }

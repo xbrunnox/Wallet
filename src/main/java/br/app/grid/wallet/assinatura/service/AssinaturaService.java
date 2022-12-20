@@ -24,10 +24,13 @@ import br.app.grid.wallet.licenca.Conta;
 import br.app.grid.wallet.licenca.ContaRepository;
 import br.app.grid.wallet.pagamento.Pagamento;
 import br.app.grid.wallet.pagamento.PagamentoRepository;
+import br.app.grid.wallet.produto.Produto;
+import br.app.grid.wallet.produto.ProdutoService;
 import br.app.grid.wallet.robo.Robo;
 import br.app.grid.wallet.robo.RoboRepository;
 import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.TradeRepository;
+import br.app.grid.wallet.util.DocumentoFormatter;
 
 @Service
 public class AssinaturaService {
@@ -52,6 +55,9 @@ public class AssinaturaService {
 
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
+	
+	@Autowired
+	private ProdutoService produtoService;
 
 	@Autowired
 	private ContaRepository contaRepository;
@@ -98,7 +104,9 @@ public class AssinaturaService {
 
 		if (conta != null && pagamento != null) {
 			Assinatura assinatura = Assinatura.builder().conta(conta).dataCadastro(LocalDateTime.now())
-					.dataVencimento(LocalDate.now().plusMonths(1)).build();
+					.dataVencimento(LocalDate.now().plusMonths(1))
+					.documentoPagamento(DocumentoFormatter.format(pagamento.getCpf()))
+					.emailPagamento(pagamento.getEmail()).build();
 			assinaturaRepository.save(assinatura);
 			AssinaturaExpert expertDolar = AssinaturaExpert.builder().assinatura(assinatura).ativado(true).expert(dolar)
 					.volume(dolar.getVolume()).volumeMaximo(dolar.getVolume()).build();
@@ -198,6 +206,23 @@ public class AssinaturaService {
 		pagamentoRepository.save(pagamento);
 
 		return assinatura;
+	}
+
+	public List<AssinaturaPagamento> getListPagamentos(String conta) {
+		return assinaturaPagamentoRepository.getListPagamentos(conta);
+	}
+
+	public List<AssinaturaPagamento> getListPagamentos(int idAssinatura) {
+		return assinaturaPagamentoRepository.getListPagamentos(idAssinatura);
+	}
+
+	public void identificarPagamento(Integer idPagamento) {
+		Pagamento pagamento = pagamentoRepository.get(idPagamento);
+		if (pagamento != null) {
+			Produto produto = produtoService.getByNome(pagamento.getProduto());
+			
+			
+		}
 	}
 
 }

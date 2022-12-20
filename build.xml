@@ -10,6 +10,13 @@
 	</target>
 
 	<target name="deploy" depends="package" description="Gera o deploy no server">
+		<exec executable="scp" vmlauncher="true">
+			<arg value="target/wallet.war" />
+			<arg value="root@database.versatil-ia.com.br:/storage/metatrader" />
+		</exec>
+	</target>
+
+	<target name="rsync" depends="package" description="Gera o deploy no server">
 		<exec executable="rsync" vmlauncher="true">
 			<arg value="-avzhe" />
 			<arg value="ssh" />

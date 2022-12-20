@@ -1,5 +1,6 @@
 package br.app.grid.wallet.web;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.app.grid.wallet.assinatura.Assinatura;
+import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.assinatura.view.AssinaturaAtivaView;
 import br.app.grid.wallet.assinatura.view.AssinaturaPendenciaView;
@@ -37,6 +39,9 @@ import br.app.grid.wallet.log.LogComandoService;
 import br.app.grid.wallet.log.LogOnline;
 import br.app.grid.wallet.log.LogOnlineService;
 import br.app.grid.wallet.meta.EndpointPositions;
+import br.app.grid.wallet.pagamento.PagamentoService;
+import br.app.grid.wallet.trade.Trade;
+import br.app.grid.wallet.trade.TradeService;
 import br.app.grid.wallet.usuario.UsuarioUtil;
 import br.app.grid.wallet.util.FiiUtil;
 import br.app.grid.wallet.util.converter.ContaResultadoAssinaturaResponseConverter;
@@ -63,6 +68,12 @@ public class IndexController {
 
 	@Autowired
 	private LogOnlineService logOnlineService;
+	
+	@Autowired
+	private TradeService tradeService;
+	
+	@Autowired
+	private PagamentoService pagamentoService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -289,6 +300,34 @@ public class IndexController {
 		ModelAndView modelAndView = new ModelAndView("log/logs");
 		modelAndView.addObject("logsList", logs);
 		return modelAndView;
+
+	}
+	
+	@GetMapping("/detalhes/{conta}")
+	public ModelAndView detalhes(@PathVariable(name = "conta") String idConta) {
+		if (!UsuarioUtil.isLogged(request))
+			return new ModelAndView("redirect:/login");
+		BigDecimal total = BigDecimal.ZERO;
+		List<Trade> trades = tradeService.getList(idConta);
+		for (Trade trade : trades) {
+			total = total.add(BigDecimal.valueOf(trade.getResultado()));
+		}
+		Conta conta = contaService.get(idConta);
+		
+		List<Assinatura> assinaturas = assinaturaService.getList();
+		Assinatura assinatura = null;
+		if (assinaturas.size() >0)
+			assinatura = assinaturas.get(0);
+		
+		List<AssinaturaPagamento> pagamentos = assinaturaService.getListPagamentos(idConta);
+		
+		ModelAndView view = new ModelAndView("conta/detalhes");
+		view.addObject("assinatura", assinatura);
+		view.addObject("tradesList", trades);
+		view.addObject("pagamentosList", pagamentos);
+		view.addObject("total", total);
+		view.addObject("conta", conta);
+		return view;
 
 	}
 }
