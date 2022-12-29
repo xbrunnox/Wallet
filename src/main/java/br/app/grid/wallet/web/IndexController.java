@@ -68,10 +68,10 @@ public class IndexController {
 
 	@Autowired
 	private LogOnlineService logOnlineService;
-	
+
 	@Autowired
 	private TradeService tradeService;
-	
+
 	@Autowired
 	private PagamentoService pagamentoService;
 
@@ -302,7 +302,7 @@ public class IndexController {
 		return modelAndView;
 
 	}
-	
+
 	@GetMapping("/detalhes/{conta}")
 	public ModelAndView detalhes(@PathVariable(name = "conta") String idConta) {
 		if (!UsuarioUtil.isLogged(request))
@@ -313,14 +313,14 @@ public class IndexController {
 			total = total.add(BigDecimal.valueOf(trade.getResultado()));
 		}
 		Conta conta = contaService.get(idConta);
-		
-		List<Assinatura> assinaturas = assinaturaService.getList();
+
+		List<Assinatura> assinaturas = assinaturaService.getList(idConta);
 		Assinatura assinatura = null;
-		if (assinaturas.size() >0)
+		if (assinaturas.size() > 0)
 			assinatura = assinaturas.get(0);
-		
+
 		List<AssinaturaPagamento> pagamentos = assinaturaService.getListPagamentos(idConta);
-		
+
 		ModelAndView view = new ModelAndView("conta/detalhes");
 		view.addObject("assinatura", assinatura);
 		view.addObject("tradesList", trades);

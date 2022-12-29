@@ -27,5 +27,8 @@ public interface AssinaturaRepository extends CrudRepository<Assinatura, Integer
 	@Query("FROM Assinatura ass WHERE ass.id = :idAssinatura")
 	public Assinatura get(Integer idAssinatura);
 
+	@Query("FROM Assinatura ass WHERE ass.emailPagamento = :email")
+	public List<Assinatura> getListByEmail(String email);
+
 	
 }

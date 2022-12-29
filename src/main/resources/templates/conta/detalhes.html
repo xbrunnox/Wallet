@@ -63,7 +63,11 @@
 			<div class="col-2" align="right">
 				<label><strong>Conta:</strong></label>
 			</div>
-			<div class="col-10" th:text="${conta.id}"></div>
+			<div class="col-2" th:text="${conta.id}"></div>
+			<div class="col-2" align="right">
+				<label><strong>Venc.:</strong></label>
+			</div>
+			<div class="col-4" th:text="${#temporals.format(assinatura.dataVencimento, 'dd/MM/yyyy')}"></div>
 		</div>
 		<div class="row">
 			<div class="col-2" align="right">
@@ -89,13 +93,13 @@
 			</div>
 			<div class="col-10" th:text="${assinatura.telefone}"></div>
 		</div>
+		
 		<div class="row">
 			<div class="col-2" align="right">
 				<label><strong>Total:</strong></label>
 			</div>
 			<div class="col-10" th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"></div>
 		</div>
-
 		<br>
 		<br>
 

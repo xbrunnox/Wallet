@@ -16,6 +16,6 @@ public interface PagamentoRepository extends CrudRepository<Pagamento, Long> {
 	List<Pagamento> getList();
 
 	@Query("FROM Pagamento pag WHERE pag.id = :idPagamento")
-	Pagamento get(Integer idPagamento);
+	Pagamento get(Long idPagamento);
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.kiwify.KiwifyEvent;
 import br.app.grid.wallet.pagamento.Pagamento;
 import br.app.grid.wallet.pagamento.PagamentoService;
@@ -22,6 +23,8 @@ public class KiwifyController {
 
 	@Autowired
 	private PagamentoService pagamentoService;
+	@Autowired
+	private AssinaturaService assinaturaService;
 
 	@PostMapping("/pagamento")
 	public String pagamento(@RequestBody KiwifyEvent request) {
@@ -43,6 +46,8 @@ public class KiwifyController {
 				.taxas(request.getCommissions().getKiwify_fee() / 100).telefone(request.getCustomer().getMobile())
 				.valor(request.getCommissions().getProduct_base_price() / 100).plataforma("Kiwify").build();
 		pagamentoService.gravar(pagamento);
+		assinaturaService.identificarPagamento(pagamento.getId());
+		
 		return "ok";
 	}
 

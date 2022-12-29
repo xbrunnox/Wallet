@@ -26,6 +26,7 @@ import br.app.grid.wallet.pagamento.Pagamento;
 import br.app.grid.wallet.pagamento.PagamentoRepository;
 import br.app.grid.wallet.produto.Produto;
 import br.app.grid.wallet.produto.ProdutoService;
+import br.app.grid.wallet.produto.ProdutoTipo;
 import br.app.grid.wallet.robo.Robo;
 import br.app.grid.wallet.robo.RoboRepository;
 import br.app.grid.wallet.trade.Trade;
@@ -55,7 +56,7 @@ public class AssinaturaService {
 
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
-	
+
 	@Autowired
 	private ProdutoService produtoService;
 
@@ -216,13 +217,50 @@ public class AssinaturaService {
 		return assinaturaPagamentoRepository.getListPagamentos(idAssinatura);
 	}
 
-	public void identificarPagamento(Integer idPagamento) {
+	public void identificarPagamento(Long idPagamento) {
+		if (idPagamento == 0)
+			return;
 		Pagamento pagamento = pagamentoRepository.get(idPagamento);
 		if (pagamento != null) {
+			if (pagamento.isAssociado())
+				return;
 			Produto produto = produtoService.getByNome(pagamento.getProduto());
-			
-			
+			if (produto != null) {
+				if (produto.getTipo() == ProdutoTipo.ASSINATURA_MENSAL) {
+					List<Assinatura> assinaturas = assinaturaRepository.getListByEmail(pagamento.getEmail().toLowerCase());
+					Assinatura assinatura = null;
+					for (Assinatura ass : assinaturas) {
+						if (assinatura == null) {
+							assinatura = ass;
+						} else if (ass.getDataVencimento().compareTo(assinatura.getDataVencimento()) > 0) {
+							assinatura = ass;
+						}
+					}
+					if (assinatura != null) {
+						System.out.println(
+								"Assinatura encontrada [" + assinatura.getConta().getId() + "/" + assinatura.getId()
+										+ "]. Vencimento anterior: ["+assinatura.getDataVencimento()+"] Novo vencimento: [" + assinatura.getDataVencimento().plusMonths(1) + "]");
+						AssinaturaPagamento assPagamento = AssinaturaPagamento.builder()
+								.assinatura(assinatura)
+								.dataDeCadastro(LocalDateTime.now())
+								.pagamento(pagamento)
+								.build();
+						assinaturaPagamentoRepository.save(assPagamento);
+						pagamento.setAssociado(true);
+						pagamentoRepository.save(pagamento);
+						assinatura.setDataVencimento(assinatura.getDataVencimento().plusMonths(1));
+						assinaturaRepository.save(assinatura);
+					} else {
+						System.out.println("Assinatura nao encontrada");
+					}
+				}
+			}
+
 		}
+	}
+
+	public List<Assinatura> getList(String idConta) {
+		return assinaturaRepository.getList(idConta);
 	}
 
 }

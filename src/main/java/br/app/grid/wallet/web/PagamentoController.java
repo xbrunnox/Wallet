@@ -1,6 +1,7 @@
 package br.app.grid.wallet.web;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +49,12 @@ public class PagamentoController {
 			return new ModelAndView("redirect:/login");
 		}
 		List<Pagamento> pagamentos = pagamentoService.getListNaoAssociados();
+		Collections.sort(pagamentos, new Comparator<Pagamento>() {
+			@Override
+			public int compare(Pagamento o1, Pagamento o2) {
+				return o1.getDataAtualizacao().compareTo(o2.getDataAtualizacao());
+			}
+		});
 		Collections.reverse(pagamentos);
 		ModelAndView view = new ModelAndView("pagamento/nao_associado");
 		view.addObject("pagamentosList", pagamentos);
@@ -55,7 +62,7 @@ public class PagamentoController {
 	}
 	
 	@GetMapping("/identificar/{idPagamento}")
-	public void identificar(@PathVariable(name = "idPagamento") Integer idPagamento) {
+	public void identificar(@PathVariable(name = "idPagamento") Long idPagamento) {
 		assinaturaService.identificarPagamento(idPagamento);
 	}
 }
