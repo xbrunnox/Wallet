@@ -1,0 +1,87 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
+<link rel="stylesheet" href="/css/bootstrap.css">
+<title>Backtest - Versatil IA</title>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+</head>
+<style>
+.fonte-tabela {
+	font-weight: 600;
+	font-size: 80%;
+}
+</style>
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
+			height="30" class="d-inline-block align-top" alt=""> <span
+			style="font-weight: 600">&nbsp;&nbsp;Backtest</span>
+		</a>
+	</nav>
+	<br>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-6"><label>Backtest</label></div>
+			<div class="col-3"><label>Volume</label></div>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<select id="back1" class="form-control">
+					<option value="1">Índice 520/560 - 50 pts</option>
+					<option value="2">Índice 520/560 - 160 pts</option>
+					<option value="3">Dólar 25/25</option>
+					<option value="4">Dólar 25/14</option>
+					<option value="5">Dólar 47/33</option>
+				</select>
+			</div>
+			<div class="col-3">
+				<input type="number" id="volume1" value="1" class="form-control">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<select id="back2" class="form-control">
+					<option value="1">Índice 520/560 - 50 pts</option>
+					<option value="2">Índice 520/560 - 160 pts</option>
+					<option value="3">Dólar 25/25</option>
+					<option value="4">Dólar 25/14</option>
+					<option value="5">Dólar 47/33</option>
+				</select>
+			</div>
+			<div class="col-3">
+				<input type="number" id="volume2" value="1" class="form-control">
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-6">
+				<button class="btn btn-primary btn-sm" onclick="javascript:gerar();">Comparar</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+<script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	function gerar() {
+		var idBack1 = $('#back1').val();
+		var idBack2 = $('#back2').val();
+		var vol1 = $('#volume1').val();
+		var vol2 = $('#volume2').val();
+		window.location.href = "/backtest/" + idBack1 + "/" + idBack2 + "/"
+				+ vol1 + "/" + vol2;
+	}
+</script>
+</html>

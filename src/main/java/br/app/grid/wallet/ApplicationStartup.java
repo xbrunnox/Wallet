@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
+import br.app.grid.wallet.backtest.service.BacktestService;
 import br.app.grid.wallet.licenca.ContaService;
 import br.app.grid.wallet.operacao.Operacao;
 import br.app.grid.wallet.operacao.service.OperacaoService;
@@ -34,6 +35,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 	private AssinaturaService assinaturaService;
 	
 	@Autowired
+	private BacktestService backtestService;
+
+	@Autowired
 	private OperacaoService operacaoService;
 
 	@Autowired
@@ -45,10 +49,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		System.out.println(LocalDate.now());
-		
-		tratarOperacoes();
-		
-		
+//		importarBacktest(2, "indice520560.txt");
+
+//		 tratarOperacoes();
 
 		/*
 		 * try { BufferedReader br = new BufferedReader(new FileReader("kiwi.csv"));
@@ -70,11 +73,15 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 		 */
 	}
 
+	private void importarBacktest(int back, String nomeDoArquivo) {
+		backtestService.importar(back, nomeDoArquivo);
+	}
+
 	private void tratarOperacoes() {
 		Router router = Router.getInstance();
 		router.setLicencaService(licencaService);
 		System.out.println("Aplicacao subiu");
-		
+
 //		List<Assinatura> assinaturas = assinaturaService.getList();
 //		
 //		for (Assinatura assinatura : assinaturas) {
@@ -89,9 +96,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 		for (Operacao operacao : operacoes) {
 			mapaContas.put(operacao.getConta().getId(), operacao.getConta().getId());
 		}
-		
-		
-		List<String> contas = Arrays.asList("9I34F1","YWLKD2");
+
+		List<String> contas = Arrays.asList("9I34F1", "YWLKD2");
 
 		for (String account : mapaContas.keySet()) {
 
@@ -111,8 +117,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 								Double resultado = pontos * compra.getAtivo().getCategoria().getGanho()
 										* compra.getVolume().doubleValue();
 
-								LocalDateTime  dataEntrada = null;
-								LocalDateTime dataSaida= null;
+								LocalDateTime dataEntrada = null;
+								LocalDateTime dataSaida = null;
 								Long duracao = null;
 								if (compra.getData().compareTo(venda.getData()) < 0) {
 									duracao = ChronoUnit.SECONDS.between(compra.getData(), venda.getData());
@@ -125,10 +131,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 								}
 
 								Trade trade = Trade.builder().ativo(compra.getAtivo()).compra(compra.getPreco())
-										.conta(compra.getConta()).dataEntrada(dataEntrada)
-										.dataSaida(dataSaida).direcao(direcao).duracao(duracao)
-										.expert(compra.getExpert()).pontos(pontos).resultado(resultado)
-										.venda(venda.getPreco()).volume(compra.getVolume()).build();
+										.conta(compra.getConta()).dataEntrada(dataEntrada).dataSaida(dataSaida)
+										.direcao(direcao).duracao(duracao).expert(compra.getExpert()).pontos(pontos)
+										.resultado(resultado).venda(venda.getPreco()).volume(compra.getVolume())
+										.build();
 								trades.add(trade);
 								compra.setVolume(BigDecimal.ZERO);
 								venda.setVolume(BigDecimal.ZERO);
@@ -140,8 +146,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 								Double resultado = pontos * compra.getAtivo().getCategoria().getGanho()
 										* quantidade.doubleValue();
 
-								LocalDateTime  dataEntrada = null;
-								LocalDateTime dataSaida= null;
+								LocalDateTime dataEntrada = null;
+								LocalDateTime dataSaida = null;
 								Long duracao = null;
 								if (compra.getData().compareTo(venda.getData()) < 0) {
 									duracao = ChronoUnit.SECONDS.between(compra.getData(), venda.getData());
@@ -154,10 +160,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 								}
 
 								Trade trade = Trade.builder().ativo(compra.getAtivo()).compra(compra.getPreco())
-										.conta(compra.getConta()).dataEntrada(dataEntrada)
-										.dataSaida(dataSaida).direcao(direcao).duracao(duracao)
-										.expert(compra.getExpert()).pontos(pontos).resultado(resultado)
-										.venda(venda.getPreco()).volume(quantidade).build();
+										.conta(compra.getConta()).dataEntrada(dataEntrada).dataSaida(dataSaida)
+										.direcao(direcao).duracao(duracao).expert(compra.getExpert()).pontos(pontos)
+										.resultado(resultado).venda(venda.getPreco()).volume(quantidade).build();
 								trades.add(trade);
 								compra.setVolume(compra.getVolume().subtract(quantidade));
 								venda.setVolume(venda.getVolume().subtract(quantidade));
@@ -168,9 +173,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 								Double pontos = venda.getPreco() - compra.getPreco();
 								Double resultado = pontos * compra.getAtivo().getCategoria().getGanho()
 										* quantidade.doubleValue();
-								
-								LocalDateTime  dataEntrada = null;
-								LocalDateTime dataSaida= null;
+
+								LocalDateTime dataEntrada = null;
+								LocalDateTime dataSaida = null;
 
 								Long duracao = null;
 								if (compra.getData().compareTo(venda.getData()) < 0) {
@@ -184,10 +189,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 								}
 
 								Trade trade = Trade.builder().ativo(compra.getAtivo()).compra(compra.getPreco())
-										.conta(compra.getConta()).dataEntrada(dataEntrada)
-										.dataSaida(dataSaida).direcao(direcao).duracao(duracao)
-										.expert(compra.getExpert()).pontos(pontos).resultado(resultado)
-										.venda(venda.getPreco()).volume(quantidade).build();
+										.conta(compra.getConta()).dataEntrada(dataEntrada).dataSaida(dataSaida)
+										.direcao(direcao).duracao(duracao).expert(compra.getExpert()).pontos(pontos)
+										.resultado(resultado).venda(venda.getPreco()).volume(quantidade).build();
 								trades.add(trade);
 								compra.setVolume(compra.getVolume().subtract(quantidade));
 								venda.setVolume(venda.getVolume().subtract(quantidade));

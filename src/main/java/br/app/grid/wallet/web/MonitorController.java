@@ -39,7 +39,7 @@ public class MonitorController {
 		}
 
 		return MonitorResumo.builder().usuariosOnline(endpointStatus.getOnlineUsers().size())
-				.expertsOnline(endpointStatus.getOnlineExperts().size())
+				.expertsOnline(0)
 				.corretoras(new ArrayList<>(mapaCorretoras.values())).horario(LocalDateTime.now()).build();
 	}
 
