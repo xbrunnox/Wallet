@@ -74,7 +74,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 	}
 
 	private void importarBacktest(int back, String nomeDoArquivo) {
-		backtestService.importar(back, nomeDoArquivo);
+		backtestService.importarArquivo(back, nomeDoArquivo);
 	}
 
 	private void tratarOperacoes() {
