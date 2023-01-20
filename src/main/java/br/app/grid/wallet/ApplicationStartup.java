@@ -1,6 +1,7 @@
 package br.app.grid.wallet;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -14,19 +15,15 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import br.app.grid.wallet.assinatura.Assinatura;
-import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
+import br.app.grid.wallet.backtest.service.BacktestService;
 import br.app.grid.wallet.licenca.ContaService;
 import br.app.grid.wallet.operacao.Operacao;
 import br.app.grid.wallet.operacao.service.OperacaoService;
-import br.app.grid.wallet.pagamento.Pagamento;
 import br.app.grid.wallet.pagamento.PagamentoService;
 import br.app.grid.wallet.socket.Router;
 import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.TradeService;
-import br.app.grid.wallet.util.DocumentoFormatter;
-import br.app.grid.wallet.util.TelefoneFormatter;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
@@ -36,6 +33,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
 	@Autowired
 	private AssinaturaService assinaturaService;
+	
+	@Autowired
+	private BacktestService backtestService;
 
 	@Autowired
 	private OperacaoService operacaoService;
@@ -48,9 +48,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
+		System.out.println(LocalDate.now());
+//		importarBacktest(2, "indice520560.txt");
 
-		tratarOperacoes();
-//		ajustarAssinaturas();
+//		 tratarOperacoes();
 
 		/*
 		 * try { BufferedReader br = new BufferedReader(new FileReader("kiwi.csv"));
@@ -72,19 +73,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 		 */
 	}
 
-	private void ajustarAssinaturas() {
-		List<Assinatura> assinaturas = assinaturaService.getListAtivas();
-		for (Assinatura assinatura : assinaturas) {
-			List<AssinaturaPagamento> pagamentos = assinaturaService.getListPagamentos(assinatura.getId());
-			if (pagamentos.size() > 0) {
-				Pagamento pagamento = pagamentos.get(0).getPagamento();
-				assinatura.setEmailPagamento(pagamentos.get(0).getPagamento().getEmail().toLowerCase());
-				assinatura.setDocumentoPagamento(DocumentoFormatter.format(pagamentos.get(0).getPagamento().getCpf()));
-				assinatura.setTelefone(TelefoneFormatter.format(pagamento.getTelefone()));
-				assinaturaService.gravar(assinatura);
-				System.out.println("Gravando " + assinatura.getId());
-			}
-		}
+	private void importarBacktest(int back, String nomeDoArquivo) {
+		backtestService.importar(back, nomeDoArquivo);
 	}
 
 	private void tratarOperacoes() {
