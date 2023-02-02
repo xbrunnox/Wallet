@@ -19,41 +19,31 @@
 	<nav class="navbar navbar-light bg-light">
 		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
 			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Backtest</span>
+			style="font-weight: 600">&nbsp;&nbsp;Importar Backtest</span>
 		</a>
 	</nav>
 	<br>
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-6"><label>Backtest</label></div>
-			<div class="col-3"><label>Volume</label></div>
-		</div>
-		<div class="row">
-			<div class="col-6">
-				<select id="back1" class="form-control">
-					<option th:each="backtest : ${backtestList}" th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
-				</select>
+		<form method="post" target="/backtest/importar">
+			<div class="row">
+				<div class="col-6">
+					<select id="back1" class="form-control" name="idBacktest">
+						<option th:each="backtest : ${backtestList}" th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
+					</select>
+				</div>
 			</div>
-			<div class="col-3">
-				<input type="number" id="volume1" value="1" class="form-control">
+			<div class="row">
+				<div class="col-12">
+					<textarea rows="20" cols="500" name="transacoes"></textarea>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-6">
-				<select id="back2" class="form-control">
-					<option th:each="backtest : ${backtestList}" th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
-				</select>
+			<br>
+			<div class="row">
+				<div class="col-6">
+					<button type="submit" class="btn btn-primary btn-sm">Importar</button>
+				</div>
 			</div>
-			<div class="col-3">
-				<input type="number" id="volume2" value="1" class="form-control">
-			</div>
-		</div>
-		<br>
-		<div class="row">
-			<div class="col-6">
-				<button class="btn btn-primary btn-sm" onclick="javascript:gerar();">Comparar</button>
-			</div>
-		</div>
+		</form>
 	</div>
 </body>
 <script src="https://code.highcharts.com/highcharts.js"></script>

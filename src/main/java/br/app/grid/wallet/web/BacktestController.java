@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,6 +15,7 @@ import br.app.grid.wallet.backtest.Backtest;
 import br.app.grid.wallet.backtest.service.BacktestOperacaoService;
 import br.app.grid.wallet.backtest.service.BacktestService;
 import br.app.grid.wallet.backtest.vo.BacktestMesAnoVO;
+import br.app.grid.wallet.web.request.BacktestImportarRequest;
 
 @Controller
 @RequestMapping("/backtest")
@@ -26,7 +28,9 @@ public class BacktestController {
 	
 	@GetMapping("")
 	public ModelAndView get() {
+		List<Backtest> backtests = backtestService.getList();
 		ModelAndView modelAndView = new ModelAndView("backtest/backtest-selecao");
+		modelAndView.addObject("backtestList", backtests);
 		return modelAndView;
 	}
 
@@ -53,6 +57,21 @@ public class BacktestController {
 		modelAndView.addObject("resultado1", resultado1);
 		modelAndView.addObject("resultado2", resultado2);
 		return modelAndView;
+	}
+	
+	@GetMapping("/importar")
+	public ModelAndView importar() {
+		List<Backtest> backtests = backtestService.getList();
+		ModelAndView modelAndView = new ModelAndView("backtest/importar");
+		modelAndView.addObject("backtestList", backtests);
+		return modelAndView;
+	}
+
+	@PostMapping("/importar")
+	public void importar(BacktestImportarRequest request) {
+		System.out.println(request.getIdBacktest());
+		System.out.println(request.getTransacoes());
+		backtestService.importar2(request.getIdBacktest(), request.getTransacoes());
 	}
 
 }

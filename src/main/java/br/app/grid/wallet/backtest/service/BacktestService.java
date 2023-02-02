@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,6 +76,55 @@ public class BacktestService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void importar2(Integer idBacktest, String transacoes) {
+		DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+		Scanner scanner = new Scanner(transacoes);
+		String linha = scanner.nextLine();
+		while (linha != null) {
+			String dados[] = linha.split("\t");
+			if (dados[4].equals("in")) {
+				// Entrada
+				LocalDateTime dataEntrada = LocalDateTime.parse(dados[0], formatador);
+				String direcao = (dados[3].equals("buy") ? "C" : "V");
+				BigDecimal volume = BigDecimal.valueOf(Double.parseDouble(dados[5]));
+				BigDecimal precoEntrada = BigDecimal
+						.valueOf(Double.parseDouble(dados[6].replace(" ", "").replace(",", ".")));
+				if (scanner.hasNextLine()) {
+					linha = scanner.nextLine();
+				} else {
+					break;
+				}
+				dados = linha.split("\t");
+				if (dados[4].equals("out")) {
+					// Saída
+					LocalDateTime dataSaida = LocalDateTime.parse(dados[0], formatador);
+					BigDecimal precoSaida = BigDecimal
+							.valueOf(Double.parseDouble(dados[6].replace(" ", "").replace(",", ".")));
+					BigDecimal lucro = BigDecimal
+							.valueOf(Double.parseDouble(dados[10].replace(" ", "").replace(",", ".")));
+					Backtest backtest = get(idBacktest);
+
+					BacktestOperacao backOperacao = BacktestOperacao.builder().dataEntrada(dataEntrada).lucro(lucro)
+							.volume(volume).duracao((int) ChronoUnit.SECONDS.between(dataEntrada, dataSaida))
+							.dataSaida(dataSaida).precoEntrada(precoEntrada).precoSaida(precoSaida).direcao(direcao)
+							.backtest(backtest).build();
+					operacaoRepository.save(backOperacao);
+				}
+
+			}
+			if (scanner.hasNextLine()) {
+				linha = scanner.nextLine();
+			} else {
+				break;
+			}
+		}
+		scanner.close();
+	}
+
+	public List<Backtest> getList() {
+		return repository.getList();
 	}
 
 }
