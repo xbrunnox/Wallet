@@ -14,15 +14,6 @@ public class EndpointService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public EndpointStatusResponse getStatus() {
-		long inicio = System.currentTimeMillis();
-		EndpointStatusResponse response = restTemplate.getForObject("http://srv1.versatil-ia.com.br:8080/router/status",
-				EndpointStatusResponse.class);
-		System.out.println(DataConverter.nowBr() + " [EndpointService] Consultando Status em "
-				+ (System.currentTimeMillis() - inicio) + " ms");
-		return response;
-	}
-
 	public PosicoesMT getPosicoes(String conta) {
 		long inicio = System.currentTimeMillis();
 		PosicoesMT response = restTemplate.getForObject("http://srv1.versatil-ia.com.br:8080/router/posicoes/" + conta,

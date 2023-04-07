@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import br.app.grid.wallet.client.EndpointService;
 import br.app.grid.wallet.client.EndpointStatusResponse;
 import br.app.grid.wallet.meta.PosicoesMT;
+import br.app.grid.wallet.router.RouterService;
 
 @RestController
 @RequestMapping("/endpoint")
@@ -16,6 +17,9 @@ public class EndpointController {
 
 	@Autowired
 	private EndpointService endpointService;
+	
+	@Autowired
+	private RouterService routerService;
 
 	@RequestMapping("/conexoes")
 	public void conexoes() {
@@ -33,7 +37,7 @@ public class EndpointController {
 	
 	@RequestMapping("/status")
 	public EndpointStatusResponse status() {
-		return endpointService.getStatus();
+		return routerService.getStatus();
 	}
 	
 }

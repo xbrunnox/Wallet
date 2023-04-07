@@ -22,5 +22,7 @@ public class ContaInfoResponse {
 	private String expiracao;
 	
 	private Boolean pausado;
+	
+	private String maquina;
 
 }

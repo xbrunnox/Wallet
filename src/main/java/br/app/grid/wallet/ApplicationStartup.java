@@ -6,21 +6,34 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import br.app.grid.wallet.assinatura.Assinatura;
+import br.app.grid.wallet.assinatura.AssinaturaExpert;
+import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
+import br.app.grid.wallet.assinatura.view.AssinaturaAtivaView;
 import br.app.grid.wallet.backtest.service.BacktestService;
+import br.app.grid.wallet.enums.ServidorTipoEnum;
+import br.app.grid.wallet.licenca.Conta;
 import br.app.grid.wallet.licenca.ContaService;
 import br.app.grid.wallet.operacao.Operacao;
 import br.app.grid.wallet.operacao.service.OperacaoService;
 import br.app.grid.wallet.pagamento.PagamentoService;
+import br.app.grid.wallet.robo.Robo;
+import br.app.grid.wallet.robo.RoboService;
+import br.app.grid.wallet.servidor.Servidor;
+import br.app.grid.wallet.servidor.ServidorService;
 import br.app.grid.wallet.socket.Router;
 import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.TradeService;
@@ -33,9 +46,15 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
 	@Autowired
 	private AssinaturaService assinaturaService;
-	
+
 	@Autowired
 	private BacktestService backtestService;
+
+	@Autowired
+	private ContaService contaService;
+	
+	@Autowired
+	private RoboService expertService;
 
 	@Autowired
 	private OperacaoService operacaoService;
@@ -44,14 +63,34 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 	private PagamentoService pagamentoService;
 
 	@Autowired
+	private ServidorService servidorService;
+
+	@Autowired
 	private TradeService tradeService;
 
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		System.out.println(LocalDate.now());
+
+//		Servidor servidor = Servidor.builder()
+//				.ativo(true)
+//				.hostname("srv1.versatil-ia.com.br")
+//				.nome("SRV1")
+//				.porta(22631)
+//				.tipo(ServidorTipoEnum.ENDPOINT_CUSTOMER)
+//				.dataCadastro(LocalDateTime.now())
+//				.build();
+//		servidorService.gravar(servidor);
+
 //		importarBacktest(2, "indice520560.txt");
 
-//		 tratarOperacoes();
+		// tratarOperacoes();
+
+//		unificarAssinaturas();
+		
+//		ajustarExperts();
+		
+//		alocarServidores();
 
 		/*
 		 * try { BufferedReader br = new BufferedReader(new FileReader("kiwi.csv"));
@@ -71,6 +110,85 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 		 * } linha = br.readLine(); } } catch (Exception e) { // TODO Auto-generated
 		 * catch block e.printStackTrace(); }
 		 */
+
+	}
+
+	private void alocarServidores() {
+		List<Servidor> servidores = servidorService.getList(ServidorTipoEnum.ENDPOINT_CUSTOMER, true);
+		List<Assinatura> assinaturas = assinaturaService.getList(LocalDate.now()); 
+		int posicao = 0; 
+		for (Assinatura assinatura : assinaturas) {
+			assinatura.setServidor(servidores.get(posicao));
+			assinaturaService.gravar(assinatura);
+			posicao++;
+			if (posicao >= servidores.size())
+				posicao = 0;
+			System.out.println("Gravando: "+assinatura.getId());
+		}
+	}
+
+	private void ajustarExperts() {
+		Robo delta = expertService.getById("DELTA");
+		List<Assinatura> assinaturas = assinaturaService.getList();
+		for (Assinatura assinatura : assinaturas) {
+			AssinaturaExpert expertDelta = AssinaturaExpert.builder().assinatura(assinatura).ativado(true).expert(delta)
+					.volume(delta.getVolume()).volumeMaximo(delta.getVolume()).build();
+			assinaturaService.gravar(expertDelta);
+			System.out.println("Gravando "+assinatura.getConta().getId());
+		}
+	}
+
+	private void unificarAssinaturas() {
+		List<Conta> contas = contaService.getList();
+		for (Conta conta : contas) {
+			List<Assinatura> assinaturas = assinaturaService.getList(conta.getId());
+			Collections.sort(assinaturas, new Comparator<Assinatura>() {
+
+				@Override
+				public int compare(Assinatura o1, Assinatura o2) {
+					if (o1.getId() < o2.getId())
+						return -1;
+					return 1;
+				}
+			});
+			if (assinaturas.size() > 0) {
+				Assinatura assinaturaDefinitiva = assinaturas.get(0);
+				String documento = assinaturaDefinitiva.getDocumentoPagamento();
+				String email = assinaturaDefinitiva.getEmailPagamento();
+				String telefone = assinaturaDefinitiva.getTelefone();
+				LocalDate dataDeVencimento = assinaturaDefinitiva.getDataVencimento();
+				for (int i = 1; i < assinaturas.size(); i++) {
+					Assinatura assinatura = assinaturas.get(i);
+					if (documento == null)
+						documento = assinatura.getDocumentoPagamento();
+					if (email == null)
+						email = assinatura.getEmailPagamento();
+					if (telefone == null)
+						telefone = assinatura.getTelefone();
+					if (assinatura.getDataVencimento().compareTo(dataDeVencimento) > 0) {
+						dataDeVencimento = assinatura.getDataVencimento();
+					}
+					List<AssinaturaPagamento> pagamentos = assinaturaService.getListPagamentos(assinatura);
+					for (AssinaturaPagamento pagamento : pagamentos) {
+						pagamento.setAssinatura(assinaturaDefinitiva);
+						if (documento == null)
+							documento = pagamento.getPagamento().getCpf();
+						if (email == null)
+							email = pagamento.getPagamento().getEmail();
+						if (telefone == null)
+							telefone = pagamento.getPagamento().getTelefone();
+						assinaturaService.gravar(pagamento);
+					}
+					assinaturaService.excluir(assinatura);
+				}
+				assinaturaDefinitiva.setDocumentoPagamento(documento);
+				assinaturaDefinitiva.setEmailPagamento(email);
+				assinaturaDefinitiva.setTelefone(telefone);
+				assinaturaDefinitiva.setDataVencimento(dataDeVencimento);
+				assinaturaService.gravar(assinaturaDefinitiva);
+				System.out.println("Gravando " + assinaturaDefinitiva.getConta().getId());
+			}
+		}
 	}
 
 	private void importarBacktest(int back, String nomeDoArquivo) {
@@ -132,9 +250,11 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
 								Trade trade = Trade.builder().ativo(compra.getAtivo()).compra(compra.getPreco())
 										.conta(compra.getConta()).dataEntrada(dataEntrada).dataSaida(dataSaida)
-										.direcao(direcao).duracao(duracao).expert(compra.getExpert()).pontos(pontos)
-										.resultado(resultado).venda(venda.getPreco()).volume(compra.getVolume())
-										.build();
+										.direcao(direcao).duracao(duracao)
+										.expert((!Objects.isNull(compra.getExpert()) ? compra.getExpert()
+												: venda.getExpert()))
+										.pontos(pontos).resultado(resultado).venda(venda.getPreco())
+										.volume(compra.getVolume()).build();
 								trades.add(trade);
 								compra.setVolume(BigDecimal.ZERO);
 								venda.setVolume(BigDecimal.ZERO);
@@ -161,8 +281,11 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
 								Trade trade = Trade.builder().ativo(compra.getAtivo()).compra(compra.getPreco())
 										.conta(compra.getConta()).dataEntrada(dataEntrada).dataSaida(dataSaida)
-										.direcao(direcao).duracao(duracao).expert(compra.getExpert()).pontos(pontos)
-										.resultado(resultado).venda(venda.getPreco()).volume(quantidade).build();
+										.direcao(direcao).duracao(duracao)
+										.expert((!Objects.isNull(compra.getExpert()) ? compra.getExpert()
+												: venda.getExpert()))
+										.pontos(pontos).resultado(resultado).venda(venda.getPreco()).volume(quantidade)
+										.build();
 								trades.add(trade);
 								compra.setVolume(compra.getVolume().subtract(quantidade));
 								venda.setVolume(venda.getVolume().subtract(quantidade));
@@ -190,8 +313,11 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
 								Trade trade = Trade.builder().ativo(compra.getAtivo()).compra(compra.getPreco())
 										.conta(compra.getConta()).dataEntrada(dataEntrada).dataSaida(dataSaida)
-										.direcao(direcao).duracao(duracao).expert(compra.getExpert()).pontos(pontos)
-										.resultado(resultado).venda(venda.getPreco()).volume(quantidade).build();
+										.direcao(direcao).duracao(duracao)
+										.expert((!Objects.isNull(compra.getExpert()) ? compra.getExpert()
+												: venda.getExpert()))
+										.pontos(pontos).resultado(resultado).venda(venda.getPreco()).volume(quantidade)
+										.build();
 								trades.add(trade);
 								compra.setVolume(compra.getVolume().subtract(quantidade));
 								venda.setVolume(venda.getVolume().subtract(quantidade));

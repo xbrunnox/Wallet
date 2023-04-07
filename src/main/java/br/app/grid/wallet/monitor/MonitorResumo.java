@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MonitorResumo {
-	
+
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime horario;
 
 	private int usuariosOnline;
@@ -27,5 +27,7 @@ public class MonitorResumo {
 	private int expertsOnline;
 
 	private List<MonitorResumoCorretora> corretoras;
+
+	private List<MonitorResumoServidor> servidores;
 
 }

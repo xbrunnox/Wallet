@@ -22,3 +22,25 @@ CREATE VIEW assinatura_ativa_view
 SELECT ass.id, ass.conta, cont.nome, cont.corretora, ass.data_vencimento, ass.observacao
 FROM assinatura ass, conta cont
 where ass.conta = cont.id AND ass.id in (select t.id_assinatura from assinatura_pagamento t);
+
+DROP VIEW trade_view;
+CREATE VIEW trade_view (id, conta, nome, corretora, servidor, expert, ativo, direcao, volume, compra, venda, pontos, data_entrada, data_saida, duracao, resultado)
+AS SELECT tr.id, tr.conta, ct.nome, ct.corretora, serv.nome, tr.expert, tr.ativo, tr.direcao, tr.volume, tr.compra, tr.venda, tr.pontos, tr.data_entrada, tr.data_saida, tr.duracao, tr.resultado
+FROM trade tr, conta ct, assinatura ass LEFT JOIN servidor serv ON ass.servidor = serv.id
+WHERE tr.conta = ct.id AND tr.conta = ass.conta
+
+DROP VIEW assinatura_view;
+CREATE VIEW assinatura_view
+(id, conta, nome, corretora, servidor, maquina, data_vencimento)
+AS
+SELECT ass.id, ass.conta, cont.nome, cont.corretora, serv.nome, maq.nome, ass.data_vencimento
+FROM assinatura ass LEFT JOIN maquina maq ON ass.maquina = maq.id LEFT JOIN servidor serv ON ass.servidor = serv.id , 
+conta cont
+WHERE ass.conta = cont.id;
+
+DROP VIEW trade_resultado_dia_view;
+CREATE VIEW trade_resultado_dia_view (fake_id, data, expert, resultado) 
+AS
+SELECT ROW_NUMBER() OVER (ORDER BY DATE(tr.data_saida)), DATE(tr.data_saida), tr.expert, SUM(tr.resultado)
+FROM trade tr
+GROUP BY DATE(tr.data_saida), tr.expert

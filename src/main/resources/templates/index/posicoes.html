@@ -35,20 +35,29 @@
 		</a>
 	</nav>
 	<br>
-	<div class="container-fluid">
-		<div class="custom-control custom-switch" align="right">
-			<input type="checkbox" class="custom-control-input" checked
-				id="customSwitch1"> <label class="custom-control-label"
-				for="customSwitch1"><i class="bi bi-eye-slash"></i></label>
-		</div>
+	<div class="container">
 		<div class="row">
+			<div class="col-3" th:each="grupo: ${posicoesGrupos}">
+				<span th:text="${grupo.ativo}"></span>&nbsp;<span
+					th:text="${grupo.volume}"></span><span
+					th:text="${grupo.direcao}"></span>&nbsp;-&nbsp;<span
+					th:text="${grupo.posicoes.size()}"></span>
+			</div>
+		</div>
+		<br>
+		<div class="row" th:each="grupo: ${posicoesGrupos}">
+			<div class="col-8">
+				<h5 th:text="${grupo.titulo}"></h5>
+			</div>
+			<div class="col-4" style="text-align: right;">
+				<h5 th:text="${grupo.posicoes.size()}"></h5>
+			</div>
 			<div class="col-12">
 				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th class="fonte-tabela">Data</th>
 							<th class="fonte-tabela">Conta</th>
-							<th class="fonte-tabela">Volume</th>
 							<th class="fonte-tabela">Ativo</th>
 							<th class="fonte-tabela">Abertura</th>
 							<th class="fonte-tabela">Profit</th>
@@ -56,23 +65,39 @@
 						</tr>
 					</thead>
 					<tbody>
-						<th:block th:each="conta : ${posicoes.contas}">
-							<tr th:each="posicao : ${conta.posicoes}">
-								<td><span class="fonte-tabela" th:text="${posicao.data}"></span>
-								</td>
-								<td><span class="fonte-tabela" th:text="${conta.conta}"></span>
-								</td>
-								<td><span class="fonte-tabela"
-									th:text="${posicao.volume + posicao.direcao}"></span></td>
-								<td><span class="fonte-tabela" th:text="${posicao.ativo}"></span></td>
-								<td><span class="fonte-tabela"
-									th:text="${posicao.abertura}"></span></td>
-								<td><span class="fonte-tabela" th:text="${posicao.profit}"></span></td>
-								<td><a
-									th:href="@{javascript:fecharPosicao('{conta}','{ativo}')(conta=${conta.conta},ativo=${posicao.ativo})}"
-									class="btn btn-sm btn-danger">Encerrar</a></td>
-							</tr>
-						</th:block>
+						<tr th:each="posicao : ${grupo.posicoes}">
+							<td>
+								<!-- span class="fonte-tabela" th:text="${posicao.data}"></span-->
+								<span class="fonte-tabela"
+								th:text="${#temporals.format(posicao.data, 'dd/MM/yy')}"></span>
+								<br> <span class="fonte-tabela"
+								th:text="${#temporals.format(posicao.data, 'HH:mm:ss')}"></span>
+							</td>
+							<td><span class="fonte-tabela" th:text="${posicao.conta}"></span><br>
+								<span class="fonte-tabela" th:text="${posicao.corretora}"></span>
+							</td>
+							<td><span class="fonte-tabela" th:text="${posicao.ativo}"></span><br>
+								<span class="fonte-tabela"
+								th:text="${posicao.volume + posicao.direcao}"></span></td>
+							<td><span class="fonte-tabela"
+								th:text="${#numbers.formatDecimal(posicao.abertura, 1, 'POINT', 2, 'COMMA')}"></span><br>
+								<span class="fonte-tabela" th:text="${posicao.servidor}"></span></td>
+							<td><span class="fonte-tabela"
+								th:text="${#numbers.formatDecimal(posicao.profit, 1, 'POINT', 2, 'COMMA')}"></span></td>
+							<td align="right">
+								<!-- Comprar --> <a
+								th:href="@{javascript:comprar('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
+								class="btn btn-sm btn-success"><i class="bi bi-plus-lg"></i></a>
+
+								<!-- Vender --> <a
+								th:href="@{javascript:vender('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
+								class="btn btn-sm btn-primary"><i class="bi bi-dash-lg"></i></a>
+
+								<!-- Encerrar --> <a
+								th:href="@{javascript:fecharPosicao('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
+								class="btn btn-sm btn-danger"><i class="bi bi-x-lg"></i></a>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 
@@ -90,8 +115,32 @@
 <script>
 	function fecharPosicao(conta, ativo) {
 		$.ajax({
-			url : "/posicao/fechar/" + conta+"/"+ativo,
+			url : "/posicao/fechar/" + conta + "/" + ativo,
 			success : function(retorno) {
+				location.reload();
+			}
+		});
+	}
+
+	function comprar(conta, ativo) {
+		console.log("Comprando " + ativo + " em " + conta);
+		$.ajax({
+			url : '/metatrader/order/market/' + conta + '/' + ativo
+					+ '/1.0/BUY',
+			success : function(resultado) {
+				alert(resultado);
+				location.reload();
+			}
+		});
+	}
+
+	function vender(conta, ativo) {
+		console.log("Vendendo " + ativo + " em " + conta);
+		$.ajax({
+			url : '/metatrader/order/market/' + conta + '/' + ativo
+					+ '/1.0/SELL',
+			success : function(resultado) {
+				alert(resultado);
 				location.reload();
 			}
 		});

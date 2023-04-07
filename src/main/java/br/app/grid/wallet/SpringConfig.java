@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import br.app.grid.wallet.client.EndpointService;
 import br.app.grid.wallet.client.EndpointStatusResponse;
 import br.app.grid.wallet.log.LogOnline;
 import br.app.grid.wallet.log.LogOnlineService;
+import br.app.grid.wallet.router.RouterService;
 
 @Configuration
 @EnableScheduling
@@ -20,7 +20,7 @@ public class SpringConfig {
 	private LogOnlineService logOnlineService;
 
 	@Autowired
-	private EndpointService endpointService;
+	private RouterService routerService;
 
 	@Scheduled(cron = "0 0 * * * ?")
 	@Scheduled(cron = "0 5 * * * ?")
@@ -37,7 +37,7 @@ public class SpringConfig {
 	public void scheduleFixedRateTask() {
 		LocalDateTime data = LocalDateTime.now();
 		try {
-			EndpointStatusResponse status = endpointService.getStatus();
+			EndpointStatusResponse status = routerService.getStatus();
 			if (status != null)
 				logOnlineService.gravar(LogOnline.builder().horario(data).experts(status.getOnlineExperts().size())
 						.usuarios(status.getOnlineUsers().size()).build());

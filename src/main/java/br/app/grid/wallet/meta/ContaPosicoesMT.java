@@ -17,6 +17,10 @@ public class ContaPosicoesMT {
 	
 	private String nome;
 	
+	private String corretora;
+	
+	private String server;
+	
 	private List<PosicaoMT> posicoes;
 
 }

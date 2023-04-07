@@ -14,11 +14,12 @@ import org.springframework.web.servlet.ModelAndView;
 import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.AssinaturaExpertsResponse;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
-import br.app.grid.wallet.assinatura.view.AssinaturaAtivaView;
+import br.app.grid.wallet.assinatura.view.AssinaturaView;
 import br.app.grid.wallet.licenca.Conta;
 import br.app.grid.wallet.licenca.ContaService;
 import br.app.grid.wallet.pagamento.Pagamento;
 import br.app.grid.wallet.pagamento.PagamentoService;
+import br.app.grid.wallet.router.RouterService;
 import br.app.grid.wallet.usuario.UsuarioUtil;
 
 @RestController
@@ -36,6 +37,9 @@ public class AssinaturaController {
 
 	@Autowired
 	private HttpServletRequest request;
+
+	@Autowired
+	private RouterService routerService;
 
 	@GetMapping("/experts/{conta}")
 	public AssinaturaExpertsResponse experts(@PathVariable("conta") String conta) {
@@ -104,7 +108,7 @@ public class AssinaturaController {
 			return new ModelAndView("redirect:/login");
 		}
 	}
-	
+
 	@GetMapping("/todas")
 	public ModelAndView todas() {
 		if (UsuarioUtil.isLogged(request)) {
@@ -114,6 +118,58 @@ public class AssinaturaController {
 			return view;
 		} else {
 			return new ModelAndView("redirect:/login");
+		}
+	}
+
+	@GetMapping("/list")
+	public List<AssinaturaView> list() {
+		if (UsuarioUtil.isLogged(request)) {
+			return assinaturaService.getListView();
+		} else {
+			throw new RuntimeException("Usuário não está logado.");
+		}
+	}
+
+	/**
+	 * Realiza a pausa de execução de ordens da assinatura.
+	 * 
+	 * @param conta ID da conta.
+	 * @return
+	 */
+	@GetMapping("/pausar/{conta}")
+	public String pausar(@PathVariable("conta") String conta) {
+		if (UsuarioUtil.isLogged(request)) {
+			List<Assinatura> assinaturas = assinaturaService.getList(conta);
+			for (Assinatura assinatura : assinaturas) {
+				assinatura.setPausado(true);
+				assinaturaService.gravar(assinatura);
+				routerService.pause(conta);
+			}
+			return "ok";
+		} else {
+			throw new RuntimeException("Usuário não está logado.");
+		}
+
+	}
+
+	/**
+	 * Retorma a execução de ordens da assinatura.
+	 * 
+	 * @param idConta ID da conta.
+	 * @return
+	 */
+	@GetMapping("/retomar/{conta}")
+	public String retomar(@PathVariable("conta") String idConta) {
+		if (UsuarioUtil.isLogged(request)) {
+			List<Assinatura> assinaturas = assinaturaService.getList(idConta);
+			for (Assinatura assinatura : assinaturas) {
+				assinatura.setPausado(false);
+				assinaturaService.gravar(assinatura);
+				routerService.resume(idConta);
+			}
+			return "ok";
+		} else {
+			throw new RuntimeException("Usuário não está logado.");
 		}
 	}
 

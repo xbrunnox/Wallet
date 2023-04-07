@@ -13,5 +13,11 @@ public interface AssinaturaPagamentoRepository extends CrudRepository<Assinatura
 
 	@Query("FROM AssinaturaPagamento ap WHERE ap.assinatura.id = :idAssinatura")
 	List<AssinaturaPagamento> getList(int idAssinatura);
+	
+	@Query("FROM AssinaturaPagamento ap WHERE ap.assinatura.conta.id = :conta ORDER BY ap.pagamento.dataAtualizacao")
+	List<AssinaturaPagamento> getListPagamentos(String conta);
+
+	@Query("FROM AssinaturaPagamento ap WHERE ap.assinatura.id = :idAssinatura ORDER BY ap.pagamento.dataAtualizacao")
+	List<AssinaturaPagamento> getListPagamentos(int idAssinatura);
 
 }

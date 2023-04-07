@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.repository.AssinaturaRepository;
+import br.app.grid.wallet.assinatura.service.AssinaturaService;
+import br.app.grid.wallet.servidor.Servidor;
 import br.app.grid.wallet.util.CorretoraUtil;
 
 @Service
@@ -21,6 +24,9 @@ public class ContaService {
 
 	@Autowired
 	private AssinaturaRepository assinaturaRepository;
+	
+	@Autowired
+	private AssinaturaService assinaturaService;
 
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -34,22 +40,7 @@ public class ContaService {
 					.dataDeCadastro(LocalDateTime.now()).build();
 			repository.save(licenca);
 		}
-
-		System.out.println("Pesquisando: " + licenca.getId());
 		return autenticar(licenca.getId());
-
-//		List<Assinatura> assinaturas = assinaturaRepository.getListAtivas(licensa.getId(), LocalDate.now());
-//		if (assinaturas.size() == 0)
-//			return ContaResponse.builder().ativo(false).id(licensa.getId()).build();
-//
-//		LocalDate maiorVencimento = assinaturas.get(0).getDataVencimento();
-//		for (Assinatura assinatura : assinaturas) {
-//			if (assinatura.getDataVencimento().compareTo(maiorVencimento) > 0)
-//				maiorVencimento = assinatura.getDataVencimento();
-//		}
-//
-//		return ContaResponse.builder().ativo(true).id(licensa.getId()).expiracao(formatter.format(maiorVencimento))
-//				.servidor("srv1.versatil-ia.com.br").porta(22631).build();
 	}
 
 	public ContaResponse autenticar(String licenceKey) {
@@ -58,13 +49,23 @@ public class ContaService {
 			return ContaResponse.builder().ativo(false).id(licenceKey).build();
 
 		LocalDate maiorVencimento = assinaturas.get(0).getDataVencimento();
+		Assinatura assinaturaMaiorVencimento = assinaturas.get(0);
 		for (Assinatura assinatura : assinaturas) {
-			if (assinatura.getDataVencimento().compareTo(maiorVencimento) > 0)
+			if (assinatura.getDataVencimento().compareTo(maiorVencimento) > 0) {
 				maiorVencimento = assinatura.getDataVencimento();
+				assinaturaMaiorVencimento = assinatura;
+			}
+		}
+
+		Servidor servidor = assinaturaMaiorVencimento.getServidor();
+		if (servidor == null) {
+			servidor = assinaturaService.getServidorParaAlocacao();
+			assinaturaMaiorVencimento.setServidor(servidor);
+			assinaturaService.gravar(assinaturaMaiorVencimento);
 		}
 
 		return ContaResponse.builder().ativo(true).id(licenceKey).expiracao(formatter.format(maiorVencimento))
-				.servidor("srv1.versatil-ia.com.br").porta(22631).build();
+				.servidor(servidor.getHostname()).porta(servidor.getPorta()).build();
 	}
 
 	public Boolean isAtivo(String nome, String corretora, Integer conta) {
@@ -123,7 +124,7 @@ public class ContaService {
 
 		return ContaInfoResponse.builder().ativo(true).conta(conta.getId()).nome(conta.getNome())
 				.corretora(conta.getCorretora()).pausado(ass.isPausado()).expiracao(maiorVencimento.format(formatter))
-				.build();
+				.maquina((Objects.isNull(ass.getMaquina()) ? null : ass.getMaquina().getNome())).build();
 	}
 
 	public List<ContaResultadoView> getListContaResultado() {

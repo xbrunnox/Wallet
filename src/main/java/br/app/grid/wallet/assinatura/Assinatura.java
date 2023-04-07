@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import br.app.grid.wallet.licenca.Conta;
+import br.app.grid.wallet.maquina.Maquina;
+import br.app.grid.wallet.servidor.Servidor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,10 +33,25 @@ public class Assinatura {
 	@JoinColumn(name = "conta")
 	private Conta conta;
 
+	@ManyToOne
+	@JoinColumn(name = "servidor")
+	private Servidor servidor;
+	
+	@ManyToOne
+	@JoinColumn(name = "maquina")
+	private Maquina maquina;
+	
 	private LocalDateTime dataCadastro;
 
 	private LocalDate dataVencimento;
 	
 	private boolean pausado;
+	
+	private String emailPagamento;
+	
+	private String telefone;
+	
+	private String documentoPagamento;
+	
 
 }

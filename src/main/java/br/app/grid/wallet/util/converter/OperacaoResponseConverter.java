@@ -19,9 +19,9 @@ public class OperacaoResponseConverter {
 	public static OperacaoResponse converter(Operacao operacao) {
 		return OperacaoResponse.builder().ativo(operacao.getAtivo().getCodigo())
 				.categoria(operacao.getAtivo().getCategoria().getNome()).conta(operacao.getConta().getId())
-				.data(operacao.getData()).direcao(operacao.getDirecao()).expert(operacao.getExpert().getId())
-				.id(operacao.getId()).nome(operacao.getConta().getNome()).volume(operacao.getVolume())
-				.preco(operacao.getPreco()).build();
+				.data(operacao.getData()).direcao(operacao.getDirecao())
+				.expert((operacao.getExpert() != null ? operacao.getExpert().getId() : null)).id(operacao.getId())
+				.nome(operacao.getConta().getNome()).volume(operacao.getVolume()).preco(operacao.getPreco()).build();
 	}
 
 }

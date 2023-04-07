@@ -1,5 +1,6 @@
 package br.app.grid.wallet.socket;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -15,6 +16,10 @@ public class DataConverter {
 
 	public static String nowBr() {
 		return formatador.format(LocalDateTime.now());
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(LocalDate.now().toString());
 	}
 
 }

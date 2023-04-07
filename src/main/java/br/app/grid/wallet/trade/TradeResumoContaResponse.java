@@ -22,5 +22,7 @@ public class TradeResumoContaResponse {
 	private BigDecimal total;
 	
 	private int operacoes;
+	
+	private String maquina;
 
 }

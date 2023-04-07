@@ -1,5 +1,6 @@
 package br.app.grid.wallet.web;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.app.grid.wallet.assinatura.Assinatura;
+import br.app.grid.wallet.assinatura.AssinaturaExpert;
+import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.assinatura.view.AssinaturaAtivaView;
 import br.app.grid.wallet.assinatura.view.AssinaturaPendenciaView;
@@ -36,11 +40,21 @@ import br.app.grid.wallet.log.LogComando;
 import br.app.grid.wallet.log.LogComandoService;
 import br.app.grid.wallet.log.LogOnline;
 import br.app.grid.wallet.log.LogOnlineService;
+import br.app.grid.wallet.meta.ContaPosicoesMT;
 import br.app.grid.wallet.meta.EndpointPositions;
+import br.app.grid.wallet.meta.PosicaoMT;
+import br.app.grid.wallet.pagamento.Pagamento;
+import br.app.grid.wallet.pagamento.PagamentoService;
+import br.app.grid.wallet.resultado.ResultadoService;
+import br.app.grid.wallet.router.RouterService;
+import br.app.grid.wallet.trade.Trade;
+import br.app.grid.wallet.trade.TradeService;
 import br.app.grid.wallet.usuario.UsuarioUtil;
 import br.app.grid.wallet.util.FiiUtil;
 import br.app.grid.wallet.util.converter.ContaResultadoAssinaturaResponseConverter;
 import br.app.grid.wallet.web.response.ContaResultadoAssinaturaResponse;
+import br.app.grid.wallet.web.response.PosicaoGroupResponse;
+import br.app.grid.wallet.web.response.PosicaoResponse;
 
 @RestController
 @RequestMapping("")
@@ -59,6 +73,9 @@ public class IndexController {
 	private EndpointService endpointService;
 
 	@Autowired
+	private RouterService routerService;
+
+	@Autowired
 	private LogComandoService logComandoService;
 
 	@Autowired
@@ -66,6 +83,24 @@ public class IndexController {
 
 	@Autowired
 	private HttpServletRequest request;
+
+	@Autowired
+	private PagamentoService pagamentoService;
+
+	@Autowired
+	private TradeService tradeService;
+
+	@Autowired
+	private ResultadoService resultadoService;
+
+	@GetMapping("/acompanhamento/{expert}")
+	public @ResponseBody ModelAndView acompanhamento(@PathVariable("expert") String expert) {
+		if (!UsuarioUtil.isLogged(request))
+			return new ModelAndView("redirect:/login");
+		ModelAndView modelAndView = new ModelAndView("acompanhamento/expert");
+		modelAndView.addObject("expert", expert);
+		return modelAndView;
+	}
 
 	@GetMapping("/dividendo/{ativo}")
 	public @ResponseBody FiiDividendo ultimo(@PathVariable("ativo") String ativo) {
@@ -112,7 +147,7 @@ public class IndexController {
 		Double total = 0.0;
 		for (ContaResultadoAssinaturaResponse conta : contas) {
 			if (conta.getResultado() != null)
-				total += conta.getResultado();
+				total += conta.getResultado().doubleValue();
 			conta.setDataDeVencimento(mapaVencimentos.get(conta.getId()));
 		}
 		ModelAndView view = new ModelAndView("index/contas");
@@ -140,10 +175,41 @@ public class IndexController {
 		Double total = 0.0;
 		for (int i = contas.size() - 1; i >= 0; i--) {
 			ContaResultadoAssinaturaResponse conta = contas.get(i);
-			if (conta.getResultado() == null || conta.getResultado() == 0.0) {
+			if (conta.getResultado() == null || conta.getResultado().compareTo(BigDecimal.ZERO) == 0) {
 				contas.remove(i);
 			} else {
-				total += conta.getResultado();
+				total += conta.getResultado().doubleValue();
+				conta.setDataDeVencimento(mapaVencimentos.get(conta.getId()));
+			}
+		}
+		ModelAndView view = new ModelAndView("index/resultados");
+		view.addObject("contasList", contas);
+		view.addObject("contas", contas.size());
+		view.addObject("total", total);
+		return view;
+	}
+
+	@GetMapping("/resultados/{expert}")
+	public ModelAndView resultados(@PathVariable(name = "expert") String expert) {
+		if (!UsuarioUtil.isLogged(request))
+			return new ModelAndView("redirect:/login");
+		List<ContaResultadoAssinaturaResponse> contas = resultadoService.getResultado(expert);
+		List<Assinatura> assinaturas = assinaturaService.getList();
+		Map<String, LocalDate> mapaVencimentos = new HashMap<>();
+		for (Assinatura assinatura : assinaturas) {
+			LocalDate data = mapaVencimentos.get(assinatura.getConta().getId());
+			if (data == null)
+				mapaVencimentos.put(assinatura.getConta().getId(), assinatura.getDataVencimento());
+			else if (data.compareTo(assinatura.getDataVencimento()) < 0)
+				mapaVencimentos.put(assinatura.getConta().getId(), assinatura.getDataVencimento());
+		}
+		Double total = 0.0;
+		for (int i = contas.size() - 1; i >= 0; i--) {
+			ContaResultadoAssinaturaResponse conta = contas.get(i);
+			if (conta.getResultado() == null || conta.getResultado().compareTo(BigDecimal.ZERO) == 0) {
+				contas.remove(i);
+			} else {
+				total += conta.getResultado().doubleValue();
 				conta.setDataDeVencimento(mapaVencimentos.get(conta.getId()));
 			}
 		}
@@ -159,7 +225,7 @@ public class IndexController {
 		if (!UsuarioUtil.isLogged(request))
 			return new ModelAndView("redirect:/login");
 		List<AssinaturaPendenciaView> pendencias = assinaturaService.getPendencias();
-		ModelAndView view = new ModelAndView("index/pendencias");
+		ModelAndView view = new ModelAndView("assinatura/pendencias");
 		view.addObject("pendenciasList", pendencias);
 		return view;
 	}
@@ -216,12 +282,16 @@ public class IndexController {
 	@GetMapping("/status")
 	public ModelAndView status() {
 		ModelAndView view = new ModelAndView("endpoint/status");
-		EndpointStatusResponse status = endpointService.getStatus();
+		EndpointStatusResponse status = routerService.getStatus();
 		Collections.sort(status.getOnlineUsers(), new Comparator<ClienteUser>() {
 
 			@Override
 			public int compare(ClienteUser o1, ClienteUser o2) {
-				return o1.getNome().compareTo(o2.getNome());
+				if(o1.getPausado() && !o2.getPausado())
+					return -1;
+				if(!o1.getPausado() && o2.getPausado())
+					return 1;
+				return StringUtils.stripAccents(o1.getNome()).compareTo(StringUtils.stripAccents(o2.getNome()));
 			}
 
 		});
@@ -233,10 +303,72 @@ public class IndexController {
 	public ModelAndView posicoes() {
 		if (!UsuarioUtil.isLogged(request))
 			return new ModelAndView("redirect:/login");
-		EndpointPositions endpointPosicoes = endpointService.getPosicoes();
+		List<PosicaoResponse> posicoes = new ArrayList<>();
+		Map<String, PosicaoGroupResponse> mapaPosicaoGrupo = new HashMap<>();
+
+		EndpointPositions endpointPosicoes = routerService.getPosicoes();
+		if (endpointPosicoes != null && endpointPosicoes.getContas() != null) {
+			for (ContaPosicoesMT conta : endpointPosicoes.getContas()) {
+				if (conta != null && conta.getPosicoes() != null) {
+					for (PosicaoMT posicao : conta.getPosicoes()) {
+						if (posicao != null) {
+							String posicaoTitulo = posicao.getAtivo() + " - " + posicao.getVolume()
+									+ posicao.getDirecao();
+							PosicaoGroupResponse grupo = mapaPosicaoGrupo.get(posicaoTitulo);
+							if (grupo == null) {
+								grupo = PosicaoGroupResponse.builder().ativo(posicao.getAtivo())
+										.direcao(posicao.getDirecao()).posicoes(new ArrayList<>()).titulo(posicaoTitulo)
+										.volume(posicao.getVolume()).build();
+								mapaPosicaoGrupo.put(posicaoTitulo, grupo);
+							}
+							PosicaoResponse posicaoResponse = PosicaoResponse.builder().abertura(posicao.getAbertura())
+									.ativo(posicao.getAtivo()).conta(conta.getConta()).data(posicao.getData())
+									.direcao(posicao.getDirecao()).nome(conta.getNome()).profit(posicao.getProfit())
+									.volume(posicao.getVolume()).servidor(conta.getServer())
+									.corretora(conta.getCorretora()).build();
+							posicoes.add(posicaoResponse);
+							grupo.add(posicaoResponse);
+						}
+					}
+				}
+			}
+			Collections.sort(posicoes, new Comparator<PosicaoResponse>() {
+				@Override
+				public int compare(PosicaoResponse o1, PosicaoResponse o2) {
+					int resultado = o1.getAtivo().compareTo(o2.getAtivo());
+					if (resultado != 0)
+						return resultado;
+					resultado = o1.getDirecao().compareTo(o2.getDirecao());
+					if (resultado != 0)
+						return resultado;
+					resultado = o1.getVolume().compareTo(o2.getVolume());
+					if (resultado != 0)
+						return resultado;
+					return 0;
+				}
+			});
+		}
+
+		List<PosicaoGroupResponse> retornoPosicoesGrupo = new ArrayList<>();
+		for (String titulo : mapaPosicaoGrupo.keySet()) {
+			retornoPosicoesGrupo.add(mapaPosicaoGrupo.get(titulo));
+		}
+
+		Collections.sort(retornoPosicoesGrupo, new Comparator<PosicaoGroupResponse>() {
+
+			@Override
+			public int compare(PosicaoGroupResponse o1, PosicaoGroupResponse o2) {
+				int resultado = o1.getPosicoes().size() - o2.getPosicoes().size();
+				if (resultado != 0)
+					return resultado;
+				return o1.getAtivo().compareTo(o2.getAtivo());
+			}
+
+		});
 
 		ModelAndView modelAndView = new ModelAndView("index/posicoes");
-		modelAndView.addObject("posicoes", endpointPosicoes);
+		modelAndView.addObject("posicoes", posicoes);
+		modelAndView.addObject("posicoesGrupos", retornoPosicoesGrupo);
 		return modelAndView;
 	}
 
@@ -291,4 +423,66 @@ public class IndexController {
 		return modelAndView;
 
 	}
+
+	@GetMapping("/detalhes/{conta}")
+	public ModelAndView detalhes(@PathVariable(name = "conta") String idConta) {
+		if (!UsuarioUtil.isLogged(request))
+			return new ModelAndView("redirect:/login");
+		BigDecimal total = BigDecimal.ZERO;
+		List<Trade> trades = tradeService.getList(idConta);
+		for (Trade trade : trades) {
+			total = total.add(BigDecimal.valueOf(trade.getResultado()));
+		}
+		Conta conta = contaService.get(idConta);
+
+		List<Assinatura> assinaturas = assinaturaService.getList(idConta);
+		Assinatura assinatura = null;
+		if (assinaturas.size() > 0)
+			assinatura = assinaturas.get(0);
+
+		List<AssinaturaPagamento> pagamentos = assinaturaService.getListPagamentos(idConta);
+		List<AssinaturaExpert> experts = assinaturaService.getExperts(assinatura);
+
+		ModelAndView view = new ModelAndView("conta/detalhes");
+		view.addObject("assinatura", assinatura);
+		view.addObject("tradesList", trades);
+		view.addObject("pagamentosList", pagamentos);
+		view.addObject("expertList", experts);
+		view.addObject("total", total);
+		view.addObject("conta", conta);
+		return view;
+
+	}
+
+	@GetMapping("/terminal")
+	public ModelAndView terminal() {
+		ModelAndView view = new ModelAndView("index/terminal");
+		return view;
+	}
+
+	@GetMapping("/assinaturas")
+	public ModelAndView assinaturas() {
+		if (!UsuarioUtil.isLogged(request))
+			return new ModelAndView("redirect:/login");
+		ModelAndView view = new ModelAndView("menu/assinaturas");
+		return view;
+	}
+
+	@GetMapping("/pagamento-tratamento-pendente")
+	public ModelAndView pagamentoTratamentoPendente() {
+		if (!UsuarioUtil.isLogged(request)) {
+			return new ModelAndView("redirect:/login");
+		}
+		List<Pagamento> pagamentos = pagamentoService.getListNaoAssociados();
+		Collections.sort(pagamentos, new Comparator<Pagamento>() {
+			@Override
+			public int compare(Pagamento p1, Pagamento p2) {
+				return p2.getDataAtualizacao().compareTo(p1.getDataAtualizacao());
+			}
+		});
+		ModelAndView view = new ModelAndView("pagamento/tratamento-pendente");
+		view.addObject("pagamentosList", pagamentos);
+		return view;
+	}
+
 }

@@ -11,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 import br.app.grid.wallet.carteira.Carteira;
 import br.app.grid.wallet.carteira.CarteiraService;
 import br.app.grid.wallet.cotacao.service.CotacaoService;
-import br.app.grid.wallet.historico.Historico;
 import br.app.grid.wallet.historico.HistoricoService;
 import br.app.grid.wallet.resumo.Resumo;
 import br.app.grid.wallet.resumo.ResumoPosicao;

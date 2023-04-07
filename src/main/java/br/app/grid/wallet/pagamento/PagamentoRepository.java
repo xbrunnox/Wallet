@@ -15,4 +15,7 @@ public interface PagamentoRepository extends CrudRepository<Pagamento, Long> {
 	@Query("FROM Pagamento pag ORDER BY pag.dataAtualizacao")
 	List<Pagamento> getList();
 
+	@Query("FROM Pagamento pag WHERE pag.id = :idPagamento")
+	Pagamento get(Long idPagamento);
+
 }

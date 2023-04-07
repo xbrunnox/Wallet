@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import br.app.grid.wallet.assinatura.Assinatura;
+import br.app.grid.wallet.assinatura.view.AssinaturaView;
 
 @Repository
 public interface AssinaturaRepository extends CrudRepository<Assinatura, Integer>{
@@ -26,6 +27,15 @@ public interface AssinaturaRepository extends CrudRepository<Assinatura, Integer
 
 	@Query("FROM Assinatura ass WHERE ass.id = :idAssinatura")
 	public Assinatura get(Integer idAssinatura);
+
+	@Query("FROM Assinatura ass WHERE ass.emailPagamento = :email")
+	public List<Assinatura> getListByEmail(String email);
+
+	@Query("FROM Assinatura ass WHERE ass.dataVencimento >= :data")
+	public List<Assinatura> getList(LocalDate data);
+
+	@Query("From AssinaturaView ass ORDER BY ass.nome")
+	public List<AssinaturaView> getListView();
 
 	
 }

@@ -40,4 +40,7 @@ public interface OperacaoRepository extends CrudRepository<Operacao, Integer> {
 	@Query("SELECT op FROM Operacao op WHERE op.conta.id = :conta AND op.direcao = :direcao")
 	List<Operacao> getList(String conta, String direcao);
 
+	@Query("SELECT op FROM Operacao op WHERE op.conta.id = :conta AND DATE(op.data) = :date")
+	List<Operacao> getList(String conta, Date date);
+
 }

@@ -23,4 +23,8 @@ public class PagamentoService {
 		return repository.getList();
 	}
 
+	public Pagamento get(Long id) {
+		return repository.get(id);
+	}
+
 }

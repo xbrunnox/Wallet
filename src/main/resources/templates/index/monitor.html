@@ -32,9 +32,14 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-12">
+			<div class="col-6">
 				<figure class="highcharts-figure">
 					<div id="chartCorretoras"></div>
+				</figure>
+			</div>
+			<div class="col-6">
+				<figure class="highcharts-figure">
+					<div id="chartServidores"></div>
 				</figure>
 			</div>
 		</div>
@@ -223,6 +228,44 @@
 			data : monitorResumo.corretoras
 		} ]
 	});
+	
+	
+	// Build the chart
+	var chartServidores = Highcharts.chart('chartServidores', {
+		chart : {
+			plotBackgroundColor : null,
+			plotBorderWidth : null,
+			plotShadow : false,
+			type : 'pie'
+		},
+		title : {
+			text : 'Usuários online por servidor',
+			align : 'left'
+		},
+		tooltip : {
+			pointFormat : '{series.name}: <b>{point.y}</b>'
+		},
+		accessibility : {
+			point : {
+				valueSuffix : '%'
+			}
+		},
+		plotOptions : {
+			pie : {
+				allowPointSelect : true,
+				cursor : 'pointer',
+				dataLabels : {
+					enabled : true,
+					format : '<b>{point.name}</b>: {point.y}',
+					connectorColor : 'silver'
+				}
+			}
+		},
+		series : [ {
+			name : 'Share',
+			data : monitorResumo.servidores
+		} ]
+	});
 
 	function consultarStatus() {
 		$.ajax({
@@ -230,17 +273,25 @@
 			success : function(retorno) {
 				console.log(retorno);
 				var corretoras = [];
+				var servidores = [];
 				$.each(retorno.corretoras, function(index, corretora) {
 					var nCorretora = {};
 					nCorretora.name = corretora.corretora;
 					nCorretora.y = corretora.quantidade;
 					corretoras.push(nCorretora);
 				});
+				$.each(retorno.servidores, function(index, servidor) {
+					var nServidor = {};
+					nServidor.name = servidor.servidor;
+					nServidor.y = servidor.quantidade;
+					servidores.push(nServidor);
+				});
 				monitor[0].data.push(retorno.usuariosOnline);
 				monitor[0].categorias.push(retorno.horario.substring(11,16));
 				monitor[1].data.push(retorno.expertsOnline);
 				monitor[1].categorias.push(retorno.horario.substring(11,16));
 				monitorResumo.corretoras = corretoras;
+				monitorResumo.servidores = servidores;
 				chartUsuarios.series[0].update({
 					data : monitor[0].data
 				});
@@ -249,6 +300,9 @@
 				});
 				chartCorretoras.series[0].update({
 					data : corretoras
+				});
+				chartServidores.series[0].update({
+					data : servidores
 				});
 			}
 		});

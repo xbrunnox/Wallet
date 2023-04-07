@@ -36,9 +36,16 @@
 					</thead>
 					<tbody>
 						<tr th:each="conta : ${contasList}">
-							<td><span class="fonte-tabela" th:text="${conta.id}"></span><br>
+							<td>
+							<a th:href="@{'/detalhes/' + ${conta.id}}"> <span
+										class="fonte-tabela" th:text="${conta.id}"></span></a><br> <small><span
+										class="fonte-tabela"
+										th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small>
+							
+							
+							<!-- span class="fonte-tabela" th:text="${conta.id}"></span><br>
 								<small><span class="fonte-tabela"
-									th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small>
+									th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small-->
 							</td>
 							<td><span class="fonte-tabela" th:text="${conta.nome}"></span><br>
 								<small><span th:text="${conta.corretora}"></span></small></td>

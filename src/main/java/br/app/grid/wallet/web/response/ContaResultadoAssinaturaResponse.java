@@ -1,5 +1,6 @@
 package br.app.grid.wallet.web.response;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class ContaResultadoAssinaturaResponse {
 
 	private String nome;
 	private String corretora;
-	private Double resultado;
+	private BigDecimal resultado;
 
 	private LocalDate dataDeVencimento;
 

@@ -26,5 +26,7 @@ public class ClienteUser {
 	private String versao;
 	private String tempoEnvio;
 	private Boolean pausado;
+	private String servidor;
+	private String maquina;
 
 }

@@ -22,9 +22,15 @@ public class OperacaoResponse {
 	
 	private String expert;
 	
+	private String corretora;
+	
+	private String servidor;
+	
 	private String ativo;
 	
 	private String categoria;
+	
+	private String maquina;
 	
 	private Double preco;
 	

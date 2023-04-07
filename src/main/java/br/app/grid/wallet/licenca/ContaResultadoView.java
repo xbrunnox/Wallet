@@ -1,5 +1,7 @@
 package br.app.grid.wallet.licenca;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,6 +20,6 @@ public class ContaResultadoView {
 	
 	private String nome;
 	private String corretora;
-	private Double resultado;
+	private BigDecimal resultado;
 
 }

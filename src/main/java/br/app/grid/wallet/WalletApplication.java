@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
-import br.app.grid.wallet.socket.DispatcherServer;
-
 @SpringBootApplication(scanBasePackages = "br.app.grid")
 @ComponentScan({ "br.app.grid.*" })
 public class WalletApplication {
