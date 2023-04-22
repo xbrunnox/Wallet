@@ -2,13 +2,17 @@ package br.app.grid.wallet.web;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,6 +35,7 @@ import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.TradeService;
 import br.app.grid.wallet.usuario.UsuarioUtil;
 import br.app.grid.wallet.web.request.GravarOperacaoRequest;
+import br.app.grid.wallet.web.request.MarketOrderRequest;
 
 @RestController
 @RequestMapping("/metatrader")
@@ -142,5 +147,20 @@ public class MetatraderController {
 			@PathVariable(name = "direcao") DirecaoOperacaoEnum direcao) {
 		routerService.sendMarketOrder(conta, ativo, volume, direcao);
 		return "ok";
+	}
+
+	@PostMapping("/order/market")
+	public void market(@RequestBody MarketOrderRequest request) {
+		if (request.getBilhete() == null)
+			request.setBilhete(new Random().nextInt(100000) + 0L);
+		if (request.getDataHora() == null)
+			request.setDataHora(LocalDateTime.now());
+		try {
+			System.out.println(new ObjectMapper().writeValueAsString(request));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		routerService.sendMarketOrder(request);
 	}
 }

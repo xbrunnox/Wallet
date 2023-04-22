@@ -22,7 +22,6 @@ import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.AssinaturaExpert;
 import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
-import br.app.grid.wallet.assinatura.view.AssinaturaAtivaView;
 import br.app.grid.wallet.backtest.service.BacktestService;
 import br.app.grid.wallet.enums.ServidorTipoEnum;
 import br.app.grid.wallet.licenca.Conta;
@@ -37,6 +36,7 @@ import br.app.grid.wallet.servidor.ServidorService;
 import br.app.grid.wallet.socket.Router;
 import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.TradeService;
+import br.app.grid.wallet.web.request.GravarOperacaoRequest;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
@@ -110,6 +110,41 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 		 * } linha = br.readLine(); } } catch (Exception e) { // TODO Auto-generated
 		 * catch block e.printStackTrace(); }
 		 */
+		
+		/*
+		List<Operacao> operacoes = operacaoService.getList();
+		for (Operacao operacao : operacoes) {
+			if (operacao.getAtivo().getCodigo().equals("WDOK23")) {
+				GravarOperacaoRequest operacaoFechamento = GravarOperacaoRequest.builder()
+						.ativo(operacao.getAtivo().getCodigo())
+						.conta(operacao.getConta().getId())
+						.data(LocalDateTime.of(2023, 4, 12, 9, 27, 37))
+						.direcao("V")
+						.expert(operacao.getExpert().getId())
+						.preco(4964.0)
+						.tipo("E")
+						.volume(operacao.getVolume())
+						.build();
+				operacaoService.save(operacaoFechamento);
+				System.out.println("Gravando trade");
+			}
+			if (operacao.getAtivo().getCodigo().equals("WINM23")) {
+				GravarOperacaoRequest operacaoFechamento = GravarOperacaoRequest.builder()
+						.ativo(operacao.getAtivo().getCodigo())
+						.conta(operacao.getConta().getId())
+						.data(LocalDateTime.of(2023, 4, 12, 9, 27, 37))
+						.direcao("C")
+						.expert(operacao.getExpert().getId())
+						.preco(109295.0)
+						.tipo("E")
+						.volume(operacao.getVolume())
+						.build();
+				operacaoService.save(operacaoFechamento);
+				System.out.println("Gravando trade");
+			}
+		}
+		*/
+		
 
 	}
 

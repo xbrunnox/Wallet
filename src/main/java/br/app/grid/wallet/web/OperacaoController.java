@@ -92,9 +92,11 @@ public class OperacaoController {
 		List<OperacaoResponse> operacoesResponse = OperacaoResponseConverter.converter(operacoes);
 		for (OperacaoResponse operacao : operacoesResponse) {
 			operacao.setOnline(mapaStatus.containsKey(operacao.getConta()));
-			operacao.setMaquina(mapaAssinaturas.get(operacao.getConta()).getMaquina());
-			operacao.setCorretora(mapaAssinaturas.get(operacao.getConta()).getCorretora());
-			operacao.setServidor(mapaAssinaturas.get(operacao.getConta()).getServidor());
+			if (mapaAssinaturas.get(operacao.getConta()) != null) {
+				operacao.setMaquina(mapaAssinaturas.get(operacao.getConta()).getMaquina());
+				operacao.setCorretora(mapaAssinaturas.get(operacao.getConta()).getCorretora());
+				operacao.setServidor(mapaAssinaturas.get(operacao.getConta()).getServidor());
+			}
 		}
 
 		Collections.sort(operacoesResponse, new Comparator<OperacaoResponse>() {

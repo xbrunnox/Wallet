@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,10 +88,13 @@ public class AssinaturaService {
 	}
 
 	public List<Conta> getContasInativas() {
-		List<Assinatura> assinaturasAtivas = getListAtivas();
-		Map<String, Assinatura> mapaAssinaturas = new HashMap<>();
-		for (Assinatura assinatura : assinaturasAtivas) {
-			mapaAssinaturas.put(assinatura.getConta().getId(), assinatura);
+//		List<AssinaturaAtivaView> assinaturasAtivas = assinaturaAtivaRepository.getList(LocalDate.now());
+		List<AssinaturaView> assinaturas = assinaturaRepository.getListView();
+//		List<Assinatura> assinaturasAtivas = getListAtivas();
+		Map<String, AssinaturaView> mapaAssinaturas = new HashMap<>();
+		for (AssinaturaView assinatura : assinaturas) {
+			if (assinatura.getDataVencimento().compareTo(LocalDate.now()) >= 0)
+				mapaAssinaturas.put(assinatura.getConta(), assinatura);
 		}
 		List<Conta> contas = contaRepository.getList();
 		for (int i = contas.size() - 1; i >= 0; i--) {
@@ -161,8 +165,8 @@ public class AssinaturaService {
 
 		if (conta != null) {
 			Assinatura assinatura = Assinatura.builder().conta(conta).dataCadastro(LocalDateTime.now())
-					.dataVencimento(LocalDate.now().plusMonths(1)).servidor(getServidorParaAlocacao())
-					.pausado(true).build();
+					.dataVencimento(LocalDate.now().plusMonths(1)).servidor(getServidorParaAlocacao()).pausado(true)
+					.build();
 			assinaturaRepository.save(assinatura);
 			// Expert Dolar
 			AssinaturaExpert expertDolar = AssinaturaExpert.builder().assinatura(assinatura).ativado(true).expert(dolar)
@@ -277,6 +281,15 @@ public class AssinaturaService {
 						assinaturaRepository.save(assinatura);
 						System.out.println("Pagamento identificado.[" + idPagamento + "] Assinatura encontrada. ["
 								+ assinatura.getConta().getId() + "]");
+						
+						// Atualizando subcontas
+						List<Assinatura> assinaturaSubContas = getListSubContas(assinatura.getId());
+						if (!Objects.isNull(assinaturaSubContas)) {
+							for (Assinatura subAssinatura : assinaturaSubContas) {
+								subAssinatura.setDataVencimento(assinatura.getDataVencimento());
+								assinaturaRepository.save(subAssinatura);
+							}
+						}
 					} else {
 						System.out.println("Pagamento não identificado. Assinatura não encontrada.");
 					}
@@ -332,5 +345,16 @@ public class AssinaturaService {
 
 	public List<AssinaturaView> getListView() {
 		return assinaturaRepository.getListView();
+	}
+
+	public Assinatura getByConta(String conta) {
+		List<Assinatura> assinaturas = getList(conta);
+		if (assinaturas.size() > 0)
+			return assinaturas.get(0);
+		return null;
+	}
+
+	public List<Assinatura> getListSubContas(Integer idAssinatura) {
+		return assinaturaRepository.getListSubContas(idAssinatura);
 	}
 }

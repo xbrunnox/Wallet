@@ -41,6 +41,10 @@ public class Assinatura {
 	@JoinColumn(name = "maquina")
 	private Maquina maquina;
 	
+	@ManyToOne
+	@JoinColumn(name = "id_assinatura_principal")
+	private Assinatura assinaturaPrincipal;
+	
 	private LocalDateTime dataCadastro;
 
 	private LocalDate dataVencimento;

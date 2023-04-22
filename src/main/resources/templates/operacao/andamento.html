@@ -224,7 +224,7 @@
 								class="fonte-tabela"></span><br> <small><span
 									th:text="${operacao.maquina}"></span></small></td>
 							<td align="center"><span
-								th:class="${operacao.ativo.startsWith('WIN') ? 'badge badge-success': 'badge badge-dollar'}"
+								th:class="${operacao.ativo.startsWith('WIN') ? 'badge badge-info': 'badge badge-success'}"
 								th:text="${operacao.ativo}"></span><br> <span
 								th:class="${operacao.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
 								th:text="${operacao.volume +' '+ operacao.direcao}"></span></td>

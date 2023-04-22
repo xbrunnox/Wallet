@@ -1,5 +1,7 @@
 package br.app.grid.wallet.robo;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,10 @@ public class RoboService {
 	
 	public Robo getById(String id) {
 		return repository.findById(id).get();
+	}
+
+	public List<Robo> getListEnabled() {
+		return repository.getListEnabled();
 	}
 
 }

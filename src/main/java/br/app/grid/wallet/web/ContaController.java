@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.app.grid.wallet.assinatura.service.AssinaturaService;
+import br.app.grid.wallet.licenca.Conta;
 import br.app.grid.wallet.licenca.ContaInfoResponse;
 import br.app.grid.wallet.licenca.ContaResponse;
 import br.app.grid.wallet.licenca.ContaService;
@@ -29,6 +31,9 @@ public class ContaController {
 	
 	@Autowired
 	private HttpServletRequest request;
+	
+	@Autowired
+	private AssinaturaService assinaturaService;
 
 	@PostMapping("/autenticar")
 	public ContaResponse autenticar(@RequestBody AutenticarRequest request) {
@@ -55,5 +60,16 @@ public class ContaController {
 		if (!UsuarioUtil.isLogged(request))
 			throw new RuntimeException("Usuario não está logado.");
 		service.excluir(idConta);
+	}
+	
+	/**
+	 * Retorna a lista de contas inativas.
+	 */
+	@GetMapping("/inativas")
+	public List<Conta> inativas() {
+		if (!UsuarioUtil.isLogged(request))
+			throw new RuntimeException("Usuário não está logado");
+		List<Conta> contasInativas = assinaturaService.getContasInativas();
+		return contasInativas;
 	}
 }

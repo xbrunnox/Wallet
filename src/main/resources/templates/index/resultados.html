@@ -52,8 +52,7 @@
 	</nav>
 	<br>
 	<div class="container">
-
-		<br>
+		<input type="hidden" id="automacao" th:value="${automacao}"> <br>
 		<div class="nav nav-tabs">
 			<button id="menuResultadoIndividual" class="nav-link active"
 				onclick="javascript:resultadoIndividual();">Por Licença</button>
@@ -478,9 +477,10 @@
 	}
 
 	function consultarResultados(expert) {
+		var automacao = $('#automacao').val();
 		$
 				.ajax({
-					url : '/resultado/global/' + expert,
+					url : '/resultado/global/' + automacao,
 					success : function(resultado) {
 						console.log(resultado);
 						$('#divTotalAcumulado').html(

@@ -1,6 +1,7 @@
 package br.app.grid.wallet.router;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import br.app.grid.wallet.meta.EndpointPositions;
 import br.app.grid.wallet.meta.PosicaoMT;
 import br.app.grid.wallet.socket.DataConverter;
 import br.app.grid.wallet.util.Constantes;
+import br.app.grid.wallet.web.request.MarketOrderRequest;
 
 @Service
 public class RouterService {
@@ -70,12 +72,6 @@ public class RouterService {
 				+ conta + " em " + (System.currentTimeMillis() - inicio) + " ms");
 	}
 
-	public void sendMarketOrder(String conta, String ativo, BigDecimal volume, DirecaoOperacaoEnum direcao) {
-		restTemplate.getForObject(
-				Constantes.ROUTER_SEND_MARKET_ORDER_URL + conta + "/" + ativo + "/" + volume + "/" + direcao,
-				String.class);
-	}
-
 	public List<AccountInfoMeta> getAccountInfo() {
 		AccountInfosMT response = restTemplate.getForObject(Constantes.ROUTER_ACCOUNT_INFO_URL, AccountInfosMT.class);
 		if (response != null && response.getInfos() != null) {
@@ -102,18 +98,36 @@ public class RouterService {
 	}
 
 	/**
-	 * Notifica o router da pausa da conta indicada. 
+	 * Notifica o router da pausa da conta indicada.
+	 * 
 	 * @param conta Conta.
 	 */
 	public void pause(String conta) {
 		restTemplate.getForObject(Constantes.ROUTER_ACCOUNT_PAUSE_URL + "/" + conta, String.class);
 	}
-	
+
 	/**
-	 * Notifica o router da continuação (unpause) da conta indicada. 
+	 * Notifica o router da continuação (unpause) da conta indicada.
+	 * 
 	 * @param conta Conta.
 	 */
 	public void resume(String conta) {
 		restTemplate.getForObject(Constantes.ROUTER_ACCOUNT_RESUME_URL + "/" + conta, String.class);
+	}
+
+	public void sendMarketOrder(String conta, String ativo, BigDecimal volume, DirecaoOperacaoEnum direcao) {
+		restTemplate.getForObject(
+				Constantes.ROUTER_SEND_MARKET_ORDER_URL + conta + "/" + ativo + "/" + volume + "/" + direcao,
+				String.class);
+	}
+
+	/**
+	 * Envia a ordem a mercado.
+	 * 
+	 * @param marketOrder Ordem.
+	 */
+	public void sendMarketOrder(MarketOrderRequest marketOrder) {
+		restTemplate.postForObject(URI.create("http://router.versatil-ia.com.br:8066/order/market"), marketOrder,
+				String.class);
 	}
 }

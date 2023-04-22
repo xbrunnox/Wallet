@@ -31,5 +31,7 @@ public class Robo {
 	private int tentativas;
 
 	private int timeframe;
+	
+	private Boolean enabled;
 
 }

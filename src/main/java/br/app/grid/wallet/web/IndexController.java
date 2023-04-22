@@ -34,6 +34,8 @@ import br.app.grid.wallet.dividendo.Dividendo;
 import br.app.grid.wallet.dividendo.DividendoService;
 import br.app.grid.wallet.fii.FiiDividendo;
 import br.app.grid.wallet.grafico.SerieInt;
+import br.app.grid.wallet.homebroker.HomeBroker;
+import br.app.grid.wallet.homebroker.HomeBrokerService;
 import br.app.grid.wallet.licenca.Conta;
 import br.app.grid.wallet.licenca.ContaService;
 import br.app.grid.wallet.log.LogComando;
@@ -46,6 +48,8 @@ import br.app.grid.wallet.meta.PosicaoMT;
 import br.app.grid.wallet.pagamento.Pagamento;
 import br.app.grid.wallet.pagamento.PagamentoService;
 import br.app.grid.wallet.resultado.ResultadoService;
+import br.app.grid.wallet.robo.Robo;
+import br.app.grid.wallet.robo.RoboService;
 import br.app.grid.wallet.router.RouterService;
 import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.TradeService;
@@ -89,6 +93,12 @@ public class IndexController {
 
 	@Autowired
 	private TradeService tradeService;
+
+	@Autowired
+	private RoboService automacaoService;
+
+	@Autowired
+	private HomeBrokerService homeBrokerService;
 
 	@Autowired
 	private ResultadoService resultadoService;
@@ -214,6 +224,7 @@ public class IndexController {
 			}
 		}
 		ModelAndView view = new ModelAndView("index/resultados");
+		view.addObject("automacao", expert);
 		view.addObject("contasList", contas);
 		view.addObject("contas", contas.size());
 		view.addObject("total", total);
@@ -287,9 +298,9 @@ public class IndexController {
 
 			@Override
 			public int compare(ClienteUser o1, ClienteUser o2) {
-				if(o1.getPausado() && !o2.getPausado())
+				if (o1.getPausado() && !o2.getPausado())
 					return -1;
-				if(!o1.getPausado() && o2.getPausado())
+				if (!o1.getPausado() && o2.getPausado())
 					return 1;
 				return StringUtils.stripAccents(o1.getNome()).compareTo(StringUtils.stripAccents(o2.getNome()));
 			}
@@ -436,15 +447,19 @@ public class IndexController {
 		Conta conta = contaService.get(idConta);
 
 		List<Assinatura> assinaturas = assinaturaService.getList(idConta);
+		List<Assinatura> subcontas = new ArrayList<>();
 		Assinatura assinatura = null;
-		if (assinaturas.size() > 0)
+		if (assinaturas.size() > 0) {
 			assinatura = assinaturas.get(0);
+			subcontas = assinaturaService.getListSubContas(assinatura.getId());
+		}
 
 		List<AssinaturaPagamento> pagamentos = assinaturaService.getListPagamentos(idConta);
 		List<AssinaturaExpert> experts = assinaturaService.getExperts(assinatura);
 
 		ModelAndView view = new ModelAndView("conta/detalhes");
 		view.addObject("assinatura", assinatura);
+		view.addObject("subContaList", subcontas);
 		view.addObject("tradesList", trades);
 		view.addObject("pagamentosList", pagamentos);
 		view.addObject("expertList", experts);
@@ -482,6 +497,18 @@ public class IndexController {
 		});
 		ModelAndView view = new ModelAndView("pagamento/tratamento-pendente");
 		view.addObject("pagamentosList", pagamentos);
+		return view;
+	}
+
+	@GetMapping("/home-broker")
+	public ModelAndView homebroker() {
+		if (!UsuarioUtil.isLogged(request))
+			return new ModelAndView("redirect:/login");
+		List<Robo> automacoes = automacaoService.getListEnabled();
+		List<HomeBroker> homeBrokers = homeBrokerService.getList();
+		ModelAndView view = new ModelAndView("index/home-broker");
+		view.addObject("automacaoList", automacoes);
+		view.addObject("homeBrokerList", homeBrokers);
 		return view;
 	}
 

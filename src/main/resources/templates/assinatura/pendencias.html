@@ -16,9 +16,10 @@
 </style>
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/assinaturas"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Assinaturas com Pendência</span>
+		<a class="navbar-brand" href="/assinaturas"> <img
+			src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Assinaturas com
+				Pendência</span>
 		</a>
 	</nav>
 	<br>
@@ -36,8 +37,9 @@
 					</thead>
 					<tbody>
 						<tr th:each="assinatura : ${pendenciasList}">
-							<td><span class="fonte-tabela" th:text="${assinatura.conta}"></span>
-								<br> <small><span class="fonte-tabela"
+							<td><a th:href="@{'/detalhes/' + ${assinatura.conta}}">
+									<span class="fonte-tabela" th:text="${assinatura.conta}"></span>
+							</a> <br> <small><span class="fonte-tabela"
 									th:text="${#temporals.format(assinatura.dataVencimento, 'dd/MM/yyyy')}"></span></small>
 							</td>
 							<td><span class="fonte-tabela" th:text="${assinatura.nome}"></span><br>
