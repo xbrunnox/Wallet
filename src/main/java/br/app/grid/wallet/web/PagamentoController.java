@@ -21,38 +21,43 @@ import br.app.grid.wallet.usuario.UsuarioUtil;
 @RequestMapping("/pagamento")
 public class PagamentoController {
 
-	@Autowired
-	private PagamentoService pagamentoService;
+  @Autowired
+  private PagamentoService pagamentoService;
 
-	@Autowired
-	private AssinaturaService assinaturaService;
+  @Autowired
+  private AssinaturaService assinaturaService;
 
-	@Autowired
-	private HttpServletRequest request;
+  @Autowired
+  private HttpServletRequest request;
 
-	@GetMapping("/get/{idPagamento}")
-	public Pagamento get(@PathVariable(name = "idPagamento") Long id) {
-		if (!UsuarioUtil.isLogged(request)) {
-			throw new RuntimeException("User not logged.");
-		}
-		return pagamentoService.get(id);
-	}
+  @GetMapping("/get/{idPagamento}")
+  public Pagamento get(@PathVariable(name = "idPagamento") Long id) {
+    if (!UsuarioUtil.isLogged(request)) {
+      throw new RuntimeException("User not logged.");
+    }
+    return pagamentoService.get(id);
+  }
 
-	@GetMapping("/recebido")
-	public ModelAndView recebido() {
-		if (!UsuarioUtil.isLogged(request)) {
-			return new ModelAndView("redirect:/login");
-		}
-		List<Pagamento> pagamentos = pagamentoService.getList();
-		Collections.reverse(pagamentos);
-		ModelAndView view = new ModelAndView("pagamento/recebido");
-		view.addObject("pagamentosList", pagamentos);
-		return view;
-	}
+  @GetMapping("/recebido")
+  public ModelAndView recebido() {
+    if (!UsuarioUtil.isLogged(request)) {
+      return new ModelAndView("redirect:/login");
+    }
+    List<Pagamento> pagamentos = pagamentoService.getList();
+    Collections.reverse(pagamentos);
+    ModelAndView view = new ModelAndView("pagamento/recebido");
+    view.addObject("pagamentosList", pagamentos);
+    return view;
+  }
 
-	@GetMapping("/identificar/{idPagamento}")
-	public void identificar(@PathVariable(name = "idPagamento") Long idPagamento) {
-		assinaturaService.identificarPagamento(idPagamento);
-	}
+  @GetMapping("/identificar/{idPagamento}")
+  public void identificar(@PathVariable(name = "idPagamento") Long idPagamento) {
+    System.out.println("Identificando pagamento");
+    assinaturaService.identificarPagamento(idPagamento);
+  }
+  
+  public void associar(Long idPagamento, String assinatura) {
+    
+  }
 
 }

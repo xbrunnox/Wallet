@@ -21,6 +21,8 @@ public class PosicaoResponse {
 	private String corretora;
 	
 	private String servidor;
+	
+	private String expert;
 
 	private BigDecimal volume;
 	private String direcao;
