@@ -1,0 +1,426 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
+<link rel="stylesheet" href="/css/bootstrap.css">
+<title>Backtest - Versatil IA</title>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+</head>
+<style>
+.fonte-tabela {
+	font-weight: 600;
+	font-size: 80%;
+}
+</style>
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<a class="navbar-brand" th:href="${'/backtest/'+backtest.id}"> <img src="/vst-ia.png"
+			height="30" class="d-inline-block align-top" alt=""> <span
+			style="font-weight: 600" th:text="${'&nbsp;&nbsp;'+backtest.descricao}">&nbsp;&nbsp;Backtest</span>
+		</a>
+	</nav>
+	<br>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="row" th:each="dia : ${dias}">
+					<div class="col-12">
+						<figure class="highcharts-figure">
+							<div th:id="@{'div-back-1-' + ${dia.data}}"></div>
+						</figure>
+					</div>
+					<div class="col-12" align="right">
+						Resultado:&nbsp;<strong><span th:text="${dia.resultado}"></span></strong>
+					</div>
+					<br> <br> <br>
+					<div class="col-12" align="right">
+						<hr>
+					</div>
+				</div>
+				<!--  div class="row">
+					<div class="col-12">
+						<figure class="highcharts-figure">
+							<div th:id="div-resultado-1"></div>
+						</figure>
+					</div>
+					<div class="col-12" align="right">
+						Resultado Acumulado:&nbsp;<strong><span
+							th:text="${resultado1}"></span></strong>
+					</div>
+				</div-->
+			</div>
+		</div>
+		<br> <br> <br>
+	</div>
+</body>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+<script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/versatil.js"></script>
+<script th:inline="javascript">
+	var acumuladoDias = /*[[${dias}]]*/[];
+	
+	console.log(acumuladoDias);
+
+	montarGrafico("div-back-1-", acumuladoDias);
+	/*montarGrafico("div-back-2-", acumuladoMeses2);
+	montarResultado("div-resultado-1", acumuladoMeses);
+	montarResultado("div-resultado-2", acumuladoMeses2);
+	*/
+
+	function montarGrafico(divGrafico, acumulados) {
+
+		$.each(acumulados, function(index, acumuladoDia) {
+			var categorias = [];
+			var valores = [];
+			var resultadoDia = [];
+			$.each(acumuladoDia.operacoes, function(index, operacao) {
+				categorias.push(extractHourMinutesFromOffsetDate(operacao.dataHoraEntrada));
+				valores.push(operacao.acumulado);
+				resultadoDia.push(operacao.lucro);
+			});
+			var serie = {};
+			serie.type = 'spline';
+			serie.data = valores;
+			serie.name = "Acumulado";
+			var serie2 = {};
+			serie2.type = 'column';
+			serie2.data = resultadoDia;
+			serie2.name = "Resultado";
+			serie2.color = '#336600';
+			serie2.negativeColor = '#FF0000';
+			var series = [];
+			series.push(serie2);
+			series.push(serie);
+			console.log(serie);
+
+			var chartUsuarios = Highcharts.chart(divGrafico + acumuladoDia.data, {
+
+				chart : {
+					type : 'area'
+				},
+
+				title : {
+					text : acumuladoDia.data,
+					align : 'left'
+				},
+
+				subtitle : {
+					text : 'Versátil IA - ' + acumuladoDia.data,
+					align : 'left'
+				},
+
+				yAxis : {
+					title : {
+						text : ''
+					},
+					plotLines : [ {
+						color : '#000000',
+						width : 1,
+						value : 0,
+						zIndex : 2
+					} ]
+				},
+
+				xAxis : {
+					categories : categorias
+				},
+
+				plotOptions : {
+					area : {
+						marker : {
+							enabled : false,
+							symbol : 'circle',
+							radius : 4,
+							states : {
+								hover : {
+									enabled : true
+								}
+							}
+						}
+					}
+				},
+
+				/**legend : {
+					layout : 'vertical',
+					align : 'right',
+					verticalAlign : 'middle'
+				},*/
+				series : series,
+
+				responsive : {
+					rules : [ {
+						condition : {
+							maxWidth : 500
+						},
+						chartOptions : {
+							legend : {
+								layout : 'horizontal',
+								align : 'center',
+								verticalAlign : 'bottom'
+							}
+						}
+					} ]
+				}
+
+			});
+		});
+
+	}
+
+	function montarGraficoOld(divGrafico, acumulados) {
+
+		$.each(acumulados, function(index, acumuladoMes) {
+			var categorias = [];
+			var valores = [];
+			$.each(acumuladoMes.dias, function(index, acumuladoDia) {
+				categorias.push(acumuladoDia.data.substring(8, 10));
+				valores.push(acumuladoDia.acumulado);
+			});
+			var serie = {};
+			serie.data = valores;
+			serie.name = "Saldo";
+			var series = [];
+			series.push(serie);
+			console.log(serie);
+
+			var chartUsuarios = Highcharts.chart(divGrafico + acumuladoMes.ano
+					+ '' + acumuladoMes.mes, {
+
+				chart : {
+					type : 'area'
+				},
+
+				title : {
+					text : getMes(acumuladoMes.mes) + '/' + acumuladoMes.ano,
+					align : 'left'
+				},
+
+				subtitle : {
+					text : 'Versátil IA - ' + acumuladoMes.descricao,
+					align : 'left'
+				},
+
+				yAxis : {
+					title : {
+						text : ''
+					}
+				},
+
+				xAxis : {
+					categories : categorias
+				},
+
+				plotOptions : {
+					area : {
+						marker : {
+							enabled : false,
+							symbol : 'circle',
+							radius : 1,
+							states : {
+								hover : {
+									enabled : true
+								}
+							}
+						}
+					}
+				},
+
+				/**legend : {
+					layout : 'vertical',
+					align : 'right',
+					verticalAlign : 'middle'
+				},*/
+				series : series,
+
+				responsive : {
+					rules : [ {
+						condition : {
+							maxWidth : 500
+						},
+						chartOptions : {
+							legend : {
+								layout : 'horizontal',
+								align : 'center',
+								verticalAlign : 'bottom'
+							}
+						}
+					} ]
+				}
+
+			});
+		});
+
+	}
+
+	function montarResultado(divGrafico, acumulados) {
+		var categorias = [];
+		var valores = [];
+
+		var serie = {};
+		serie.data = valores;
+		serie.name = "Resultado";
+
+		var series = [];
+		series.push(serie);
+		console.log(serie);
+
+		$.each(acumulados, function(index, acumuladoMes) {
+			$.each(acumuladoMes.dias, function(index, acumuladoDia) {
+				categorias.push(acumuladoDia.data.substring(8, 10) + '-'
+						+ acumuladoDia.data.substring(5, 7));
+				valores.push(acumuladoDia.acumuladoGeral);
+			});
+		});
+
+		var chartUsuarios = Highcharts.chart(divGrafico, {
+			chart : {
+				type : 'area'
+			},
+
+			title : {
+				text : 'Resultado',
+				align : 'left'
+			},
+
+			subtitle : {
+				text : 'Versátil IA',
+				align : 'left'
+			},
+
+			yAxis : {
+				title : {
+					text : ''
+				}
+			},
+
+			xAxis : {
+				categories : categorias
+			},
+
+			plotOptions : {
+				area : {
+					marker : {
+						enabled : false,
+						symbol : 'circle',
+						radius : 4,
+						states : {
+							hover : {
+								enabled : true
+							}
+						}
+					}
+				}
+			},
+
+			series : series,
+
+			responsive : {
+				rules : [ {
+					condition : {
+						maxWidth : 500
+					},
+					chartOptions : {
+						legend : {
+							layout : 'horizontal',
+							align : 'center',
+							verticalAlign : 'bottom'
+						}
+					}
+				} ]
+			}
+
+		});
+
+	}
+
+	var monitorResumo = {
+		corretoras : []
+	};
+
+	function getMes(mes) {
+		if (mes == 1) {
+			return "Janeiro";
+		} else if (mes == 2) {
+			return "Fevereiro";
+		} else if (mes == 3) {
+			return "Março";
+		} else if (mes == 4) {
+			return "Abril";
+		} else if (mes == 5) {
+			return "Maio";
+		} else if (mes == 6) {
+			return "Junho";
+		} else if (mes == 7) {
+			return "Julho";
+		} else if (mes == 8) {
+			return "Agosto";
+		} else if (mes == 9) {
+			return "Setembro";
+		} else if (mes == 10) {
+			return "Outubro";
+		} else if (mes == 11) {
+			return "Novembro";
+		} else if (mes == 12) {
+			return "Dezembro";
+		}
+	}
+
+	//console.log(monitor);
+
+	function formatarNumero(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR'); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits : 2,
+			maximumFractionDigits : 2
+		}); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero, casasDecimais) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits : casasDecimais,
+			maximumFractionDigits : casasDecimais
+		}); // "9.876.543,21"
+	}
+
+	// Radialize the colors
+	Highcharts.setOptions({
+		colors : Highcharts.map(Highcharts.getOptions().colors,
+				function(color) {
+					return {
+						radialGradient : {
+							cx : 0.5,
+							cy : 0.3,
+							r : 0.7
+						},
+						stops : [
+								[ 0, color ],
+								[
+										1,
+										Highcharts.color(color).brighten(-0.3)
+												.get('rgb') ] // darken
+						]
+					};
+				})
+	});
+</script>
+</html>

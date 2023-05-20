@@ -1,0 +1,126 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+<link rel="stylesheet" href="/css/bootstrap.css">
+<title>Dashboard - Versatil IA</title>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+</head>
+<style>
+.fonte-tabela {
+	font-weight: 600;
+	font-size: 80%;
+}
+</style>
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
+			height="30" class="d-inline-block align-top" alt=""> <span
+			style="font-weight: 600">&nbsp;&nbsp;Dashboard</span>
+		</a>
+	</nav>
+	<br>
+	<div class="container">
+		<div class="row">
+			<div class="col-6 col-sm-4 col-md-3">
+				<div class="card mb-3" style="background-color: darkslategrey;">
+					<div class="card-body text-white">
+						<h6 class="card-title">Delta</h6>
+						<p class="card-text"
+							th:text="${#numbers.formatDecimal(dashboardDelta.delta, 1, 'POINT', 0, 'COMMA')}"
+							style="text-align: right;"></p>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-sm-4 col-md-3">
+				<div class="card mb-3" style="background-color: green;">
+					<div class="card-body text-white">
+						<h6 class="card-title">Delta Inferior</h6>
+						<p class="card-text"
+							th:text="${#numbers.formatDecimal(dashboardDelta.deltaInferior, 1, 'POINT', 0, 'COMMA')}"
+							style="text-align: right;"></p>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-sm-4 col-md-3">
+				<div class="card mb-3" style="background-color: lightseagreen;">
+					<div class="card-body text-white">
+						<h6 class="card-title">Delta Superior</h6>
+						<p class="card-text"
+							th:text="${#numbers.formatDecimal(dashboardDelta.deltaSuperior, 1, 'POINT', 0, 'COMMA')}"
+							style="text-align: right;"></p>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6 col-sm-4 col-md-3">
+				<div class="card mb-3" style="background-color: darkslateblue;">
+					<div class="card-body text-white">
+						<h6 class="card-title">Amplitude Média</h6>
+						<p class="card-text"
+							th:text="${#numbers.formatDecimal(dashboardDelta.amplitudeMedia, 1, 'POINT', 0, 'COMMA')}"
+							style="text-align: right;"></p>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-sm-4 col-md-3">
+				<div class="card mb-3" style="background-color: cornflowerblue;">
+					<div class="card-body text-white">
+						<h6 class="card-title">Amplitude Máxima</h6>
+						<p class="card-text"
+							th:text="${#numbers.formatDecimal(dashboardDelta.amplitudeMaxima, 1, 'POINT', 0, 'COMMA')}"
+							style="text-align: right;"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-12">
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th class="fonte-tabela">Data</th>
+							<th class="fonte-tabela">Abertura<br> <small><b>Fechamento</b></small></th>
+							<th class="fonte-tabela">VWAP<br> <small><b>Inferior</b></small></th>
+							<th class="fonte-tabela">VWAP<br> <small><b>Superior</b></small></th>
+							<th class="fonte-tabela">Amplitude</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="deltaDia : ${dashboardDelta.deltas}">
+							<td th:text="${#temporals.format(deltaDia.data, 'dd/MM')}"
+								class="fonte-tabela"></td>
+							<td align="right" class="fonte-tabela"><span
+								th:text="${#numbers.formatDecimal(deltaDia.abertura, 1, 'POINT', 0, 'COMMA')}"></span><br>
+								<small
+								th:text="${#numbers.formatDecimal(deltaDia.fechamento, 1, 'POINT', 0, 'COMMA')}"></small></td>
+							<td align="right" class="fonte-tabela"><span
+								th:text="${#numbers.formatDecimal(deltaDia.vwapInferior, 1, 'POINT', 0, 'COMMA')}"></span><br>
+								<small
+								th:text="${#temporals.format(deltaDia.dataVwapInferior, 'HH:mm')}"></small>
+							</td>
+							<td align="right" class="fonte-tabela"><span
+								th:text="${#numbers.formatDecimal(deltaDia.vwapSuperior, 1, 'POINT', 0, 'COMMA')}"></span><br>
+								<small
+								th:text="${#temporals.format(deltaDia.dataVwapSuperior, 'HH:mm')}"></small></td>
+							<td
+								th:text="${#numbers.formatDecimal(deltaDia.amplitude, 1, 'POINT', 0, 'COMMA')}"
+								align="right" class="fonte-tabela"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+<script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</html>

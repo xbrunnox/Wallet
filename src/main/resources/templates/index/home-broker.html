@@ -89,7 +89,7 @@
 								&nbsp;
 								<button class="btn btn-primary" onclick="javascript:vender();">Vender</button>
 								&nbsp;
-								<button class="btn btn-danger" onclick="javascript:vender();">Zerar</button>
+								<button class="btn btn-danger" onclick="javascript:zerar();">Zerar</button>
 							</div>
 						</div>
 					</div>
@@ -107,7 +107,7 @@
 								<strong>Automação:</strong>
 							</div>
 							<div class="col-6 col-sm-2" align="right">
-								<select class="form-control">
+								<select class="form-control" th:id="'expert'+${homeBroker.id}">
 									<option th:each="automacao : ${automacaoList}"
 										th:value="${automacao.id}" th:text="${automacao.id}"
 										th:selected="${automacao.id == homeBroker.automacao}"></option>
@@ -117,13 +117,14 @@
 								<strong>Ativo:</strong>
 							</div>
 							<div class="col-6 col-sm-2">
-								<input class="form-control" th:value="${homeBroker.ativo}">
+								<input class="form-control" th:value="${homeBroker.ativo}"
+									th:id="'ativo'+${homeBroker.id}">
 							</div>
 							<div class="col-6 col-sm-2" align="right">
 								<strong>Conta:</strong>
 							</div>
 							<div class="col-6 col-sm-2">
-								<input class="form-control">
+								<input class="form-control" th:id="'conta'+${homeBroker.id}">
 							</div>
 						</div>
 						<div class="row">
@@ -131,19 +132,21 @@
 								<strong>Volume:</strong>
 							</div>
 							<div class="col-6 col-sm-2">
-								<input class="form-control" value="1">
+								<input class="form-control" value="1"
+									th:id="'volume'+${homeBroker.id}">
 							</div>
 							<div class="col-6 col-sm-2" align="right">
 								<strong>Stop Loss:</strong>
 							</div>
 							<div class="col-6 col-sm-2" align="right">
-								<input class="form-control">
+								<input class="form-control" th:id="'stopLoss'+${homeBroker.id}">
 							</div>
 							<div class="col-6 col-sm-2" align="right">
 								<strong>Take Profit:</strong>
 							</div>
 							<div class="col-6 col-sm-2" align="right">
-								<input class="form-control">
+								<input class="form-control"
+									th:id="'takeProfit'+${homeBroker.id}">
 							</div>
 						</div>
 						<div class="row">
@@ -151,7 +154,7 @@
 								<strong>Tipo:</strong>
 							</div>
 							<div class="col-6 col-sm-2">
-								<select class="form-control">
+								<select class="form-control" th:id="'tipo'+${homeBroker.id}">
 									<option>ENTRADA</option>
 									<option>SAIDA</option>
 								</select>
@@ -160,9 +163,11 @@
 						<hr>
 						<div class="row">
 							<div class="col-12" align="right">
-								<button class="btn btn-primary">Comprar</button>
+								<button class="btn btn-success" th:onclick="'javascript:comprar('+${homeBroker.id}+');'">Comprar</button>
 								&nbsp;
-								<button class="btn btn-danger">Vender</button>
+								<button class="btn btn-primary" th:onclick="'javascript:vender('+${homeBroker.id}+');'">Vender</button>
+								&nbsp;
+								<button class="btn btn-danger" th:onclick="'javascript:zerar('+${homeBroker.id}+');'">Zerar</button>
 							</div>
 						</div>
 					</div>
@@ -178,17 +183,19 @@
 <script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-	function comprar() {
+	function comprar(home) {
+		var idHome = (home == 0 ? '': home);
 		var marketOrder = {};
-		marketOrder.conta = $('#conta').val();
-		marketOrder.ativo = $('#ativo').val();
-		marketOrder.expert = $('#expert').val();
+		marketOrder.conta = $('#conta'+idHome).val();
+		marketOrder.ativo = $('#ativo'+idHome).val();
+		marketOrder.expert = $('#expert'+idHome).val();
 		marketOrder.direcao = 'BUY';
-		marketOrder.volume = $('#volume').val();
-		marketOrder.tipo = $('#tipo').val();
-		marketOrder.stopLoss = $('#stopLoss').val();
-		marketOrder.takeProfit = $('#takeProfit').val();
-		console.log('Stop Loss: '+$('#stopLoss').val());
+		marketOrder.volume = $('#volume'+idHome).val();
+		marketOrder.tipo = $('#tipo'+idHome).val();
+		marketOrder.stopLoss = $('#stopLoss'+idHome).val();
+		marketOrder.takeProfit = $('#takeProfit'+idHome).val();
+		
+		console.log(marketOrder);
 		$.ajax({
 			url : "/metatrader/order/market",
 			type : "POST",
@@ -207,16 +214,20 @@
 		});
 	}
 
-	function vender() {
+	function vender(home) {
+		var idHome = (home == 0 ? '': home);
 		var marketOrder = {};
-		marketOrder.conta = $('#conta').val();
-		marketOrder.ativo = $('#ativo').val();
-		marketOrder.expert = $('#expert').val();
+		marketOrder.conta = $('#conta'+idHome).val();
+		marketOrder.ativo = $('#ativo'+idHome).val();
+		marketOrder.expert = $('#expert'+idHome).val();
 		marketOrder.direcao = 'SELL';
-		marketOrder.volume = $('#volume').val();
-		marketOrder.tipo = $('#tipo').val();
-		marketOrder.stopLoss = $('#stopLoss').val();
-		marketOrder.takeProfit = $('#takeProfit').val();
+		marketOrder.volume = $('#volume'+idHome).val();
+		marketOrder.tipo = $('#tipo'+idHome).val();
+		marketOrder.stopLoss = $('#stopLoss'+idHome).val();
+		marketOrder.takeProfit = $('#takeProfit'+idHome).val();
+		
+		console.log(marketOrder);
+		
 		$.ajax({
 			url : "/metatrader/order/market",
 			type : "POST",

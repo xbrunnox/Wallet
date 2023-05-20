@@ -6,10 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.AssinaturaExpert;
 import br.app.grid.wallet.assinatura.AssinaturaExpertsResponse;
@@ -22,6 +21,7 @@ import br.app.grid.wallet.assinatura.repository.AssinaturaRepository;
 import br.app.grid.wallet.assinatura.view.AssinaturaAtivaView;
 import br.app.grid.wallet.assinatura.view.AssinaturaPendenciaView;
 import br.app.grid.wallet.assinatura.view.AssinaturaView;
+import br.app.grid.wallet.exception.BusinessException;
 import br.app.grid.wallet.licenca.Conta;
 import br.app.grid.wallet.licenca.ContaRepository;
 import br.app.grid.wallet.pagamento.Pagamento;
@@ -36,6 +36,10 @@ import br.app.grid.wallet.servidor.ServidorAlocacao;
 import br.app.grid.wallet.servidor.ServidorRepository;
 import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.repository.TradeRepository;
+import br.app.grid.wallet.web.request.AlterarEmailRequest;
+import br.app.grid.wallet.web.request.AlterarVencimentoRequest;
+import br.app.grid.wallet.web.request.AssociarTratarPagamentoRequest;
+import br.app.grid.wallet.web.request.ExcluirAssinaturaPagamentoRequest;
 
 @Service
 public class AssinaturaService {
@@ -266,11 +270,12 @@ public class AssinaturaService {
       if (produto != null) {
         if (produto.getTipo() == ProdutoTipo.ASSINATURA_MENSAL) {
           List<Assinatura> assinaturas =
-              assinaturaRepository.getListByEmail(pagamento.getEmail().toLowerCase());
+              assinaturaRepository.getListHabilitadasByEmail(pagamento.getEmail().toLowerCase());
           Assinatura assinatura = null;
           for (Assinatura ass : assinaturas) {
-            if (assinatura == null
-                || ass.getDataVencimento().compareTo(assinatura.getDataVencimento()) > 0) {
+            if ((assinatura == null
+                || ass.getDataVencimento().compareTo(assinatura.getDataVencimento()) < 0)
+                && ass.getAssinaturaPrincipal() == null) {
               assinatura = ass;
             }
           }
@@ -367,5 +372,180 @@ public class AssinaturaService {
 
   public List<Assinatura> getListSubContas(Integer idAssinatura) {
     return assinaturaRepository.getListSubContas(idAssinatura);
+  }
+
+  /**
+   * Realiza a associação e tratamento do pagamento na assinatura indicada.
+   * 
+   * @param associarRequest Requisição de associação.
+   * @return Pagamento que representa a associação.
+   */
+  public AssinaturaPagamento associarTratarPagamento(
+      AssociarTratarPagamentoRequest associarRequest) {
+    AssinaturaPagamento retorno = null;
+    Pagamento pagamento = pagamentoRepository.get(associarRequest.getIdPagamento());
+    if (pagamento != null) {
+      if (pagamento.isAssociado()) {
+        throw new BusinessException("Este pagamento já está associado.");
+      }
+      Produto produto = produtoService.getByNome(pagamento.getProduto());
+      if (produto != null) {
+        if (produto.getTipo() == ProdutoTipo.ASSINATURA_MENSAL
+            || produto.getTipo() == ProdutoTipo.ADESAO) {
+          Assinatura assinatura = assinaturaRepository.get(associarRequest.getIdAssinatura());
+
+          if (assinatura != null) {
+            AssinaturaPagamento assPagamento = AssinaturaPagamento.builder().assinatura(assinatura)
+                .dataDeCadastro(LocalDateTime.now()).pagamento(pagamento).build();
+            assinaturaPagamentoRepository.save(assPagamento);
+            retorno = assPagamento;
+            pagamento.setAssociado(true);
+            pagamentoRepository.save(pagamento);
+            if (!associarRequest.getApenasAssociar()
+                && produto.getTipo() == ProdutoTipo.ASSINATURA_MENSAL) {
+              if (assinatura.getDataVencimento()
+                  .compareTo(pagamento.getDataAtualizacao().toLocalDate()) > 0) {
+                assinatura.setDataVencimento(assinatura.getDataVencimento().plusMonths(1));
+              } else {
+                assinatura
+                    .setDataVencimento(pagamento.getDataAtualizacao().toLocalDate().plusMonths(1));
+              }
+              assinatura.setTelefone(pagamento.getTelefone());
+              assinatura.setDocumentoPagamento(pagamento.getCpf());
+              assinatura.setEmailPagamento(pagamento.getEmail());
+            }
+            assinaturaRepository.save(assinatura);
+            System.out.println("Pagamento identificado.[" + associarRequest.getIdPagamento()
+                + "] Assinatura encontrada. [" + assinatura.getConta().getId() + "]");
+
+            if (!associarRequest.getApenasAssociar()) {
+              // Atualizando subcontas
+              List<Assinatura> assinaturaSubContas = getListSubContas(assinatura.getId());
+              if (!Objects.isNull(assinaturaSubContas)) {
+                for (Assinatura subAssinatura : assinaturaSubContas) {
+                  subAssinatura.setDataVencimento(assinatura.getDataVencimento());
+                  subAssinatura.setTelefone(pagamento.getTelefone());
+                  subAssinatura.setDocumentoPagamento(pagamento.getCpf());
+                  subAssinatura.setEmailPagamento(pagamento.getEmail());
+                  assinaturaRepository.save(subAssinatura);
+                }
+              }
+            }
+          } else {
+            throw new BusinessException(
+                "Assinatura não encontrada. (" + associarRequest.getIdAssinatura() + ")");
+          }
+        }
+      } else {
+        throw new BusinessException("Produto não encontrado. (" + pagamento.getProduto() + ")");
+      }
+    }
+    return retorno;
+  }
+
+  /**
+   * Realiza a alteração da data de vencimento da assinatura e suas sub contas.
+   * 
+   * @param alterarVencimentoRequest Request para alteração de assintura.
+   */
+  public void alterarVencimento(AlterarVencimentoRequest alterarVencimentoRequest) {
+    if (Objects.isNull(alterarVencimentoRequest.getNovoVencimento())) {
+      throw new BusinessException("Novo vencimento é obrigatório.");
+    }
+    if (Strings.isEmpty(alterarVencimentoRequest.getMotivo())) {
+      throw new BusinessException("Obrigatório informar o motivo.");
+    }
+
+    Assinatura assinatura = assinaturaRepository.get(alterarVencimentoRequest.getIdAssinatura());
+    if (Objects.isNull(assinatura)) {
+      throw new BusinessException(
+          "Assinatura não encontrada. (" + alterarVencimentoRequest.getIdAssinatura() + ")");
+    }
+
+    assinatura.setDataVencimento(alterarVencimentoRequest.getNovoVencimento());
+    assinaturaRepository.save(assinatura);
+
+    // Alteração da data de vencimento de subcontas.
+    List<Assinatura> assinaturaSubContas = getListSubContas(assinatura.getId());
+    if (!Objects.isNull(assinaturaSubContas)) {
+      for (Assinatura subAssinatura : assinaturaSubContas) {
+        subAssinatura.setDataVencimento(assinatura.getDataVencimento());
+        assinaturaRepository.save(subAssinatura);
+      }
+    }
+  }
+
+  /**
+   * Realiza a alteração do email da assinatura.
+   * 
+   * @param alterarEmailRequest Request para alteração de email.
+   */
+  public void alterarEmail(AlterarEmailRequest alterarEmailRequest) {
+    Assinatura assinatura = assinaturaRepository.get(alterarEmailRequest.getIdAssinatura());
+    if (Objects.isNull(alterarEmailRequest.getNovoEmail())) {
+      throw new BusinessException("Novo email não informado.");
+    }
+    if (Objects.isNull(assinatura)) {
+      throw new BusinessException(
+          "Assinatura não encontrada. (" + alterarEmailRequest.getIdAssinatura() + ")");
+    }
+    assinatura.setEmailPagamento(alterarEmailRequest.getNovoEmail().trim().toLowerCase());
+    assinaturaRepository.save(assinatura);
+  }
+
+  /**
+   * Retorna o pagamento com o ID indicado.
+   * 
+   * @param idPagamento ID do pagamento.
+   * @return Pagamento com o ID indicado.
+   */
+  public AssinaturaPagamento getPagamento(Integer idPagamento) {
+    if (Objects.isNull(idPagamento))
+      throw new BusinessException("ID do pagamento não informado.");
+    return assinaturaPagamentoRepository.getById(idPagamento);
+  }
+
+  /**
+   * Realiza a exclusão do pagamento indicado.
+   * 
+   * @param excluirPagamentoRequest Request para exclusão de pagamento.
+   */
+  public void excluirPagamento(ExcluirAssinaturaPagamentoRequest excluirPagamentoRequest) {
+    if (Objects.isNull(excluirPagamentoRequest))
+      throw new BusinessException("Request de excluir pagamento vazia.");
+    if (Objects.isNull(excluirPagamentoRequest.getId()))
+      throw new BusinessException("ID do pagamento não informado.");
+    if (Objects.isNull(excluirPagamentoRequest.getIdAssinatura()))
+      throw new BusinessException("ID da assinatura não informado.");
+
+    AssinaturaPagamento assinaturaPagamento =
+        assinaturaPagamentoRepository.getById(excluirPagamentoRequest.getId());
+    if (Objects.isNull(assinaturaPagamento)) {
+      throw new BusinessException("Pagamento não encontrado.");
+    }
+
+    if (!excluirPagamentoRequest.getIdAssinatura()
+        .equals(assinaturaPagamento.getAssinatura().getId())) {
+      throw new BusinessException("O pagamento não corresponde a assinatura indicada.");
+    }
+
+    Pagamento pagamento = pagamentoRepository.get(assinaturaPagamento.getPagamento().getId());
+
+    Produto produto = produtoService.getByNome(pagamento.getProduto());
+    if (produto != null) {
+      // Produto identificado.
+      if (produto.getTipo() == ProdutoTipo.ASSINATURA_MENSAL) {
+        Assinatura assinatura =
+            assinaturaRepository.get(assinaturaPagamento.getAssinatura().getId());
+        assinatura.setDataVencimento(assinatura.getDataVencimento().minusMonths(1));
+        assinaturaRepository.save(assinatura);
+      }
+    } else {
+      // Tipo do produto não identificado.
+    }
+    pagamento.setAssociado(false);
+    pagamentoRepository.save(pagamento);
+
+    assinaturaPagamentoRepository.delete(assinaturaPagamento);
   }
 }

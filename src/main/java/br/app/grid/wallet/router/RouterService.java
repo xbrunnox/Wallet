@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.client.EndpointStatusResponse;
@@ -24,7 +22,9 @@ import br.app.grid.wallet.meta.EndpointPositions;
 import br.app.grid.wallet.meta.PosicaoMT;
 import br.app.grid.wallet.socket.DataConverter;
 import br.app.grid.wallet.util.Constantes;
+import br.app.grid.wallet.web.request.CandlesRequest;
 import br.app.grid.wallet.web.request.MarketOrderRequest;
+import br.app.grid.wallet.web.response.AtivoCandlesResponse;
 
 @Service
 public class RouterService {
@@ -130,4 +130,10 @@ public class RouterService {
 		restTemplate.postForObject(URI.create("http://router.versatil-ia.com.br:8066/order/market"), marketOrder,
 				String.class);
 	}
+	
+	public AtivoCandlesResponse  getCandles(CandlesRequest request) {
+	  AtivoCandlesResponse response = restTemplate.postForObject(URI.create(Constantes.ROUTER_CANDLES_REQUEST_URL), request,
+	      AtivoCandlesResponse.class);
+	  return response;
+  }
 }

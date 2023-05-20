@@ -24,8 +24,12 @@ import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.assinatura.view.AssinaturaAtivaView;
 import br.app.grid.wallet.assinatura.view.AssinaturaPendenciaView;
+import br.app.grid.wallet.backtest.Backtest;
+import br.app.grid.wallet.backtest.service.BacktestService;
+import br.app.grid.wallet.backtest.vo.BacktestOperacaoResultadoMesVO;
 import br.app.grid.wallet.client.ClienteUser;
 import br.app.grid.wallet.client.EndpointStatusResponse;
+import br.app.grid.wallet.dashboard.DashboardService;
 import br.app.grid.wallet.dividendo.Dividendo;
 import br.app.grid.wallet.dividendo.DividendoService;
 import br.app.grid.wallet.fii.FiiDividendo;
@@ -62,6 +66,12 @@ public class IndexController {
 
   @Autowired
   private AssinaturaService assinaturaService;
+
+  @Autowired
+  private BacktestService backtestService;
+
+  @Autowired
+  private DashboardService dashboardService;
 
   @Autowired
   private DividendoService dividendoService;
@@ -510,4 +520,59 @@ public class IndexController {
     view.addObject("homeBrokerList", homeBrokers);
     return view;
   }
+
+  /**
+   * Realiza a exibição dos backtests catalogados.
+   * 
+   * @return View dos backtests.
+   */
+  @GetMapping("/backtests")
+  public ModelAndView backtests() {
+    if (!UsuarioUtil.isLogged(request))
+      return new ModelAndView("redirect:/login");
+    List<Backtest> backtests = backtestService.getList();
+    ModelAndView view = new ModelAndView("index/backtests");
+    view.addObject("backtestList", backtests);
+    return view;
+  }
+
+
+
+  /**
+   * Realiza a exibição do backtest indicado.
+   * 
+   * @param id ID.
+   * @return Resumo do backtest por dia.
+   */
+  @GetMapping("/backtest/{idBacktest}")
+  public ModelAndView backtestGet(@PathVariable(name = "idBacktest") Integer idBacktest) {
+    if (!UsuarioUtil.isLogged(request))
+      return new ModelAndView("redirect:/login");
+    Backtest backtest = backtestService.get(idBacktest);
+    List<BacktestOperacaoResultadoMesVO> resultadosDias =
+        backtestService.getListResultadosMensais(idBacktest);
+    ModelAndView view = new ModelAndView("backtest/backtest");
+    view.addObject("resultadoList", resultadosDias);
+    view.addObject("backtest", backtest);
+    return view;
+  }
+
+  /**
+   * Realiza a exibição do dashboard.
+   * 
+   * @param id ID.
+   * @return Exibição do dashboard.
+   */
+  @GetMapping("/dashboard")
+  public ModelAndView dashboard() {
+    if (!UsuarioUtil.isLogged(request))
+      return new ModelAndView("redirect:/login");
+
+    ModelAndView view = new ModelAndView("index/dashboard");
+    view.addObject("dashboardDelta", dashboardService.getDashboardDelta());
+    return view;
+  }
+
+
+
 }

@@ -5,12 +5,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.view.AssinaturaView;
 
-@Repository
 public interface AssinaturaRepository extends CrudRepository<Assinatura, Integer> {
 
 	@Query("FROM Assinatura ass ORDER BY ass.conta.nome")
@@ -30,6 +28,9 @@ public interface AssinaturaRepository extends CrudRepository<Assinatura, Integer
 
 	@Query("FROM Assinatura ass WHERE ass.emailPagamento = :email")
 	public List<Assinatura> getListByEmail(String email);
+	
+	@Query("FROM Assinatura ass WHERE ass.emailPagamento = :email AND ass.desabilitada = false")
+    public List<Assinatura> getListHabilitadasByEmail(String email);
 
 	@Query("FROM Assinatura ass WHERE ass.dataVencimento >= :data")
 	public List<Assinatura> getList(LocalDate data);

@@ -19,6 +19,8 @@ import br.app.grid.wallet.backtest.Backtest;
 import br.app.grid.wallet.backtest.BacktestOperacao;
 import br.app.grid.wallet.backtest.repository.BacktestOperacaoRepository;
 import br.app.grid.wallet.backtest.repository.BacktestRepository;
+import br.app.grid.wallet.backtest.vo.BacktestOperacaoResultadoDiaVO;
+import br.app.grid.wallet.backtest.vo.BacktestOperacaoResultadoMesVO;
 
 @Service
 public class BacktestService {
@@ -98,12 +100,13 @@ public class BacktestService {
 				}
 				dados = linha.split("\t");
 				if (dados[4].equals("out")) {
+				    System.out.println("Lucro: "+dados[11]);
 					// Saída
 					LocalDateTime dataSaida = LocalDateTime.parse(dados[0], formatador);
 					BigDecimal precoSaida = BigDecimal
-							.valueOf(Double.parseDouble(dados[6].replace(" ", "").replace(",", ".")));
+							.valueOf(Double.parseDouble(dados[6].replace(" ", "").replace(",", ".").replace("--", "-")));
 					BigDecimal lucro = BigDecimal
-							.valueOf(Double.parseDouble(dados[10].replace(" ", "").replace(",", ".")));
+							.valueOf(Double.parseDouble(dados[11].replace(" ", "").replace(",", ".").replace("--", "-")));
 					Backtest backtest = get(idBacktest);
 
 					BacktestOperacao backOperacao = BacktestOperacao.builder().dataEntrada(dataEntrada).lucro(lucro)
@@ -126,5 +129,13 @@ public class BacktestService {
 	public List<Backtest> getList() {
 		return repository.getList();
 	}
+
+  public List<BacktestOperacaoResultadoDiaVO> getListResultadosDiarios(Integer idBacktest) {
+    return operacaoRepository.getListResultadosDiarios(idBacktest);
+  }
+
+  public List<BacktestOperacaoResultadoMesVO> getListResultadosMensais(Integer idBacktest) {
+    return operacaoRepository.getListResultadosMensais(idBacktest);
+  }
 
 }

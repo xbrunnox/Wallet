@@ -27,7 +27,7 @@ public class Assinatura {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 
 	@ManyToOne
 	@JoinColumn(name = "conta")
@@ -57,5 +57,6 @@ public class Assinatura {
 	
 	private String documentoPagamento;
 	
-
+	private boolean desabilitada;
+	
 }

@@ -25,13 +25,33 @@
 	<br>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-6"><label>Backtest</label></div>
-			<div class="col-3"><label>Volume</label></div>
+			<form method="POST" enctype="multipart/form-data" action="/backtest/upload">
+				<table>
+					<tr>
+						<td>File to upload:</td>
+						<td><input type="file" name="file" /></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="submit" value="Upload" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+
+		<div class="row">
+			<div class="col-6">
+				<label>Backtest</label>
+			</div>
+			<div class="col-3">
+				<label>Volume</label>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-6">
 				<select id="back1" class="form-control">
-					<option th:each="backtest : ${backtestList}" th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
+					<option th:each="backtest : ${backtestList}"
+						th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
 				</select>
 			</div>
 			<div class="col-3">
@@ -41,7 +61,8 @@
 		<div class="row">
 			<div class="col-6">
 				<select id="back2" class="form-control">
-					<option th:each="backtest : ${backtestList}" th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
+					<option th:each="backtest : ${backtestList}"
+						th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
 				</select>
 			</div>
 			<div class="col-3">

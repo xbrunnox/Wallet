@@ -10,5 +10,6 @@ public class Constantes {
 	public static final String ROUTER_ACCOUNT_INFO_URL = "http://router.versatil-ia.com.br:8066/account-info";
 	public static final String ROUTER_ACCOUNT_PAUSE_URL = "http://router.versatil-ia.com.br:8066/account-pause";
 	public static final String ROUTER_ACCOUNT_RESUME_URL = "http://router.versatil-ia.com.br:8066/account-resume";
+	public static final String ROUTER_CANDLES_REQUEST_URL = "http://router.versatil-ia.com.br:8066/candles";
 
 }

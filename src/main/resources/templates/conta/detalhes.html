@@ -6,6 +6,14 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
 <link rel="stylesheet" href="/css/bootstrap.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+	integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+	crossorigin="anonymous"></script>
 <!-- link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -69,8 +77,12 @@
 			<div class="col-2" align="right">
 				<label><strong>Venc.:</strong></label>
 			</div>
-			<div class="col-4"
-				th:text="${assinatura != null ? #temporals.format(assinatura.dataVencimento, 'dd/MM/yyyy'):''}"></div>
+			<div class="col-4">
+				<span
+					th:text="${assinatura != null ? #temporals.format(assinatura.dataVencimento, 'dd/MM/yyyy'):''}"></span>
+				&nbsp;<a href="javascript:alterarVencimentoModal();"><i
+					class="bi bi-pencil-square"></i></a>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-2" align="right">
@@ -88,8 +100,12 @@
 			<div class="col-2" align="right">
 				<label><strong>E-mail:</strong></label>
 			</div>
-			<div class="col-10"
-				th:text="${assinatura != null ? assinatura.emailPagamento : ''}"></div>
+			<div class="col-10">
+				<span
+					th:text="${assinatura != null ? assinatura.emailPagamento : ''}"></span>
+				&nbsp;<a href="javascript:alterarEmailModal();"><i
+					class="bi bi-pencil-square"></i></a>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-2" align="right">
@@ -169,6 +185,7 @@
 								<th>Nome</th>
 								<th style="text-align: right;">Email/Telefone</th>
 								<th style="text-align: right;">Valor</th>
+								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -189,6 +206,22 @@
 										th:text="${assinaturaPagamento.pagamento.telefone}"></span></small></td>
 								<td class="fonte-tabela" align="right"><span
 									th:text="${#numbers.formatDecimal(assinaturaPagamento.pagamento.valor, 1, 'POINT', 2, 'COMMA')}"></span></td>
+								<td>
+									<div class="btn-group">
+										<button type="button"
+											class="btn btn-sm btn-danger dropdown-toggle"
+											data-toggle="dropdown" aria-expanded="false">
+											<i class="bi bi-gear-fill"></i>
+										</button>
+										<div class="dropdown-menu">
+											<!-- Excluir Pagamento -->
+											<a class="dropdown-item"
+												th:href="@{'javascript:excluirPagamentoModal(' + ${assinaturaPagamento.id} +');'}">
+												Excluir </a>
+										</div>
+									</div>
+
+								</td>
 							</tr>
 							<tr>
 								<td colspan="4"><span class="fonte-tabela"
@@ -376,6 +409,10 @@
 						<div class="col-9">
 							<select class="form-control" id="selectAutomacoesAtivas">
 								<option value="SWING">SWING</option>
+								<option value="SWING">SWING2</option>
+								<option value="SWING">SWING3</option>
+								<option value="SWING">SWING4</option>
+								<option value="SWING">SWING5</option>
 							</select>
 						</div>
 					</div>
@@ -390,7 +427,191 @@
 			</div>
 		</div>
 	</div>
+	<!-- Modal Alterar Vencimento -->
+	<div class="modal fade" id="alterarVencimentoModal" tabindex="-1"
+		role="dialog" aria-labelledby="alterarVencimentoModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Alterar
+						Vencimento</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-3" align="right">
+							<label>Vencimento:</label>
+						</div>
+						<div class="col-4">
+							<input class="form-control" id="vencimentoAtual" disabled>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3" align="right">
+							<label>Novo Vencimento:</label>
+						</div>
+						<div class="col-4">
+							<div id="novoVencimentoDatePicker" class="input-group date"
+								data-date-format="dd/mm/yyyy">
+								<input id="novoVencimento" class="form-control" type="text"
+									readonly /> <span class="input-group-addon"> <i
+									class="glyphicon glyphicon-calendar"></i>
+								</span>
+							</div>
+							<!-- 
+							<input class="form-control" id="novoVencimento"> -->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3" align="right">
+							<label>Motivo:</label>
+						</div>
+						<div class="col-9">
+							<textarea class="form-control" id="motivoAlteracaoVencimento"
+								rows="3" cols=""></textarea>
+						</div>
+					</div>
+				</div>
 
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						onclick="javascript:alterarVencimento();">Gravar</button>
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Alterar Email -->
+	<div class="modal fade" id="alterarEmailModal" tabindex="-1"
+		role="dialog" aria-labelledby="alterarEmailModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Alterar E-mail</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-3" align="right">
+							<label>E-mail Atual:</label>
+						</div>
+						<div class="col-9">
+							<input class="form-control" id="emailAtual" disabled>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3" align="right">
+							<label>Novo E-mail:</label>
+						</div>
+						<div class="col-9">
+							<input id="novoEmail" class="form-control" type="text" />
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						onclick="javascript:alterarEmail();">Gravar</button>
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Excluir Pagamento -->
+	<div class="modal fade" id="excluirPagamentoModal" tabindex="-1"
+		role="dialog" aria-labelledby="excluirPagamentoModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="excluirPagamentoModalLabel">Excluir
+						Pagamento</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-3" align="right">
+							<label><strong>ID:</strong></label>
+						</div>
+						<div class="col-3">
+							<input class="form-control" id="idPagamentoExcluir" disabled>
+						</div>
+						<div class="col-3" align="right">
+							<label><strong>Valor:</strong></label>
+						</div>
+						<div class="col-3">
+							<input id="valorPagamentoExcluir" class="form-control"
+								type="text" style="text-align: right;"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3" align="right">
+							<label><strong>Nome:</strong></label>
+						</div>
+						<div class="col-9">
+							<input id="nomePagamentoExcluir" class="form-control" type="text" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3" align="right">
+							<label><strong>Produto:</strong></label>
+						</div>
+						<div class="col-9">
+							<input id="produtoPagamentoExcluir" class="form-control"
+								type="text" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3" align="right">
+							<label><strong>Plataforma:</strong></label>
+						</div>
+						<div class="col-3">
+							<input id="plataformaPagamentoExcluir" class="form-control"
+								type="text" />
+						</div>
+						<div class="col-2" align="right">
+							<label><strong>Data:</strong></label>
+						</div>
+						<div class="col-4">
+							<input id="dataPagamentoExcluir" class="form-control" type="text" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3" align="right">
+							<label><strong>Email:</strong></label>
+						</div>
+						<div class="col-9">
+							<input id="emailPagamentoExcluir" class="form-control"
+								type="text" />
+						</div>
+					</div>
+					<div class="row"></div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger"
+						onclick="javascript:excluirPagamento();">Excluir</button>
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 <script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
 <script type="text/javascript" src="/js/jquery.form.js"></script>
@@ -402,12 +623,147 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js">
+	
+</script>
 <!-- script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
 		crossorigin="anonymous"></script>
 <!-- script type="text/javascript" src="/js/bootstrap.min.js"></script-->
 <script>
+	function alterarVencimentoModal() {
+		$.ajax({
+			url : '/assinatura/get/' + $('#idAssinatura').val(),
+			success : function(assinatura) {
+				$('#vencimentoAtual').val(
+						assinatura.dataVencimento.split('-').reverse()
+								.join('/'));
+			}
+		});
+
+		$('#alterarVencimentoModal').modal({
+			show : true
+		});
+	}
+
+	function alterarEmailModal() {
+		$.ajax({
+			url : '/assinatura/get/' + $('#idAssinatura').val(),
+			success : function(assinatura) {
+				console.log(assinatura);
+				$('#emailAtual').val(assinatura.email);
+			}
+		});
+
+		$('#alterarEmailModal').modal({
+			show : true
+		});
+	}
+
+	function excluirPagamentoModal(idPagamento) {
+		console.log('Excluindo pagamento ' + idPagamento);
+		$.ajax({
+			url : '/assinatura/get-pagamento/' + idPagamento,
+			success : function(pagamento) {
+				console.log(pagamento);
+
+				$('#idPagamentoExcluir').val(pagamento.id);
+				$('#nomePagamentoExcluir').val(pagamento.nome);
+				$('#valorPagamentoExcluir').val(formatarDecimal(pagamento.valor, 2));
+				$('#plataformaPagamentoExcluir').val(pagamento.plataforma);
+				$('#emailPagamentoExcluir').val(pagamento.email);
+				$('#dataPagamentoExcluir').val(
+						parseISOLocal(pagamento.data).toLocaleString());
+				$('#produtoPagamentoExcluir').val(pagamento.produto);
+
+				$('#excluirPagamentoModal').modal({
+					show : true
+				});
+			}
+		});
+	}
+
+	function parseISOLocal(s) {
+		var b = s.split(/\D/);
+		return new Date(b[0], b[1] - 1, b[2], b[3], b[4], b[5]);
+	}
+
+	function excluirPagamento() {
+		var request = {};
+		request.id = $('#idPagamentoExcluir').val();
+		request.idAssinatura = $('#idAssinatura').val();
+
+		$.ajax({
+			url : "/assinatura/excluir-pagamento",
+			type : "POST",
+			data : JSON.stringify(request),
+			// dataType : "json",
+			contentType : "application/json; charset=utf-8",
+			success : function() {
+				location.reload(true);
+			}
+		}).fail(function(response) {
+			var error = JSON.parse(response.responseText);
+			console.log(error);
+			alert(error.message);
+		});
+	}
+
+	function alterarVencimento() {
+		var request = {};
+		request.dataVencimento = ($('#vencimentoAtual').val()).split('/')
+				.reverse().join('-');
+		request.novoVencimento = ($('#novoVencimento').val()).split('/')
+				.reverse().join('-');
+		request.idAssinatura = $('#idAssinatura').val();
+		request.motivo = $('#motivoAlteracaoVencimento').val();
+
+		console.log(request);
+
+		$.ajax({
+			url : "/assinatura/alterar-vencimento",
+			type : "POST",
+			data : JSON.stringify(request),
+			// dataType : "json",
+			contentType : "application/json; charset=utf-8",
+			success : function() {
+				location.reload(true);
+			}
+		}).fail(function(response) {
+			var error = JSON.parse(response.responseText);
+			console.log(error);
+			alert(error.message);
+		});
+
+	}
+
+	function alterarEmail() {
+		var request = {};
+		request.emailAtual = $('#emailAtual').val();
+		request.novoEmail = $('#novoEmail').val();
+		request.idAssinatura = $('#idAssinatura').val();
+
+		console.log(request);
+
+		$.ajax({
+			url : "/assinatura/alterar-email",
+			type : "POST",
+			data : JSON.stringify(request),
+			// dataType : "json",
+			contentType : "application/json; charset=utf-8",
+			success : function() {
+				location.reload(true);
+			}
+		}).fail(function(response) {
+			var error = JSON.parse(response.responseText);
+			console.log(error);
+			alert(error.message);
+		});
+
+	}
+
 	function adicionarSubConta() {
 		console.log('Exibindo modal de subcontas')
 		$.ajax({
@@ -430,7 +786,7 @@
 					$("#selectAutomacoesAtivas").append(
 							'<option value=' + automacao.id + '>'
 									+ automacao.id + '</option>');
-					*/
+					 */
 				})
 			}
 		});
@@ -558,6 +914,14 @@
 			} ]
 		}
 
+	});
+</script>
+<script>
+	$(function() {
+		$("#novoVencimentoDatePicker").datepicker({
+			autoclose : true,
+			todayHighlight : true,
+		}).datepicker('update', new Date());
 	});
 </script>
 </html>

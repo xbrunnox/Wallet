@@ -68,7 +68,7 @@
 	<!-- Modal -->
 	<div class="modal fade" id="associarPagamentoModal" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
+		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">Associar
@@ -80,35 +80,47 @@
 				</div>
 				<div class="modal-body">
 					<div class="row">
-						<div class="col-2">
+						<div class="col-3" align="right">
 							<label>ID:</label>
 						</div>
-						<div class="col-5">
+						<div class="col-4">
 							<input class="form-control" id="idPagamento">
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-2">
+						<div class="col-3" align="right">
 							<label>Nome:</label>
 						</div>
-						<div class="col-10">
+						<div class="col-9">
 							<input class="form-control" id="nomePagamento">
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-2">
+						<div class="col-3" align="right">
 							<label>Valor:</label>
 						</div>
-						<div class="col-10">
+						<div class="col-4">
 							<input class="form-control" id="valorPagamento">
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-2">
+						<div class="col-3" align="right">
 							<label>Assinatura:</label>
 						</div>
-						<div class="col-10">
+						<div class="col-9">
 							<select class="form-control" id="assinaturaSelect"></select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3" align="right">&nbsp;</div>
+						<div class="col-5">
+							<div class="custom-control custom-checkbox">
+								<input class="custom-control-input" type="checkbox"
+									id="apenasAssociarCheck"> <label
+									class="custom-control-label" for="apenasAssociarCheck">Apenas
+									associar</label>
+							</div>
+
 						</div>
 					</div>
 				</div>
@@ -137,7 +149,7 @@
 			success : function(pagamento) {
 				console.log(pagamento);
 				$('#idPagamento').val(pagamento.id);
-				$('#valorPagamento').val(pagamento.valor);
+				$('#valorPagamento').val(formatarDecimal(pagamento.valor, 2));
 				$('#nomePagamento').val(pagamento.nome);
 
 				$.ajax({
@@ -148,7 +160,9 @@
 							$("#assinaturaSelect").append(
 									'<option value=' + assinatura.id + '>'
 											+ assinatura.conta + ' - '
-											+ assinatura.nome + '</option>');
+											+ assinatura.nome + ' - '
+											+ assinatura.dataVencimento
+											+ '</option>');
 						})
 					}
 				});
@@ -161,10 +175,31 @@
 	}
 
 	function associar() {
-		var idPagamento = $('#idPagamento').val();
-		var idAssinatura = $('#assinaturaSelect').val();
+		var requestAssociar = {};
 
-		console.log('Associando ' + idPagamento + ' para ' + idAssinatura);
+		requestAssociar.idPagamento = $('#idPagamento').val();
+		requestAssociar.idAssinatura = $('#assinaturaSelect').val();
+		requestAssociar.apenasAssociar = $('#apenasAssociarCheck').is(
+				":checked");
+
+		console.log('Associando ' + requestAssociar.idPagamento + ' para '
+				+ requestAssociar.idAssinatura);
+		console.log(requestAssociar);
+		$.ajax({
+			url : "/pagamento/associar-tratar",
+			type : "POST",
+			data : JSON.stringify(requestAssociar),
+			// dataType : "json",
+			contentType : "application/json; charset=utf-8",
+			success : function() {
+				alert('Associado com sucesso');
+				location.reload(true);
+			}
+		}).fail(function(response) {
+			var error = JSON.parse(response.responseText);
+			console.log(error);
+			alert(error.message);
+		});
 	}
 
 	function formatarNumero(numero) {

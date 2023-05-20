@@ -1,3 +1,25 @@
+CREATE VIEW backtest_operacao_resultado_mes_view 
+(id, ano, mes, resultado, operacoes)
+AS SELECT bo.id_backtest, YEAR(bo.data_saida), MONTH(bo.data_saida), SUM(lucro), count(*)
+FROM backtest_operacao bo
+GROUP BY YEAR(bo.data_saida), MONTH(bo.data_saida), id_backtest 
+ORDER BY YEAR(bo.data_saida), MONTH(bo.data_saida);
+
+
+CREATE VIEW backtest_operacao_resultado_dia_view 
+(id, data, resultado, operacoes)
+AS
+SELECT bo.id_backtest, DATE(bo.data_saida), SUM(lucro), count(*)
+FROM backtest_operacao bo
+GROUP BY DATE(bo.data_saida), id_backtest 
+ORDER BY DATE(bo.data_saida);
+
+DROP VIEW backtest_operacao_view;
+CREATE VIEW backtest_operacao_view (id, id_backtest, volume, direcao, data_entrada, data_hora_entrada, data_saida, data_hora_saida, duracao, preco_entrada, preco_saida, lucro)
+AS
+SELECT id, id_backtest, volume, direcao, DATE(data_entrada), data_entrada, DATE(data_saida), data_saida, duracao, preco_entrada, preco_saida, lucro
+FROM backtest_operacao bo ORDER BY data_entrada;
+
 DROP VIEW assinatura_expert_view ;
 CREATE VIEW assinatura_expert_view 
 (id, id_assinatura, conta, expert, ativo, volume, data_vencimento, ativado)
