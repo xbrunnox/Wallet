@@ -16,7 +16,7 @@ import br.app.grid.wallet.delta.repository.DeltaRepository;
  * @since 16 de janeiro de 2022.
  */
 @Service
-public class DeltaService {
+public class OldDeltaService {
 
 	@Autowired
 	private DeltaRepository repository;

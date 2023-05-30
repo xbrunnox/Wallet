@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.app.grid.wallet.delta.Delta;
 import br.app.grid.wallet.delta.DeltaResumo;
-import br.app.grid.wallet.delta.service.DeltaService;
+import br.app.grid.wallet.delta.service.OldDeltaService;
 
 @Controller
 @RequestMapping("/delta")
 public class DeltaController {
 
 	@Autowired
-	private DeltaService deltaService;
+	private OldDeltaService deltaService;
 
 	@PostMapping("/registrar")
 	public @ResponseBody Delta registrar(@RequestBody Delta delta) {

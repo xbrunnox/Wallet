@@ -24,6 +24,119 @@
 	<br>
 	<div class="container">
 		<div class="row">
+			<div class="col-12 col-sm-6">
+				<div class="card mb-3">
+					<div class="card-body">
+						<h6 class="card-title">Mini Índice: Delta</h6>
+						<div id="divGauge" align="center">
+							<canvas id="foo" height="150" width="300"></canvas>
+							<span id="gauge-value"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-sm-6">
+				<div class="card mb-3">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-6">
+								<span style="color: darkslategrey;">&bull;</span>Delta
+							</div>
+							<div class="col-6" align="right">
+								<span class="badge badge-secondary"
+									th:text="${#numbers.formatDecimal(dashboardDelta.delta, 1, 'POINT', 0, 'COMMA')}"
+									style="text-align: right; background-color: darkslategrey;"></span>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-6">
+								<span style="color: green;">&bull;</span>Delta Inferior
+							</div>
+							<div class="col-6" align="right">
+								<span class="badge badge-secondary"
+									th:text="${#numbers.formatDecimal(dashboardDelta.deltaInferior, 1, 'POINT', 0, 'COMMA')}"
+									style="text-align: right; background-color: green;"></span>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-6">
+								<span style="color: lightseagreen;">&bull;</span>Delta Superior
+							</div>
+							<div class="col-6" align="right">
+								<span class="badge badge-secondary"
+									th:text="${#numbers.formatDecimal(dashboardDelta.deltaSuperior, 1, 'POINT', 0, 'COMMA')}"
+									style="text-align: right; background-color: lightseagreen;"></span>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-6">
+								<span style="color: darkslateblue;">&bull;</span>Amplitude Média
+							</div>
+							<div class="col-6" align="right">
+								<span class="badge badge-secondary"
+									th:text="${#numbers.formatDecimal(dashboardDelta.amplitudeMedia, 1, 'POINT', 0, 'COMMA')}"
+									style="text-align: right; background-color: darkslateblue;"></span>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-6">
+								<span style="color: cornflowerblue;">&bull;</span>Amplitude
+								Máxima
+							</div>
+							<div class="col-6" align="right">
+								<span class="badge badge-secondary"
+									th:text="${#numbers.formatDecimal(dashboardDelta.amplitudeMaxima, 1, 'POINT', 0, 'COMMA')}"
+									style="text-align: right; background-color: cornflowerblue;"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 
+		<div class="row">
+			<div class="col-12 col-sm-6">
+				<div class="card mb-3">
+					<div class="card-body">
+						<h6 class="card-title">Calendário Econômico (25/05)</h6>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Hora</th>
+									<th>Evento</th>
+									<th>Relev.</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>9:30</td>
+									<td>PIB Americano</td>
+									<td><span class="badge badge-success">Alta</span></td>
+								</tr>
+								<tr>
+									<td>9:30</td>
+									<td>Pedidos Iniciais por Seguro Desemprego (EUA)</td>
+									<td><span class="badge badge-success">Alta</span></td>
+								</tr>
+							</tbody>
+
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		-->
+		<div class="row">
+			<div class="col-12">
+				<div id="idCanvas"></div>
+			</div>
+		</div>
+		<br> <br>
+		<div class="row">
 			<div class="col-6 col-sm-4 col-md-3">
 				<div class="card mb-3" style="background-color: darkslategrey;">
 					<div class="card-body text-white">
@@ -123,4 +236,697 @@
 <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
 <script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/versatil.js"></script>
+<script type="text/javascript" src="/js/gauge.js"></script>
+<script type="text/javascript">
+
+var dados = {}; 
+var atualizacao = null;
+var fonteTitulo = '26px verdana';
+var fonte = '20px sans-serif';
+var fonte14 = '14px sans-serif';
+var fonte12 = '12px sans-serif';
+var fonte10 = '10px sans-serif';
+/*
+dados.vwap = 111472.33;
+dados.preco = 111255.00,
+dados.inicioVendaDelta = 112301.93;
+dados.vendaDelta = 112509.33;
+dados.fimVendaDelta = 112716.73;
+dados.inicioCompraDelta = 110642.73;
+dados.compraDelta = 110435.73,
+dados.fimCompraDelta = 110227.93;
+*/
+
+var windowHeight = 600;
+var windowWidth = $('#idCanvas').width();
+
+
+
+function drawDelta() {
+	var screenWidth = screen.width;
+	var screenHeight = screen.height;
+	// var windowWidth = window.innerWidth;
+	//var windowHeight = window.innerHeight;
+	
+	var canvas = document.getElementById('tutorial');
+	
+	
+	
+	if (canvas.getContext) {
+		var ctx = canvas.getContext('2d');
+
+		var x = 10;
+		var y = 0;
+
+		
+		
+		
+		
+		
+
+		/* Fundo branco */
+		ctx.clearRect(0, 0, windowWidth, windowHeight);
+		ctx.font = fonteTitulo;
+		ctx.fillStyle = "rgba(245, 245, 245, 1)";
+		ctx.fillRect(0, 0, windowWidth, windowHeight);
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		
+		var borda = 10;
+		
+		var comprimento = windowWidth - 2 * borda;
+		
+		var minimo = (dados.preco < dados.fimCompraDelta ? dados.preco - 100 : dados.fimCompraDelta);
+		var maximo = (dados.preco > dados.fimVendaDelta ? dados.preco + 100:  dados.fimVendaDelta);
+		var comprimentoReal = maximo - minimo;
+		
+		var proporcao = comprimento/comprimentoReal;
+		
+		/* var xFinalCompra = (dados.fimCompraDelta * comprimento)/(maximo+minimo);
+		var xDelta = (dados.compraDelta * comprimento)/(maximo+minimo); */
+		
+		
+		
+		var xFinalCompra = (dados.fimCompraDelta - minimo) * proporcao;
+		var xDeltaCompra = (dados.compraDelta - minimo) * proporcao;
+		var xInicioCompra = (dados.inicioCompraDelta - minimo) * proporcao;
+		
+		var xFinalVenda = (dados.fimVendaDelta - minimo) * proporcao;
+		var xDeltaVenda = (dados.vendaDelta - minimo) * proporcao;
+		var xInicioVenda = (dados.inicioVendaDelta - minimo) * proporcao;
+		
+		var xPreco = (dados.preco - minimo) * proporcao;
+		
+		
+		// var xFinalCompra = dados.fimCompraDelta
+		
+		fillRect(ctx, 0 + borda, 120, comprimento, 20, "rgba(210, 210, 210, 1)", "rgba(200, 200, 200, 1)");
+		
+		fillRect(ctx, xFinalCompra + borda, 120, xDeltaCompra-xFinalCompra, 20, "rgba(0, 200, 0, 1)", "rgba(0, 250, 0, 1)");
+		fillRect(ctx, xDeltaCompra + borda, 120, xInicioCompra-xDeltaCompra, 20, "rgba(200, 200, 0, 1)", "rgba(200, 250, 0, 1)");
+		
+		fillRect(ctx, xInicioVenda + borda, 120, xDeltaVenda - xInicioVenda, 20, "rgba(200, 200, 0, 1)", "rgba(200, 250, 0, 1)");
+		fillRect(ctx, xDeltaVenda + borda, 120, xFinalVenda - xDeltaVenda, 20, "rgba(0, 200, 0, 1)", "rgba(0, 250, 0, 1)");
+		
+		// fillRect(ctx, xPreco + borda, 120, 2, 10, "rgba(5, 5, 5, 1)", "rgba(10, 10, 10, 1)");
+		// fillRect(ctx, xDeltaCompra + borda, 120, 2, 10, "rgba(5, 5, 5, 1)", "rgba(10, 10, 10, 1)");
+		// fillRect(ctx, xDeltaVenda + borda, 120, 2, 10, "rgba(5, 5, 5, 1)", "rgba(10, 10, 10, 1)");
+		
+		ctx.fillStyle = "rgba(0, 0, 0, 1)";
+		ctx.font = fonte14;
+		ctx.textAlign = "center";
+		
+		ctx.fillText(formatarDecimal(dados.preco, 0), xPreco + borda, 100);
+		ctx.fillText(formatarDecimal(dados.compraDelta, 0), xDeltaCompra + borda, 170);
+		ctx.fillText(formatarDecimal(dados.vendaDelta, 0), xDeltaVenda + borda, 170);
+		ctx.textAlign = "left";
+		ctx.font = fonte10;
+		ctx.fillText("+20%", xFinalCompra + borda, 155);
+		ctx.textAlign = "right";
+		ctx.fillText("+20%", xFinalVenda + borda, 155);
+		ctx.textAlign = "center";
+		ctx.fillText("-20%", xInicioCompra + borda, 155);
+		ctx.fillText("-20%", xInicioVenda + borda, 155);
+		
+		fillTrianguloInvertido(ctx, xPreco + borda - 5, 105, 10, 10, "rgba(5, 5, 5, 1)", "rgba(10, 10, 10, 1)");
+		fillTriangulo(ctx, xDeltaVenda + borda - 5, 145, 10, 10, "rgba(5, 5, 5, 1)", "rgba(10, 10, 10, 1)");
+		fillTriangulo(ctx, xDeltaCompra + borda - 5, 145, 10, 10, "rgba(5, 5, 5, 1)", "rgba(10, 10, 10, 1)");
+
+		var comprimentoDp = 105;
+		var comprimentoDl = 105;
+		var comprimentoTv = 105;
+		var comprimentoUv = 105;
+
+		/* Quadro de tÃ­tulo */			
+		/*fillRect(ctx, x, y, windowWidth - 10 - x, 50, "rgba(0, 0, 0, 1)",
+				"rgba(45, 45, 45, 1)");
+		*/
+		
+		ctx.font = fonte;
+		ctx.textAlign = "left";
+		ctx.fillStyle = "rgba(40, 40, 40, 1)";
+
+		var titulo = "Mini Índice: Delta";
+
+		ctx.fillText(titulo, borda, y + 35);
+		
+		ctx.textAlign = "right";
+		ctx.font = fonte14;
+		ctx.fillText(atualizacao, windowWidth - borda, y + 35);
+
+		/*
+		y += 52;
+		
+		fillRect(ctx, x, y, windowWidth - 10 - x, 24, "rgba(0, 0, 0, 1)", "rgba(45, 45, 45, 1)");
+		ctx.font = fonte;
+		ctx.fillStyle = "rgba(255, 255, 255, 1)";
+		ctx.fillText('Pos', x + 18, y + altura * 4 / 5);
+		ctx.textAlign = "left";
+		ctx.fillText('#', x + 50, y + altura * 4 / 5);
+		ctx.fillText('Piloto/Equipe', x + 70, y + altura * 4 / 5);
+		ctx.textAlign = "right";
+		ctx.fillText('Best Lap', windowWidth - comprimentoDp - comprimentoDl - comprimentoTv, y + altura * 4 / 5);
+		ctx.fillText('Last Lap', windowWidth - comprimentoDp - comprimentoDl, y + altura * 4 / 5);
+		ctx.fillText('Gap', windowWidth - comprimentoDp, y + altura * 4 / 5);
+		ctx.fillText('Gap N.', windowWidth - 20, y + altura * 4 / 5);
+		
+		y += 30;
+
+		$.each(laptime.pilotos, function(index, piloto) {
+			ctx.fillStyle = "rgba(255, 130, 32, 1)";
+			fillRect(ctx, x, y, windowWidth - 10 - x, altura,
+					"rgba(255, 255, 255, 1)", "rgba(245, 245, 245, 1)");
+			var tempoDecorrido = d.getTime() - piloto.horario;
+			if (piloto.posicao < piloto.posicaoAnterior && tempoDecorrido < 15000) {
+				fillSeta(ctx, x, y, 25, altura, 10, 'rgba(86, 175, 73, 1)', 'rgba(131, 210, 120, 1)');
+			} else if (piloto.posicao > piloto.posicaoAnterior && tempoDecorrido < 15000) {
+				fillSeta(ctx, x, y, 25, altura, 10, 'rgba(223, 86, 64, 1)', 'rgba(240, 86, 72, 1)');
+			} else {
+				fillSeta(ctx, x, y, 25, altura, 10, 'rgba(255, 130, 32, 1)', 'rgba(255, 130, 0, 1)');
+			}
+
+			ctx.fillStyle = "rgba(0, 0, 0, 1)";
+			ctx.font = fonte;
+			ctx.textAlign = "center";
+			
+			ctx.fillText(piloto.posicao, x + 12, y + altura * 4 / 5);
+			ctx.textAlign = "right";
+			ctx.fillText(piloto.numero + '', x + 60, y + altura * 4 / 5);
+			ctx.textAlign = "left";
+				ctx.fillText(piloto.nome + '', x + 70, y + altura * 4 / 5, windowWidth - comprimentoDp - comprimentoDl
+					- comprimentoTv - comprimentoUv - 70);
+			ctx.textAlign = "right";
+			if (piloto.fastest) {
+				var oldFill = ctx.fillStyle;
+				ctx.fillStyle = 'rgba(157, 59, 143, 1)';
+				ctx
+					.fillText(millisToString(piloto.melhorVoltaInMillis) + '',
+						windowWidth - comprimentoDp - comprimentoDl
+								- comprimentoTv, y + altura * 4 / 5);
+				ctx.fillStyle = oldFill;
+			}
+			else {
+				ctx
+					.fillText(millisToString(piloto.melhorVoltaInMillis) + '',
+							windowWidth - comprimentoDp - comprimentoDl
+									- comprimentoTv, y + altura * 4 / 5);					
+			}
+			if (piloto.fastest && piloto.tempoVoltaInMillis == piloto.melhorVoltaInMillis) {
+				var oldFill = ctx.fillStyle;
+				ctx.fillStyle = 'rgba(157, 59, 143, 1)';
+				ctx.fillText(millisToString(piloto.tempoVoltaInMillis) + '', windowWidth
+						- comprimentoDp - comprimentoDl, y + altura * 4 / 5);
+				ctx.fillStyle = oldFill;
+			} else {
+				
+				ctx.fillText(millisToString(piloto.tempoVoltaInMillis) + '', windowWidth
+					- comprimentoDp - comprimentoDl, y + altura * 4 / 5);
+				
+			}
+			if (piloto.diferencaLiderInMillis > 0) {
+				
+				ctx.fillText('-'+millisToString(piloto.diferencaLiderInMillis), windowWidth
+						- comprimentoDp, y + altura * 4 / 5);
+				
+			} else if (piloto.diferencaLider.includes('VOLTA')) {
+				
+				ctx.fillText(piloto.diferencaLider.split(" ")[0]+" LAP", windowWidth
+						- comprimentoDp, y + altura * 4 / 5);
+				
+			} else {
+				
+				ctx.fillText(piloto.diferencaLider, windowWidth
+						- comprimentoDp, y + altura * 4 / 5);
+				
+			}
+			if (piloto.diferencaProximoInMillis > 0) {
+				
+				ctx.fillText('-'+millisToString(piloto.diferencaProximoInMillis), windowWidth - 20,
+					y + altura * 4 / 5);
+				
+			} else if (piloto.diferencaProximo.includes('VOLTA')) {
+				
+				ctx.fillText(piloto.diferencaProximo.split(" ")[0]+" LAP", windowWidth - 20,
+						y + altura * 4 / 5);
+				
+			} else {
+				
+				ctx.fillText(piloto.diferencaProximo, windowWidth - 20,
+						y + altura * 4 / 5);
+				
+			}
+
+			y += alturaLinha;
+		}); */
+		/* ctx.fillText(screenWidth + 'x' + screenHeight, 300, 400);
+		ctx.fillText(windowWidth + 'x' + windowHeight, 300, 420); */
+	}
+}
+
+function inicializar() {
+	console.log('Inicializando');
+	windowWidth = $('#idCanvas').width();
+	
+	$('#idCanvas').html(
+			'<canvas id="tutorial" width="'+windowWidth+'" height="200"></canvas>');
+	consultar();
+}
+
+function draw() {
+	if (laptime != null) {
+		console.log('Pintando');
+		var screenWidth = screen.width;
+		var screenHeight = screen.height;
+		var windowWidth = window.innerWidth;
+		var windowHeight = window.innerHeight;
+		
+		var altura = 24;
+		var alturaLinha = 28;
+		var alturaTitulo = 50;
+		var alturaSubtitulos = 30;
+			
+		var alturaNecessaria = (laptime.pilotos.lenght || 0) * alturaLinha + alturaTitulo + 2 + alturaSubtitulos + 10;
+		
+		if (windowHeight < alturaNecessaria) {
+			
+		}
+		
+		var d = new Date();
+		/* $('#tutorial').width(windowWidth); */
+		
+		
+		var canvas = document.getElementById('tutorial');
+		if (canvas.getContext) {
+			var ctx = canvas.getContext('2d');
+
+			var x = 10;
+			var y = 0;
+
+			var fonteTitulo = '26px verdana';
+			var fonte = '20px sans-serif';
+			
+			
+			
+			
+
+			/* Fundo branco */
+			ctx.clearRect(0, 0, windowWidth, windowHeight);
+			ctx.font = fonteTitulo;
+			ctx.fillStyle = "rgba(245, 245, 245, 1)";
+			ctx.fillRect(0, 0, windowWidth, windowHeight);
+			ctx.fillStyle = "rgba(0, 0, 0, 1)";
+			
+			
+			
+
+			var comprimentoDp = 105;
+			var comprimentoDl = 105;
+			var comprimentoTv = 105;
+			var comprimentoUv = 105;
+
+			/* Quadro de tÃ­tulo */			
+			fillRect(ctx, x, y, windowWidth - 10 - x, 50, "rgba(0, 0, 0, 1)",
+					"rgba(45, 45, 45, 1)");
+			
+			if (logotipo.complete && logotipo.width > 0) {
+				var comprimentoImg = logotipo.width;
+				var alturaImg = logotipo.height;
+				var novaAlturaImg = 50;
+				var novoComprimentoImg = Math.floor(comprimentoImg * novaAlturaImg / alturaImg);
+			    //ctx.drawImage(logotipo, 10, 0, novoComprimentoImg, novaAlturaImg);
+			}
+			if (godzila.complete && godzila.width > 0) {
+				var comprimentoImg = godzila.width;
+				var alturaImg = godzila.height;
+				var novaAlturaImg = 50;
+				var novoComprimentoImg = Math.floor(comprimentoImg * novaAlturaImg / alturaImg);
+				//ctx.drawImage(godzila, windowWidth - novoComprimentoImg - 10, 0, novoComprimentoImg, novaAlturaImg);
+			}
+
+			ctx.textAlign = "center";
+			ctx.fillStyle = "rgba(255, 255, 255, 1)";
+
+			var titulo = laptime.titulo;
+			var fimTitulo = titulo.indexOf('<br>');
+			if (fimTitulo == -1)
+				fimTitulo = titulo.lenght;
+
+			ctx.fillText(titulo.substr(0, fimTitulo), windowWidth/2, y + 35);
+
+			y += 52;
+			
+			fillRect(ctx, x, y, windowWidth - 10 - x, 24, "rgba(0, 0, 0, 1)", "rgba(45, 45, 45, 1)");
+			ctx.font = fonte;
+			ctx.fillStyle = "rgba(255, 255, 255, 1)";
+			ctx.fillText('Pos', x + 18, y + altura * 4 / 5);
+			ctx.textAlign = "left";
+			ctx.fillText('#', x + 50, y + altura * 4 / 5);
+			ctx.fillText('Piloto/Equipe', x + 70, y + altura * 4 / 5);
+			ctx.textAlign = "right";
+			ctx.fillText('Best Lap', windowWidth - comprimentoDp - comprimentoDl - comprimentoTv, y + altura * 4 / 5);
+			ctx.fillText('Last Lap', windowWidth - comprimentoDp - comprimentoDl, y + altura * 4 / 5);
+			ctx.fillText('Gap', windowWidth - comprimentoDp, y + altura * 4 / 5);
+			ctx.fillText('Gap N.', windowWidth - 20, y + altura * 4 / 5);
+			
+			y += 30;
+
+			$.each(laptime.pilotos, function(index, piloto) {
+				ctx.fillStyle = "rgba(255, 130, 32, 1)";
+				fillRect(ctx, x, y, windowWidth - 10 - x, altura,
+						"rgba(255, 255, 255, 1)", "rgba(245, 245, 245, 1)");
+				var tempoDecorrido = d.getTime() - piloto.horario;
+				if (piloto.posicao < piloto.posicaoAnterior && tempoDecorrido < 15000) {
+					fillSeta(ctx, x, y, 25, altura, 10, 'rgba(86, 175, 73, 1)', 'rgba(131, 210, 120, 1)');
+				} else if (piloto.posicao > piloto.posicaoAnterior && tempoDecorrido < 15000) {
+					fillSeta(ctx, x, y, 25, altura, 10, 'rgba(223, 86, 64, 1)', 'rgba(240, 86, 72, 1)');
+				} else {
+					fillSeta(ctx, x, y, 25, altura, 10, 'rgba(255, 130, 32, 1)', 'rgba(255, 130, 0, 1)');
+				}
+
+				ctx.fillStyle = "rgba(0, 0, 0, 1)";
+				ctx.font = fonte;
+				ctx.textAlign = "center";
+				
+				/* PosiÃ§Ã£o */
+				ctx.fillText(piloto.posicao, x + 12, y + altura * 4 / 5);
+				/* NÃºmero */
+				ctx.textAlign = "right";
+				ctx.fillText(piloto.numero + '', x + 60, y + altura * 4 / 5);
+				/* Piloto/Equipe */
+				ctx.textAlign = "left";
+ 				ctx.fillText(piloto.nome + '', x + 70, y + altura * 4 / 5, windowWidth - comprimentoDp - comprimentoDl
+						- comprimentoTv - comprimentoUv - 70);
+ 				/* NÃºmero */
+				ctx.textAlign = "right";
+				/* ctx
+						.fillText(piloto.numero + '', windowWidth
+								- comprimentoDp - comprimentoDl - comprimentoTv
+								- comprimentoUv, y + altura * 4 / 5); */
+								ctx
+								.fillText(piloto.volta + '',
+									windowWidth - comprimentoDp - comprimentoDl
+											- comprimentoTv - 120, y + altura * 4 / 5);
+				/* Melhor volta */
+				if (piloto.fastest) {
+					var oldFill = ctx.fillStyle;
+					ctx.fillStyle = 'rgba(157, 59, 143, 1)';
+					ctx
+						.fillText(millisToString(piloto.melhorVoltaInMillis) + '',
+							windowWidth - comprimentoDp - comprimentoDl
+									- comprimentoTv, y + altura * 4 / 5);
+					ctx.fillStyle = oldFill;
+				}
+				else {
+					ctx
+						.fillText(millisToString(piloto.melhorVoltaInMillis) + '',
+								windowWidth - comprimentoDp - comprimentoDl
+										- comprimentoTv, y + altura * 4 / 5);					
+				}
+				/* ltima volta */
+				if (piloto.fastest && piloto.tempoVoltaInMillis == piloto.melhorVoltaInMillis) {
+					var oldFill = ctx.fillStyle;
+					ctx.fillStyle = 'rgba(157, 59, 143, 1)';
+					ctx.fillText(millisToString(piloto.tempoVoltaInMillis) + '', windowWidth
+							- comprimentoDp - comprimentoDl, y + altura * 4 / 5);
+					ctx.fillStyle = oldFill;
+				} else {
+					
+					ctx.fillText(millisToString(piloto.tempoVoltaInMillis) + '', windowWidth
+						- comprimentoDp - comprimentoDl, y + altura * 4 / 5);
+					
+				}
+				/*  DiferenÃ§a para o lider. */
+				if (piloto.diferencaLiderInMillis > 0) {
+					
+					ctx.fillText('-'+millisToString(piloto.diferencaLiderInMillis), windowWidth
+							- comprimentoDp, y + altura * 4 / 5);
+					
+				} else if (piloto.diferencaLider.includes('VOLTA')) {
+					
+					ctx.fillText(piloto.diferencaLider.split(" ")[0]+" LAP", windowWidth
+							- comprimentoDp, y + altura * 4 / 5);
+					
+				} else {
+					
+					ctx.fillText(piloto.diferencaLider, windowWidth
+							- comprimentoDp, y + altura * 4 / 5);
+					
+				}
+				/* DiferenÃ§a para o prÃ³ximo */
+				if (piloto.diferencaProximoInMillis > 0) {
+					
+					ctx.fillText('-'+millisToString(piloto.diferencaProximoInMillis), windowWidth - 20,
+						y + altura * 4 / 5);
+					
+				} else if (piloto.diferencaProximo.includes('VOLTA')) {
+					
+					ctx.fillText(piloto.diferencaProximo.split(" ")[0]+" LAP", windowWidth - 20,
+							y + altura * 4 / 5);
+					
+				} else {
+					
+					ctx.fillText(piloto.diferencaProximo, windowWidth - 20,
+							y + altura * 4 / 5);
+					
+				}
+
+				y += alturaLinha;
+			});
+			y += alturaLinha;
+			/* ctx.fillText(screenWidth + 'x' + screenHeight, 300, 400);
+			ctx.fillText(windowWidth + 'x' + windowHeight, 300, 420); */
+		}
+	}
+}
+
+function millisToString(tempoEmMilis) {
+	 var negativo = false;
+     if (tempoEmMilis < 0) {
+         negativo = true;
+         tempoEmMilis = -tempoEmMilis;
+     }
+     var horas = Math.floor(tempoEmMilis / 3600000);
+     var minutos = Math.floor(Math.floor((tempoEmMilis / 1000)) / 60) % 60;
+     var segundos = Math.floor(tempoEmMilis / 1000) % 60;
+     var milesimos = tempoEmMilis % 1000;
+     return (negativo ? "-" : "") + (horas > 0 ? horas + ":" : "") + (horas > 0 && minutos < 10 ? "0" : "")
+                + (minutos > 0 || horas > 0 ? minutos + ":" : "")
+                + (segundos < 10 && (minutos > 0 || horas > 0) ? "0" : "") + segundos + "."
+                + (milesimos < 100 ? "0" : "") + (milesimos < 10 ? "0" : "") + milesimos;
+}
+
+function fillSeta(ctx, x, y, comprimento, altura, comprimentoSeta, cor1, cor2) {
+	var oldFillStyle = ctx.fillStyle;
+	var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
+	lingrad.addColorStop(0, cor1);
+	lingrad.addColorStop(1, cor2);
+	ctx.fillStyle = lingrad;
+	ctx.fillRect(x, y, comprimento, altura);
+	ctx.beginPath();
+	ctx.moveTo(x + comprimento, y);
+	ctx.lineTo(x + comprimento + comprimentoSeta, y + altura / 2);
+	ctx.lineTo(x + comprimento, y + altura);
+	ctx.fill();
+	ctx.fillStyle = oldFillStyle;
+}
+
+function fillTrianguloInvertido(ctx, x, y, comprimento, altura, cor1, cor2) {
+	var oldFillStyle = ctx.fillStyle;
+	var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
+	lingrad.addColorStop(0, cor1);
+	lingrad.addColorStop(1, cor2);
+	ctx.fillStyle = lingrad;
+	ctx.beginPath();
+	ctx.moveTo(x, y);
+	ctx.lineTo(x + comprimento, y);
+	ctx.lineTo(x + comprimento/2, y + altura);
+	ctx.fill();
+	ctx.fillStyle = oldFillStyle;
+}
+
+function fillTriangulo(ctx, x, y, comprimento, altura, cor1, cor2) {
+	var oldFillStyle = ctx.fillStyle;
+	var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
+	lingrad.addColorStop(0, cor1);
+	lingrad.addColorStop(1, cor2);
+	ctx.fillStyle = lingrad;
+	ctx.beginPath();
+	ctx.moveTo(x, y + altura);
+	ctx.lineTo(x + comprimento, y + altura);
+	ctx.lineTo(x + comprimento/2, y);
+	ctx.fill();
+	ctx.fillStyle = oldFillStyle;
+}
+
+function fillRect(ctx, x, y, comprimento, altura, cor1, cor2) {
+	var oldFillStyle = ctx.fillStyle;
+	var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
+	lingrad.addColorStop(0, cor1);
+	lingrad.addColorStop(1, cor2);
+	ctx.fillStyle = lingrad;
+	ctx.fillRect(x, y, comprimento, altura);
+	ctx.fillStule = oldFillStyle;
+}
+
+function consultar() {
+	$.ajax({
+		url : '/indicador/delta',
+		success : function(resumo) {
+			if (deepEqual(dados, resumo)) {
+				console.log('Nada mudou');
+			} else {
+				console.log('atualizado');
+				dados = resumo;
+			}
+			atualizacao = new Date().toLocaleTimeString();
+			drawDelta();
+			if (gauge.maxValue != resumo.fimVendaDelta) {
+				gauge.maxValue = resumo.fimVendaDelta; // set max gauge value
+				gauge.setMinValue(resumo.fimCompraDelta);
+			}
+			gauge.set(resumo.preco);
+			gauge.options.staticZones = [
+				   {strokeStyle: "#30B32D", min: resumo.fimCompraDelta, max: resumo.compraDelta}, // Red from 100 to 130
+				   {strokeStyle: "#FFDD00", min: resumo.compraDelta, max: resumo.inicioCompraDelta}, // Yellow
+				   {strokeStyle: "cornflowerblue", min: resumo.inicioCompraDelta, max: resumo.inicioVendaDelta}, // Green
+				   {strokeStyle: "#FFDD00", min: resumo.inicioVendaDelta, max: resumo.vendaDelta}, // Yellow
+				   {strokeStyle: "#30B32D", min: resumo.vendaDelta, max: resumo.fimVendaDelta}  // Red
+				],
+			gauge.options.staticLabels = {
+				  font: "12px sans-serif",  // Specifies font
+				  labels: [resumo.compraDelta, resumo.vendaDelta],  // Print labels at these values
+				  color: "#000000",  // Optional: Label text color
+				  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+				}
+		}
+	});
+}
+
+function consultarCotacao() {
+	$.ajax({
+		url : '/ativo/cotacao/WIN@N',
+		success : function(cotacao) {
+			atualizacao = new Date().toLocaleTimeString();
+			drawDelta();
+			gauge.set(cotacao.preco);
+			gauge.options.staticLabels = {
+					  font: "10px sans-serif",  // Specifies font
+					  labels: [dados.compraDelta, cotacao.preco, dados.vendaDelta],  // Print labels at these values
+					  color: "#000000",  // Optional: Label text color
+					  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+					};
+			// gauge.setTextField(cotacao.preco);
+			
+		}
+	});
+}
+
+
+document.body.onresize = function() {
+    inicializar();
+    inicializarGauge();
+};
+
+setInterval(function () {
+	consultar();
+	}, 20000);
+
+setInterval(function () {
+	consultarCotacao();
+	}, 5000);
+
+inicializar();
+
+function deepEqual(object1, object2) {
+	  const keys1 = Object.keys(object1);
+	  const keys2 = Object.keys(object2);
+
+	  if (keys1.length !== keys2.length) {
+	    return false;
+	  }
+
+	  for (const key of keys1) {
+	    const val1 = object1[key];
+	    const val2 = object2[key];
+	    const areObjects = isObject(val1) && isObject(val2);
+	    if (
+	      areObjects && !deepEqual(val1, val2) ||
+	      !areObjects && val1 !== val2
+	    ) {
+	      return false;
+	    }
+	  }
+
+	  return true;
+}
+
+function isObject(object) {
+  return object != null && typeof object === 'object';
+}
+
+
+
+var gauge = null;
+inicializarGauge();
+
+
+function inicializarGauge() {
+	console.log('Inicializando Gauge');
+	
+	var opts = {
+			  angle: 0, // The span of the gauge arc
+			  lineWidth: 0.44, // The line thickness
+			  radiusScale: 1, // Relative radius
+			  pointer: {
+			    length: 0.6, // // Relative to gauge radius
+			    strokeWidth: 0.035, // The thickness
+			    color: '#000000' // Fill color
+			  },
+			  limitMax: false,     // If false, max value increases automatically if value > maxValue
+			  limitMin: false,     // If true, the min value of the gauge will be fixed
+			  colorStart: '#6FADCF',   // Colors
+			  colorStop: '#8FC0DA',    // just experiment with them
+			  strokeColor: '#E0E0E0',  // to see which ones work best for you
+			  generateGradient: true,
+			  highDpiSupport: true,     // High resolution support
+			  
+			  staticLabels: {
+				  font: "12px sans-serif",  // Specifies font
+				  labels: [108851, 110891],  // Print labels at these values
+				  color: "#000000",  // Optional: Label text color
+				  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+				},
+			  
+			  staticZones: [
+				   {strokeStyle: "#30B32D", min: 108647, max: 108851}, // Red from 100 to 130
+				   {strokeStyle: "#FFDD00", min: 108851, max: 109055}, // Yellow
+				   {strokeStyle: "cornflowerblue", min: 109055, max: 110687}, // Green
+				   {strokeStyle: "#FFDD00", min: 110687, max: 110891}, // Yellow
+				   {strokeStyle: "#30B32D", min: 110891, max: 111095}  // Red
+				]
+	};
+	
+	
+	var gaugeComprimento = $('#divGauge').width();
+	
+	$('#divGauge').html('<canvas id="canvasGauge" width="'+gaugeComprimento+'" height="'+gaugeComprimento/2+'"></canvas><span id="gauge-value"></span>');
+	
+	
+	var target = document.getElementById('canvasGauge'); // your canvas element
+	gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+	gauge.maxValue = 111095; // set max gauge value
+	gauge.setMinValue(108647);  // Prefer setter over gauge.minValue = 0
+	gauge.animationSpeed = 10; // set animation speed (32 is default value)
+	gauge.set(109815); // set actual value
+	gauge.setTextField(document.getElementById('gauge-value'));
+	
+	
+	//consultar();
+}
+</script>
+<script>
+
+
+</script>
+
 </html>

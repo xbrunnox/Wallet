@@ -20,6 +20,18 @@ public class DashboardDelta {
   private BigDecimal deltaSuperior;
   private BigDecimal delta;
   
+  private BigDecimal vwap;
+  
+  private BigDecimal preco;
+  
+  private BigDecimal inicioVendaDelta;
+  private BigDecimal vendaDelta;
+  private BigDecimal fimVendaDelta;
+  
+  private BigDecimal inicioCompraDelta;
+  private BigDecimal compraDelta;
+  private BigDecimal fimCompraDelta;
+  
   private List<DashboardDeltaDia> deltas;
 
 }

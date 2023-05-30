@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.app.grid.wallet.candle.Candle;
 import br.app.grid.wallet.candle.service.CandleService;
+import br.app.grid.wallet.cotacao.service.CotacaoService;
 import br.app.grid.wallet.enums.TimeFrameEnum;
 import br.app.grid.wallet.util.VersatilUtil;
 
@@ -25,6 +26,9 @@ public class DashboardService {
 
   @Autowired
   private CandleService candleService;
+  
+  @Autowired
+  private CotacaoService cotacaoService;
 
   public DashboardDelta getDashboardDelta() {
     Map<LocalDate, DashboardDeltaDia> mapaDatas = new HashMap<>();
@@ -56,16 +60,21 @@ public class DashboardService {
 
     List<Candle> candlesM5 = candleService.getList("WIN@N", TimeFrameEnum.M5,
         VersatilUtil.toLocalDate(dataInicial), VersatilUtil.toLocalDate(dataFinal));
+    
+//    System.out.println("Data Inicial: "+dataInicial);
+//    System.out.println("Data Final: "+dataFinal);
 
-    System.out
-        .println("Candles M5: " + candlesM5.size() + " Inicial: " + dataInicial + " " + dataFinal);
-
+    /*
+     * Tratamento dos candles do dia.
+     */
+    BigDecimal vwap = null;
+    BigDecimal preco = candleService.getUltimoPreco("WIN@N");
     for (Candle candle : candlesM5) {
       DashboardDeltaDia dashDelta = mapaDatas.get(VersatilUtil.toLocalDate(candle.getDataHora()));
       // Identificacao do VWAP Inferior
       if (candle.getMinima().compareTo(candle.getVwap()) < 0) {
         BigDecimal diferenca = candle.getVwap().subtract(candle.getMinima()).abs();
-        System.out.println(diferenca);
+//        System.out.println(diferenca);
         if (diferenca.compareTo(dashDelta.getVwapInferior()) > 0) {
           dashDelta.setVwapInferior(diferenca);
           dashDelta.setDataVwapInferior(candle.getDataHora());
@@ -74,13 +83,17 @@ public class DashboardService {
       // Identificacao do VWAP Superior
       if (candle.getMaxima().compareTo(candle.getVwap()) > 0) {
         BigDecimal diferenca = candle.getMaxima().subtract(candle.getVwap()).abs();
-        System.out.println(diferenca);
+//        System.out.println(diferenca);
         if (diferenca.compareTo(dashDelta.getVwapSuperior()) > 0) {
           dashDelta.setVwapSuperior(diferenca);
           dashDelta.setDataVwapSuperior(candle.getDataHora());
         }
       }
+      if (candle.getVwap() != null)
+        vwap = candle.getVwap();
     }
+    
+    Candle ultimoCandle = candleService.getUltimoCandle("WIN@N", TimeFrameEnum.M5);
 
     BigDecimal vwapInferior = BigDecimal.ZERO;
     BigDecimal vwapSuperior = BigDecimal.ZERO;
@@ -111,8 +124,24 @@ public class DashboardService {
         .amplitudeMaxima(amplitudeMaxima).deltas(deltas).build();
 
 
+    vwap = ultimoCandle.getVwap();
 
     System.out.println(VersatilUtil.toJson(deltas));
+    dashboardDelta.setPreco(cotacaoService.getCotacao("WIN@N").getPreco());
+    dashboardDelta.setVwap(ultimoCandle.getVwap());
+    dashboardDelta.setVendaDelta(vwap.add(dashboardDelta.getDelta()));
+    dashboardDelta.setCompraDelta(vwap.subtract(dashboardDelta.getDelta()));
+    // Delta Superior (Venda)
+    dashboardDelta
+        .setInicioVendaDelta(vwap.add(dashboardDelta.getDelta().multiply(BigDecimal.valueOf(0.8))));
+    dashboardDelta
+        .setFimVendaDelta(vwap.add(dashboardDelta.getDelta().multiply(BigDecimal.valueOf(1.2))));
+    // Delta Inferior (Compra)
+    dashboardDelta.setInicioCompraDelta(
+        vwap.subtract(dashboardDelta.getDelta().multiply(BigDecimal.valueOf(0.8))));
+    dashboardDelta.setFimCompraDelta(
+        vwap.subtract(dashboardDelta.getDelta().multiply(BigDecimal.valueOf(1.2))));
+
     return dashboardDelta;
 
   }

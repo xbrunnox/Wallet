@@ -88,7 +88,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 //      candleService.calcularVwap("WIN@N", 5, data);
 //      data = data.minusDays(1);
 //    }
-    candleService.calcularVwap("WIN@N", 5, LocalDate.of(2023, 5, 18));
+//    candleService.calcularVwap("WIN@N", 5, LocalDate.of(2023, 5, 22));
 
 
 //    dashboardService.getDashboardDelta();

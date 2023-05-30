@@ -69,4 +69,8 @@ public class VersatilUtil {
     return data.toLocalDate();
   }
 
+  public static Date toDate(LocalDateTime localDateTime) {
+    return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+  }
+
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.app.grid.wallet.candle.Candle;
@@ -13,6 +14,7 @@ import br.app.grid.wallet.router.RouterService;
 import br.app.grid.wallet.util.VersatilUtil;
 import br.app.grid.wallet.util.converter.CandleConverter;
 import br.app.grid.wallet.web.request.CandlesRequest;
+import br.app.grid.wallet.web.request.RegistrarCandleRequest;
 import br.app.grid.wallet.web.response.AtivoCandlesResponse;
 import br.app.grid.wallet.web.response.CandleResponse;
 
@@ -64,10 +66,12 @@ public class CandleService {
    * @param data Data.
    */
   public void calcularVwap(String ativo, Integer timeframe, LocalDate data) {
+    System.out.println("Calculando VWAP " + data);
     List<Candle> candles = candleRepository.getList(ativo, timeframe, VersatilUtil.toDate(data));
     BigDecimal somatorioVolume = BigDecimal.ZERO;
     BigDecimal somatorioPrecoTipico = BigDecimal.ZERO;
     BigDecimal somatorioPrecoTipicoVolume = BigDecimal.ZERO;
+    System.out.println("Candles Encontrados: " + candles.size());
     for (Candle candle : candles) {
       somatorioVolume = somatorioVolume.add(BigDecimal.valueOf(candle.getVolume()));
 
@@ -82,12 +86,13 @@ public class CandleService {
       somatorioPrecoTipico = somatorioPrecoTipico.add(precoTipico);
 
       BigDecimal vWap = somatorioPrecoTipicoVolume.divide(somatorioVolume, 2, RoundingMode.HALF_UP);
-      candle.setVwap(vWap);
-      
-      candleRepository.save(candle);
-
-      System.out.println(VersatilUtil.toJson(candle));
+      if (Objects.isNull(candle.getVwap()) || !candle.getVwap().equals(vWap)) {
+        candle.setVwap(vWap);
+        candleRepository.save(candle);
+        System.out.println(VersatilUtil.toJson(candle));
+      }
     }
+    System.out.println("Calculo finalizado VWAP " + data);
   }
 
   public List<Candle> getListUltimos(String ativo, TimeFrameEnum timeframe, Integer resultados) {
@@ -96,7 +101,38 @@ public class CandleService {
 
   public List<Candle> getList(String ativo, TimeFrameEnum timeframe, LocalDate dataInicial,
       LocalDate dataFinal) {
-    return candleRepository.getList(ativo, timeframe.getValor(), VersatilUtil.toDate(dataInicial), VersatilUtil.toDate(dataFinal));
+    return candleRepository.getList(ativo, timeframe.getValor(), VersatilUtil.toDate(dataInicial),
+        VersatilUtil.toDate(dataFinal));
   }
 
+  /**
+   * Realiza o registro do candle.
+   * 
+   * @param request Request.
+   * @return Candle após o registro.
+   */
+  public Candle registrarCandle(RegistrarCandleRequest request) {
+    Candle candleAnterior =
+        candleRepository.get(request.getAtivo(), request.getDateTime(), request.getTimeFrame());
+
+    Candle candle = CandleConverter.convert(request);
+    if (candleAnterior != null)
+      candle.setId(candleAnterior.getId());
+
+    candleRepository.save(candle);
+
+    calcularVwap(candle.getAtivo(), candle.getTimeFrame(), candle.getDataHora().toLocalDate());
+
+    return candleRepository.get(candle.getId());
+  }
+
+  public BigDecimal getUltimoPreco(String ativo) {
+    Candle candle = candleRepository.getUltimoPreco(ativo);
+    return candle.getFechamento();
+  }
+
+  public Candle getUltimoCandle(String ativo, TimeFrameEnum m5) {
+    Candle candle = candleRepository.getUltimoCandle(ativo, m5.getValor());
+    return candle;
+  }
 }

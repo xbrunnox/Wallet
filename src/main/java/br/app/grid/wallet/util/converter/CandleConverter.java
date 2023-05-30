@@ -1,6 +1,7 @@
 package br.app.grid.wallet.util.converter;
 
 import br.app.grid.wallet.candle.Candle;
+import br.app.grid.wallet.web.request.RegistrarCandleRequest;
 import br.app.grid.wallet.web.response.AtivoCandlesResponse;
 import br.app.grid.wallet.web.response.CandleResponse;
 
@@ -22,6 +23,21 @@ public class CandleConverter {
         .tickVolume(candleResponse.getTickVolume())
         .timeFrame(response.getTimeFrame())
         .volume(candleResponse.getVolume())
+        .build();
+  }
+
+  public static Candle convert(RegistrarCandleRequest request) {
+    return Candle.builder()
+        .abertura(request.getOpen())
+        .ativo(request.getAtivo())
+        .dataHora(request.getDateTime())
+        .fechamento(request.getClose())
+        .maxima(request.getHigh())
+        .minima(request.getLow())
+        .spread(request.getSpread())
+        .tickVolume(request.getTickVolume())
+        .timeFrame(request.getTimeFrame())
+        .volume(request.getVolume())
         .build();
   }
 
