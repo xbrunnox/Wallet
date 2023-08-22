@@ -1,5 +1,7 @@
 package br.app.grid.wallet;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -31,9 +34,12 @@ import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.AssinaturaExpert;
 import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
+import br.app.grid.wallet.ativo.Ativo;
+import br.app.grid.wallet.ativo.AtivoService;
 import br.app.grid.wallet.backtest.service.BacktestOperacaoService;
 import br.app.grid.wallet.backtest.service.BacktestService;
 import br.app.grid.wallet.candle.service.CandleService;
+import br.app.grid.wallet.categoria.Categoria;
 import br.app.grid.wallet.dashboard.DashboardService;
 import br.app.grid.wallet.enums.ServidorTipoEnum;
 import br.app.grid.wallet.licenca.Conta;
@@ -52,6 +58,9 @@ import br.app.grid.wallet.web.request.GravarOperacaoRequest;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
+
+	@Autowired
+	private AtivoService ativoService;
 
 	@Autowired
 	private ContaService licencaService;
@@ -92,7 +101,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		System.out.println(LocalDate.now());
-		coletarNoticias();
+//		coletarNoticias();
+
+//		coletarAcoes();
 
 //    LocalDate data = LocalDate.of(2023, 5, 17);
 //
@@ -162,6 +173,30 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 		 * 
 		 * backtestOperacaoService.gravar(operacao); }
 		 */
+
+	}
+
+	private void coletarAcoes() {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("acoes-listadas.csv"));
+			String linha = br.readLine();
+			Categoria categoria = Categoria.builder().id(3).ganho(1.0).nome("Ação").build();
+			while (linha != null) {
+				Scanner sc = new Scanner(linha);
+				sc.useDelimiter(",");
+				String codigo = sc.next();
+				String nome = sc.next();
+				System.out.println(codigo + " - " + nome);
+				sc.close();
+				Ativo ativo = Ativo.builder().codigo(codigo).categoria(categoria).nome(nome).build();
+				ativoService.salvar(ativo);
+				linha = br.readLine();
+			}
+			br.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

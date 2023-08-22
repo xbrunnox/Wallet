@@ -24,5 +24,7 @@ public class Ativo {
 	@ManyToOne
 	@JoinColumn(name = "id_categoria")
 	private Categoria categoria;
+	
+	private String nome;
 
 }

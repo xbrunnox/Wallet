@@ -1,5 +1,7 @@
 package br.app.grid.wallet.ativo;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,10 @@ public class AtivoService {
 
 	public void salvar(Ativo ativo) {
 		repository.save(ativo);
+	}
+
+	public List<Ativo> getList() {
+		return repository.getList();
 	}
 
 }

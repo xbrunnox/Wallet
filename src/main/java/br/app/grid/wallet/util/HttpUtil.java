@@ -61,7 +61,7 @@ public class HttpUtil {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main3(String[] args) {
 		String ativo = "alzr11";
 		String csv = get("https://statusinvest.com.br/fundos-imobiliarios/"+ativo);
 		Scanner sc = new Scanner(csv);
@@ -98,6 +98,31 @@ public class HttpUtil {
 
 
 	}
+	
+	
+	public static void main(String[] args) {
+		String csv = get("https://br.investing.com/news/forex-news/moedas-globais-dolar-recua-ante-euro-libra-e-iene-em-dia-de-payroll-misto-nos-eua-1140786");
+		Scanner sc = new Scanner(csv);
+		boolean imprimir = false;
+		List<String> campos = new ArrayList<>();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		while (sc.hasNextLine()) {
+			String linha = sc.nextLine();
+			if (linha.contains("<p>") && linha.contains("</p>")) {
+				System.out.println(linha);
+			}
+		}
+		sc.close();
+//		System.out.println(csv);
+
+
+	}
+	
+	
+	// 
 
 	public static String getJson(String url) {
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
@@ -188,8 +213,11 @@ public class HttpUtil {
 
 			// use httpClient (no need to close it explicitly)
 			HttpGet getRequest = new HttpGet(url);
-			getRequest.setConfig(requestConfig);
-			getRequest.addHeader("accept", "application/x-www-form-urlencoded");
+//			getRequest.setConfig(requestConfig);
+			getRequest.addHeader("accept", "text/html");
+			// getRequest.addHeader("Accept-Encoding", "gzip, deflate, br");
+			getRequest.addHeader("User-Agent", "PostmanRuntime/7.32.3");
+			getRequest.addHeader("Connection", "keep-alive");
 			// getRequest.addHeader("charset", "UTF-8");
 
 			HttpResponse response = httpClient.execute(getRequest);
