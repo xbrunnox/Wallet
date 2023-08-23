@@ -45,12 +45,14 @@ import br.app.grid.wallet.ativo.AtivoService;
 import br.app.grid.wallet.backtest.Backtest;
 import br.app.grid.wallet.backtest.service.BacktestService;
 import br.app.grid.wallet.backtest.vo.BacktestOperacaoResultadoMesVO;
+import br.app.grid.wallet.candle.Candle;
 import br.app.grid.wallet.candle.service.CandleService;
 import br.app.grid.wallet.client.ClienteUser;
 import br.app.grid.wallet.client.EndpointStatusResponse;
 import br.app.grid.wallet.dashboard.DashboardService;
 import br.app.grid.wallet.dividendo.Dividendo;
 import br.app.grid.wallet.dividendo.DividendoService;
+import br.app.grid.wallet.enums.TimeFrameEnum;
 import br.app.grid.wallet.estrategia.EstrategiaFechamentoItem;
 import br.app.grid.wallet.fii.FiiDividendo;
 import br.app.grid.wallet.grafico.SerieInt;
@@ -96,7 +98,7 @@ public class IndexController {
 
 	@Autowired
 	private BacktestService backtestService;
-	
+
 	@Autowired
 	private CandleService candleService;
 
@@ -602,6 +604,8 @@ public class IndexController {
 	@GetMapping("/analisar")
 	public void analisar() {
 
+		LocalDate dataInicial = LocalDate.of(2023, 1, 1);
+		LocalDate dataFinal = LocalDate.of(2023, 8, 22);
 		List<Ativo> ativos = ativoService.getList();
 
 		List<EstrategiaFechamentoItem> itens = new ArrayList<>();
@@ -610,48 +614,62 @@ public class IndexController {
 			long horaDeInnicio = System.currentTimeMillis();
 			if (ativo.getCategoria().getId().equals(Integer.parseInt("3"))) {
 				System.out.println("Analisando: " + ativo.getCodigo());
-				CandlesRequest candleRequest = CandlesRequest.builder().ativo(ativo.getCodigo())
-						.dataFinal(LocalDate.now().minusDays(1)).dataInicial(LocalDate.of(2023, 1, 1)).timeFrame(16408)
-						.build();
-				AtivoCandlesResponse response = routerService.getCandles(candleRequest);
+				List<Candle> candles = candleService.getList(ativo.getCodigo(), TimeFrameEnum.D1, dataInicial,
+						dataFinal);
+				if (candles.size() == 0) {
+					candles = new ArrayList<>();
+
+				}
+
 				BigDecimal inicio = BigDecimal.valueOf(0.005);
 				BigDecimal fim = BigDecimal.valueOf(0.050);
 				BigDecimal incremento = BigDecimal.valueOf(0.001);
 				BigDecimal passo = inicio;
-				System.out.println("Candles encontratos: " + response.getCandles().size());
+				System.out.println("Candles encontratos: " + candles.size());
 				BigDecimal volumeMedio = BigDecimal.ZERO;
-				for (CandleResponse candle : response.getCandles()) {
-					volumeMedio = volumeMedio.add(candle.getOpen().multiply(BigDecimal.valueOf(candle.getVolume())));
-					try {
-					candleService.gravar(CandleConverter.convert(response, candle));
-					} catch(Exception e) {
-						System.out.println(e.getMessage());
-					}
+				boolean achou = candles.size() > 0;
+				for (Candle candle : candles) {
+					volumeMedio = volumeMedio.add(candle.getAbertura().multiply(BigDecimal.valueOf(candle.getVolume())));
 				}
-				if (response.getCandles().size() != 0) {
-					volumeMedio = volumeMedio.divide(BigDecimal.valueOf(response.getCandles().size()), 2,
-							RoundingMode.HALF_DOWN);
+				if (!achou) {
+					CandlesRequest candleRequest = CandlesRequest.builder().ativo(ativo.getCodigo())
+							.dataFinal(dataFinal).dataInicial(dataInicial).timeFrame(16408).build();
+					AtivoCandlesResponse response = routerService.getCandles(candleRequest);
+					for (CandleResponse candle : response.getCandles()) {
+						Candle cand = CandleConverter.convert(response, candle);
+						candles.add(cand);
+						try {
+							candleService.gravar(cand);
+						} catch (Exception e) {
+							System.out.println(e.getMessage());
+						}
+					}
+
+				}
+				if (candles.size() != 0) {
+					volumeMedio = volumeMedio.divide(BigDecimal.valueOf(candles.size()), 2, RoundingMode.HALF_DOWN);
 				}
 
-				while (passo.compareTo(fim) <= 0) {
+				while (passo.compareTo(fim) <= 0 && candles.size() > 0) {
 					int acertos = 0;
 					int erros = 0;
 					List<BigDecimal> resultados = new ArrayList<>();
-					CandleResponse candleAnterior = null;
+					Candle candleAnterior = null;
 					BigDecimal percentualGanho = BigDecimal.ZERO;
 
-					for (CandleResponse candle : response.getCandles()) {
+					for (Candle candle : candles) {
 						if (candleAnterior != null) {
-							BigDecimal gatilho = candleAnterior.getClose()
+							BigDecimal gatilho = candleAnterior.getFechamento()
 									.multiply(BigDecimal.valueOf(1).subtract(passo));
 
-							if (candle.getOpen().compareTo(gatilho) < 0 || candle.getLow().compareTo(gatilho) < 0) {
+							if (candle.getAbertura().compareTo(gatilho) < 0
+									|| candle.getMinima().compareTo(gatilho) < 0) {
 								// Houve entrada
-								BigDecimal entrada = (candle.getOpen().compareTo(gatilho) < 0 ? candle.getOpen()
+								BigDecimal entrada = (candle.getAbertura().compareTo(gatilho) < 0 ? candle.getAbertura()
 										: gatilho);
 								BigDecimal stop = entrada.multiply(BigDecimal.valueOf(0.95));
-								BigDecimal saida = candle.getClose();
-								if (candle.getLow().compareTo(stop) < 0) {
+								BigDecimal saida = candle.getFechamento();
+								if (candle.getMinima().compareTo(stop) < 0) {
 									saida = stop;
 								}
 								BigDecimal lucro = saida.subtract(entrada);
