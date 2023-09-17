@@ -1,26 +1,26 @@
 <!doctype html>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Backtests - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Backtests - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/backtests"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600"
-			th:text="'&nbsp;&nbsp;' + ${backtest.descricao}">Backtest</span>
+		<a class="navbar-brand" href="/backtests"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top"
+				alt=""> <span style="font-weight: 600" th:text="'&nbsp;&nbsp;' + ${backtest.descricao}">Backtest</span>
 		</a>
 	</nav>
 	<br>
@@ -28,8 +28,7 @@
 		<div class="row">
 			<div class="col-12">
 				<div class="card">
-					<form method="POST" enctype="multipart/form-data"
-						action="/backtest/upload">
+					<form method="POST" enctype="multipart/form-data" action="/backtest/upload">
 						<input type="hidden" name="idBacktest" th:value="${backtest.id}">
 						<table>
 							<tr>
@@ -63,7 +62,8 @@
 							<td th:text="${resultado.operacoes}"></td>
 							<td th:text="${resultado.resultado}"></td>
 							<td><a class="btn btn-sm btn-primary"
-								th:href="${'/backtest/detalhes/'+ resultado.id+'/'+resultado.mes+'/'+resultado.ano}">Detalhar</a></td>
+									th:href="${'/backtest/detalhes/'+ resultado.id+'/'+resultado.mes+'/'+resultado.ano}">Detalhar</a>
+							</td>
 						</tr>
 
 					</tbody>
@@ -90,7 +90,8 @@
 		var vol1 = $('#volume1').val();
 		var vol2 = $('#volume2').val();
 		window.location.href = "/backtest/" + idBack1 + "/" + idBack2 + "/"
-				+ vol1 + "/" + vol2;
+			+ vol1 + "/" + vol2;
 	}
 </script>
+
 </html>

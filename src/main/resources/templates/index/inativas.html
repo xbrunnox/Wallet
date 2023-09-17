@@ -1,20 +1,20 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Contas Inativas - Versátil IA</title>
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Contas Inativas - Versátil IA</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Contas Inativas</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Contas Inativas</span>
 		</a>
 	</nav>
 	<div class="container-fluid">
@@ -33,12 +33,11 @@
 						<tr th:each="conta : ${contasList}">
 							<td th:text="${conta.id}"></td>
 							<td><span th:text="${conta.nome}"></span><br> <small><span
-									th:text="${conta.corretora}"></span></small></td>
-							<td><a
-								th:href="@{/assinatura/iniciarAtivacao/{id}(id=${conta.id})}"
-								class="btn btn-sm btn-primary">Ativar</a>&nbsp;<a
-								th:href="@{javascript:excluir('{conta}')(conta=${conta.id})}"
-								class="btn btn-danger"><i class="bi bi-trash"></i></a></td>
+										th:text="${conta.corretora}"></span></small></td>
+							<td><a th:href="@{/assinatura/iniciarAtivacao/{id}(id=${conta.id})}"
+									class="btn btn-sm btn-primary">Ativar</a>&nbsp;<a
+									th:href="@{javascript:excluir('{conta}')(conta=${conta.id})}"
+									class="btn btn-danger"><i class="bi bi-trash"></i></a></td>
 						</tr>
 						<tr>
 							<td th:text="${contas}"></td>
@@ -59,8 +58,8 @@
 <script>
 	function excluir(conta) {
 		$.ajax({
-			url : "/conta/excluir/" + conta,
-			success : function(retorno) {
+			url: "/conta/excluir/" + conta,
+			success: function (retorno) {
 				location.reload();
 			}
 		});
@@ -75,8 +74,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -84,9 +83,10 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 </script>
+
 </html>

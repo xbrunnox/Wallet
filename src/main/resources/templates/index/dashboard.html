@@ -1,24 +1,25 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Dashboard - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Dashboard - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Dashboard</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Dashboard</span>
 		</a>
 	</nav>
 	<br>
@@ -179,23 +180,21 @@
 					</thead>
 					<tbody>
 						<tr th:each="deltaDia : ${dashboardDelta.deltas}">
-							<td th:text="${#temporals.format(deltaDia.data, 'dd/MM')}"
-								class="fonte-tabela"></td>
+							<td th:text="${#temporals.format(deltaDia.data, 'dd/MM')}" class="fonte-tabela"></td>
 							<td align="right" class="fonte-tabela"><span
-								th:text="${#numbers.formatDecimal(deltaDia.abertura, 1, 'POINT', 0, 'COMMA')}"></span><br>
+									th:text="${#numbers.formatDecimal(deltaDia.abertura, 1, 'POINT', 0, 'COMMA')}"></span><br>
 								<small
-								th:text="${#numbers.formatDecimal(deltaDia.fechamento, 1, 'POINT', 0, 'COMMA')}"></small></td>
-							<td align="right" class="fonte-tabela"><span
-								th:text="${#numbers.formatDecimal(deltaDia.vwapInferior, 1, 'POINT', 0, 'COMMA')}"></span><br>
-								<small
-								th:text="${#temporals.format(deltaDia.dataVwapInferior, 'HH:mm')}"></small>
+									th:text="${#numbers.formatDecimal(deltaDia.fechamento, 1, 'POINT', 0, 'COMMA')}"></small>
 							</td>
 							<td align="right" class="fonte-tabela"><span
-								th:text="${#numbers.formatDecimal(deltaDia.vwapSuperior, 1, 'POINT', 0, 'COMMA')}"></span><br>
-								<small
-								th:text="${#temporals.format(deltaDia.dataVwapSuperior, 'HH:mm')}"></small></td>
-							<td
-								th:text="${#numbers.formatDecimal(deltaDia.amplitude, 1, 'POINT', 0, 'COMMA')}"
+									th:text="${#numbers.formatDecimal(deltaDia.vwapInferior, 1, 'POINT', 0, 'COMMA')}"></span><br>
+								<small th:text="${#temporals.format(deltaDia.dataVwapInferior, 'HH:mm')}"></small>
+							</td>
+							<td align="right" class="fonte-tabela"><span
+									th:text="${#numbers.formatDecimal(deltaDia.vwapSuperior, 1, 'POINT', 0, 'COMMA')}"></span><br>
+								<small th:text="${#temporals.format(deltaDia.dataVwapSuperior, 'HH:mm')}"></small>
+							</td>
+							<td th:text="${#numbers.formatDecimal(deltaDia.amplitude, 1, 'POINT', 0, 'COMMA')}"
 								align="right" class="fonte-tabela"></td>
 						</tr>
 					</tbody>
@@ -214,110 +213,110 @@
 <script type="text/javascript">
 
 
-var atualizacao = null;
+	var atualizacao = null;
 
-function inicializar() {
-	console.log('Inicializando');
-	consultar();
-}
+	function inicializar() {
+		console.log('Inicializando');
+		consultar();
+	}
 
-function millisToString(tempoEmMilis) {
-	 var negativo = false;
-     if (tempoEmMilis < 0) {
-         negativo = true;
-         tempoEmMilis = -tempoEmMilis;
-     }
-     var horas = Math.floor(tempoEmMilis / 3600000);
-     var minutos = Math.floor(Math.floor((tempoEmMilis / 1000)) / 60) % 60;
-     var segundos = Math.floor(tempoEmMilis / 1000) % 60;
-     var milesimos = tempoEmMilis % 1000;
-     return (negativo ? "-" : "") + (horas > 0 ? horas + ":" : "") + (horas > 0 && minutos < 10 ? "0" : "")
-                + (minutos > 0 || horas > 0 ? minutos + ":" : "")
-                + (segundos < 10 && (minutos > 0 || horas > 0) ? "0" : "") + segundos + "."
-                + (milesimos < 100 ? "0" : "") + (milesimos < 10 ? "0" : "") + milesimos;
-}
+	function millisToString(tempoEmMilis) {
+		var negativo = false;
+		if (tempoEmMilis < 0) {
+			negativo = true;
+			tempoEmMilis = -tempoEmMilis;
+		}
+		var horas = Math.floor(tempoEmMilis / 3600000);
+		var minutos = Math.floor(Math.floor((tempoEmMilis / 1000)) / 60) % 60;
+		var segundos = Math.floor(tempoEmMilis / 1000) % 60;
+		var milesimos = tempoEmMilis % 1000;
+		return (negativo ? "-" : "") + (horas > 0 ? horas + ":" : "") + (horas > 0 && minutos < 10 ? "0" : "")
+			+ (minutos > 0 || horas > 0 ? minutos + ":" : "")
+			+ (segundos < 10 && (minutos > 0 || horas > 0) ? "0" : "") + segundos + "."
+			+ (milesimos < 100 ? "0" : "") + (milesimos < 10 ? "0" : "") + milesimos;
+	}
 
-function fillSeta(ctx, x, y, comprimento, altura, comprimentoSeta, cor1, cor2) {
-	var oldFillStyle = ctx.fillStyle;
-	var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
-	lingrad.addColorStop(0, cor1);
-	lingrad.addColorStop(1, cor2);
-	ctx.fillStyle = lingrad;
-	ctx.fillRect(x, y, comprimento, altura);
-	ctx.beginPath();
-	ctx.moveTo(x + comprimento, y);
-	ctx.lineTo(x + comprimento + comprimentoSeta, y + altura / 2);
-	ctx.lineTo(x + comprimento, y + altura);
-	ctx.fill();
-	ctx.fillStyle = oldFillStyle;
-}
+	function fillSeta(ctx, x, y, comprimento, altura, comprimentoSeta, cor1, cor2) {
+		var oldFillStyle = ctx.fillStyle;
+		var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
+		lingrad.addColorStop(0, cor1);
+		lingrad.addColorStop(1, cor2);
+		ctx.fillStyle = lingrad;
+		ctx.fillRect(x, y, comprimento, altura);
+		ctx.beginPath();
+		ctx.moveTo(x + comprimento, y);
+		ctx.lineTo(x + comprimento + comprimentoSeta, y + altura / 2);
+		ctx.lineTo(x + comprimento, y + altura);
+		ctx.fill();
+		ctx.fillStyle = oldFillStyle;
+	}
 
-function fillTrianguloInvertido(ctx, x, y, comprimento, altura, cor1, cor2) {
-	var oldFillStyle = ctx.fillStyle;
-	var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
-	lingrad.addColorStop(0, cor1);
-	lingrad.addColorStop(1, cor2);
-	ctx.fillStyle = lingrad;
-	ctx.beginPath();
-	ctx.moveTo(x, y);
-	ctx.lineTo(x + comprimento, y);
-	ctx.lineTo(x + comprimento/2, y + altura);
-	ctx.fill();
-	ctx.fillStyle = oldFillStyle;
-}
+	function fillTrianguloInvertido(ctx, x, y, comprimento, altura, cor1, cor2) {
+		var oldFillStyle = ctx.fillStyle;
+		var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
+		lingrad.addColorStop(0, cor1);
+		lingrad.addColorStop(1, cor2);
+		ctx.fillStyle = lingrad;
+		ctx.beginPath();
+		ctx.moveTo(x, y);
+		ctx.lineTo(x + comprimento, y);
+		ctx.lineTo(x + comprimento / 2, y + altura);
+		ctx.fill();
+		ctx.fillStyle = oldFillStyle;
+	}
 
-function fillTriangulo(ctx, x, y, comprimento, altura, cor1, cor2) {
-	var oldFillStyle = ctx.fillStyle;
-	var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
-	lingrad.addColorStop(0, cor1);
-	lingrad.addColorStop(1, cor2);
-	ctx.fillStyle = lingrad;
-	ctx.beginPath();
-	ctx.moveTo(x, y + altura);
-	ctx.lineTo(x + comprimento, y + altura);
-	ctx.lineTo(x + comprimento/2, y);
-	ctx.fill();
-	ctx.fillStyle = oldFillStyle;
-}
+	function fillTriangulo(ctx, x, y, comprimento, altura, cor1, cor2) {
+		var oldFillStyle = ctx.fillStyle;
+		var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
+		lingrad.addColorStop(0, cor1);
+		lingrad.addColorStop(1, cor2);
+		ctx.fillStyle = lingrad;
+		ctx.beginPath();
+		ctx.moveTo(x, y + altura);
+		ctx.lineTo(x + comprimento, y + altura);
+		ctx.lineTo(x + comprimento / 2, y);
+		ctx.fill();
+		ctx.fillStyle = oldFillStyle;
+	}
 
-function fillRect(ctx, x, y, comprimento, altura, cor1, cor2) {
-	var oldFillStyle = ctx.fillStyle;
-	var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
-	lingrad.addColorStop(0, cor1);
-	lingrad.addColorStop(1, cor2);
-	ctx.fillStyle = lingrad;
-	ctx.fillRect(x, y, comprimento, altura);
-	ctx.fillStule = oldFillStyle;
-}
+	function fillRect(ctx, x, y, comprimento, altura, cor1, cor2) {
+		var oldFillStyle = ctx.fillStyle;
+		var lingrad = ctx.createLinearGradient(0, y, 0, y + altura);
+		lingrad.addColorStop(0, cor1);
+		lingrad.addColorStop(1, cor2);
+		ctx.fillStyle = lingrad;
+		ctx.fillRect(x, y, comprimento, altura);
+		ctx.fillStule = oldFillStyle;
+	}
 
 
 
-function deepEqual(object1, object2) {
-	  const keys1 = Object.keys(object1);
-	  const keys2 = Object.keys(object2);
+	function deepEqual(object1, object2) {
+		const keys1 = Object.keys(object1);
+		const keys2 = Object.keys(object2);
 
-	  if (keys1.length !== keys2.length) {
-	    return false;
-	  }
+		if (keys1.length !== keys2.length) {
+			return false;
+		}
 
-	  for (const key of keys1) {
-	    const val1 = object1[key];
-	    const val2 = object2[key];
-	    const areObjects = isObject(val1) && isObject(val2);
-	    if (
-	      areObjects && !deepEqual(val1, val2) ||
-	      !areObjects && val1 !== val2
-	    ) {
-	      return false;
-	    }
-	  }
+		for (const key of keys1) {
+			const val1 = object1[key];
+			const val2 = object2[key];
+			const areObjects = isObject(val1) && isObject(val2);
+			if (
+				areObjects && !deepEqual(val1, val2) ||
+				!areObjects && val1 !== val2
+			) {
+				return false;
+			}
+		}
 
-	  return true;
-}
+		return true;
+	}
 
-function isObject(object) {
-  return object != null && typeof object === 'object';
-}
+	function isObject(object) {
+		return object != null && typeof object === 'object';
+	}
 
 
 
@@ -327,240 +326,240 @@ function isObject(object) {
 
 </script>
 <script type="text/javascript">
-var gauge = null;
-var dados = {
-		fimCompraDelta: 0, 
+	var gauge = null;
+	var dados = {
+		fimCompraDelta: 0,
 		compraDelta: 0,
 		inicioCompraDelta: 0,
 		inicioVendaDelta: 0,
 		vendaDelta: 0,
 		fimVendaDelta: 0,
 		preco: 0
-};
-var deltaPropriedades = {
-		comprimento : 0,
+	};
+	var deltaPropriedades = {
+		comprimento: 0,
 		altura: 0
-};
+	};
 
 
-function consultar() {
-	$.ajax({
-		url : '/indicador/delta',
-		success : function(resumo) {
-			if (deepEqual(dados, resumo)) {
-				console.log('Nada mudou');
-			} else {
-				console.log('atualizado');
-				dados = resumo;
+	function consultar() {
+		$.ajax({
+			url: '/indicador/delta',
+			success: function (resumo) {
+				if (deepEqual(dados, resumo)) {
+					console.log('Nada mudou');
+				} else {
+					console.log('atualizado');
+					dados = resumo;
+				}
+				atualizacao = new Date().toLocaleTimeString();
+				// drawDelta();
+				if (gauge.maxValue != dados.fimVendaDelta) {
+					gauge.maxValue = dados.fimVendaDelta; // set max gauge value
+					gauge.setMinValue(dados.fimCompraDelta);
+				}
+				gauge.set(dados.preco);
+				gauge.options.staticZones = [
+					{strokeStyle: "#30B32D", min: dados.fimCompraDelta, max: dados.compraDelta}, // Red from 100 to 130
+					{strokeStyle: "#FFDD00", min: dados.compraDelta, max: dados.inicioCompraDelta}, // Yellow
+					{strokeStyle: "cornflowerblue", min: dados.inicioCompraDelta, max: dados.inicioVendaDelta}, // Green
+					{strokeStyle: "#FFDD00", min: dados.inicioVendaDelta, max: dados.vendaDelta}, // Yellow
+					{strokeStyle: "#30B32D", min: dados.vendaDelta, max: dados.fimVendaDelta}  // Red
+				],
+					gauge.options.staticLabels = {
+						font: "12px sans-serif",  // Specifies font
+						labels: [dados.compraDelta, dados.vendaDelta],  // Print labels at these values
+						color: "#000000",  // Optional: Label text color
+						fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+					}
 			}
-			atualizacao = new Date().toLocaleTimeString();
-			// drawDelta();
-			if (gauge.maxValue != dados.fimVendaDelta) {
-				gauge.maxValue = dados.fimVendaDelta; // set max gauge value
+		});
+	}
+
+	function consultarCotacao() {
+		$.ajax({
+			url: '/ativo/cotacao/WIN@N',
+			success: function (cotacao) {
+				atualizacao = new Date().toLocaleTimeString();
+				//drawDelta();
+				gauge.set(cotacao.preco);
+				gauge.options.staticLabels = {
+					font: "10px sans-serif",  // Specifies font
+					labels: [dados.compraDelta, dados.vendaDelta],  // Print labels at these values
+					color: "#000000",  // Optional: Label text color
+					fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+				};
+				// gauge.setTextField(cotacao.preco);
+
+			}
+		});
+	}
+
+	function inicializarGauge() {
+		var gaugeComprimento = $('#divGaugeDelta').width();
+
+		if (deltaPropriedades.comprimento != gaugeComprimento) {
+			var opts = {
+				angle: 0, // The span of the gauge arc
+				lineWidth: 0.44, // The line thickness
+				radiusScale: 1, // Relative radius
+				pointer: {
+					length: 0.6, // // Relative to gauge radius
+					strokeWidth: 0.035, // The thickness
+					color: '#000000' // Fill color
+				},
+				limitMax: false,     // If false, max value increases automatically if value > maxValue
+				limitMin: false,     // If true, the min value of the gauge will be fixed
+				colorStart: '#6FADCF',   // Colors
+				colorStop: '#8FC0DA',    // just experiment with them
+				strokeColor: '#E0E0E0',  // to see which ones work best for you
+				generateGradient: true,
+				highDpiSupport: true,     // High resolution support
+
+				staticLabels: {
+					font: "12px sans-serif",  // Specifies font
+					labels: [dados.compraDelta, dados.vendaDelta],  // Print labels at these values
+					color: "#000000",  // Optional: Label text color
+					fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+				},
+
+				staticZones: [
+					{strokeStyle: "#30B32D", min: dados.fimCompraDelta, max: dados.compraDelta}, // Red from 100 to 130
+					{strokeStyle: "#FFDD00", min: dados.compraDelta, max: dados.inicioCompraDelta}, // Yellow
+					{strokeStyle: "cornflowerblue", min: dados.inicioCompraDelta, max: dados.inicioVendaDelta}, // Green
+					{strokeStyle: "#FFDD00", min: dados.inicioVendaDelta, max: dados.vendaDelta}, // Yellow
+					{strokeStyle: "#30B32D", min: dados.vendaDelta, max: dados.fimVendaDelta}  // Red
+				]
+			};
+
+			deltaPropriedades.comprimento = gaugeComprimento;
+			deltaPropriedades.altura = gaugeComprimento / 2;
+
+
+			$('#divGaugeDelta').html('<canvas id="canvasDeltaGauge" width="' + deltaPropriedades.comprimento + '" height="' + deltaPropriedades.altura + '"></canvas>');
+
+
+			var target = document.getElementById('canvasDeltaGauge'); // your canvas element
+			gauge = new Gauge(target).setOptions(opts); // create gauge!
+			if (dados.preco > dados.fimVendaDelta) {
+				gauge.maxValue = dados.preco;
+			} else {
+				gauge.maxValue = dados.fimVendaDelta;
+			}
+			if (dados.preco < dados.fimCompraDelta) {
+				gauge.setMinValue(dados.preco);
+			} else {
 				gauge.setMinValue(dados.fimCompraDelta);
 			}
-			gauge.set(dados.preco);
-			gauge.options.staticZones = [
-				   {strokeStyle: "#30B32D", min: dados.fimCompraDelta, max: dados.compraDelta}, // Red from 100 to 130
-				   {strokeStyle: "#FFDD00", min: dados.compraDelta, max: dados.inicioCompraDelta}, // Yellow
-				   {strokeStyle: "cornflowerblue", min: dados.inicioCompraDelta, max: dados.inicioVendaDelta}, // Green
-				   {strokeStyle: "#FFDD00", min: dados.inicioVendaDelta, max: dados.vendaDelta}, // Yellow
-				   {strokeStyle: "#30B32D", min: dados.vendaDelta, max: dados.fimVendaDelta}  // Red
-				],
-			gauge.options.staticLabels = {
-				  font: "12px sans-serif",  // Specifies font
-				  labels: [dados.compraDelta, dados.vendaDelta],  // Print labels at these values
-				  color: "#000000",  // Optional: Label text color
-				  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
-				}
-		}
-	});
-}
+			gauge.set(dados.preco); // set actual value
 
-function consultarCotacao() {
-	$.ajax({
-		url : '/ativo/cotacao/WIN@N',
-		success : function(cotacao) {
-			atualizacao = new Date().toLocaleTimeString();
-			//drawDelta();
-			gauge.set(cotacao.preco);
-			gauge.options.staticLabels = {
-					  font: "10px sans-serif",  // Specifies font
-					  labels: [dados.compraDelta, dados.vendaDelta],  // Print labels at these values
-					  color: "#000000",  // Optional: Label text color
-					  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
-					};
-			// gauge.setTextField(cotacao.preco);
-			
+			gauge.animationSpeed = 10; // set animation speed (32 is default value)
+			gauge.setTextField(document.getElementById('gauge-value'));
 		}
-	});
-}
 
-function inicializarGauge() {
-	var gaugeComprimento = $('#divGaugeDelta').width();
-	
-	if (deltaPropriedades.comprimento != gaugeComprimento) {
-		var opts = {
-				  angle: 0, // The span of the gauge arc
-				  lineWidth: 0.44, // The line thickness
-				  radiusScale: 1, // Relative radius
-				  pointer: {
-				    length: 0.6, // // Relative to gauge radius
-				    strokeWidth: 0.035, // The thickness
-				    color: '#000000' // Fill color
-				  },
-				  limitMax: false,     // If false, max value increases automatically if value > maxValue
-				  limitMin: false,     // If true, the min value of the gauge will be fixed
-				  colorStart: '#6FADCF',   // Colors
-				  colorStop: '#8FC0DA',    // just experiment with them
-				  strokeColor: '#E0E0E0',  // to see which ones work best for you
-				  generateGradient: true,
-				  highDpiSupport: true,     // High resolution support
-				  
-				  staticLabels: {
-					  font: "12px sans-serif",  // Specifies font
-					  labels: [dados.compraDelta, dados.vendaDelta],  // Print labels at these values
-					  color: "#000000",  // Optional: Label text color
-					  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
-					},
-				  
-				  staticZones: [
-					   {strokeStyle: "#30B32D", min: dados.fimCompraDelta, max: dados.compraDelta}, // Red from 100 to 130
-					   {strokeStyle: "#FFDD00", min: dados.compraDelta, max: dados.inicioCompraDelta}, // Yellow
-					   {strokeStyle: "cornflowerblue", min: dados.inicioCompraDelta, max: dados.inicioVendaDelta}, // Green
-					   {strokeStyle: "#FFDD00", min: dados.inicioVendaDelta, max: dados.vendaDelta}, // Yellow
-					   {strokeStyle: "#30B32D", min: dados.vendaDelta, max: dados.fimVendaDelta}  // Red
-					]
-		};
-		
-		deltaPropriedades.comprimento = gaugeComprimento;
-		deltaPropriedades.altura = gaugeComprimento/2;
-		
-		
-		$('#divGaugeDelta').html('<canvas id="canvasDeltaGauge" width="'+deltaPropriedades.comprimento+'" height="'+deltaPropriedades.altura+'"></canvas>');
-		
-		
-		var target = document.getElementById('canvasDeltaGauge'); // your canvas element
-		gauge = new Gauge(target).setOptions(opts); // create gauge!
-		if (dados.preco > dados.fimVendaDelta) {
-			gauge.maxValue = dados.preco;
-		} else {
-			gauge.maxValue = dados.fimVendaDelta;
-		}
-		if (dados.preco < dados.fimCompraDelta) {
-			gauge.setMinValue(dados.preco);	
-		} else {
-			gauge.setMinValue(dados.fimCompraDelta);
-		}
-		gauge.set(dados.preco); // set actual value
-		
-		gauge.animationSpeed = 10; // set animation speed (32 is default value)
-		gauge.setTextField(document.getElementById('gauge-value'));
 	}
-	
-}
 
 
-document.body.onresize = function() {
-    inicializar();
-    inicializarGauge();
-    inicializarGaugeRsi();
-};
+	document.body.onresize = function () {
+		inicializar();
+		inicializarGauge();
+		inicializarGaugeRsi();
+	};
 
-setInterval(function () {
-	consultar();
+	setInterval(function () {
+		consultar();
 	}, 20000);
 
-setInterval(function () {
-	consultarCotacao();
+	setInterval(function () {
+		consultarCotacao();
 	}, 5000);
 
-inicializar();
-inicializarGauge();
+	inicializar();
+	inicializarGauge();
 </script>
 
 <script type="text/javascript">
-var gaugeRsi = null;
-var rsiValor = 50;
-var rsiPropriedades = {
-	comprimento : 0,
-	altura: 0
-};
+	var gaugeRsi = null;
+	var rsiValor = 50;
+	var rsiPropriedades = {
+		comprimento: 0,
+		altura: 0
+	};
 
-function inicializarGaugeRsi() {
-	var gaugeComprimento = $('#divGaugeRsi').width();
-	if (gaugeComprimento != rsiPropriedades.comprimento) {
-		var opts = {
-				  angle: 0, // The span of the gauge arc
-				  lineWidth: 0.44, // The line thickness
-				  radiusScale: 1, // Relative radius
-				  pointer: {
-				    length: 0.6, // // Relative to gauge radius
-				    strokeWidth: 0.035, // The thickness
-				    color: '#000000' // Fill color
-				  },
-				  limitMax: false,     // If false, max value increases automatically if value > maxValue
-				  limitMin: false,     // If true, the min value of the gauge will be fixed
-				  colorStart: '#6FADCF',   // Colors
-				  colorStop: '#8FC0DA',    // just experiment with them
-				  strokeColor: '#E0E0E0',  // to see which ones work best for you
-				  generateGradient: true,
-				  highDpiSupport: true,     // High resolution support
-				  
-				  staticLabels: {
-					  font: "12px sans-serif",  // Specifies font
-					  labels: [0,20,30,70,80,100],  // Print labels at these values
-					  color: "#000000",  // Optional: Label text color
-					  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
-					},
-				  
-				  staticZones: [
-					   {strokeStyle: "#30B32D", min: 0, max: 20}, // Red from 100 to 130
-					   {strokeStyle: "#FFDD00", min: 20, max: 30}, // Yellow
-					   {strokeStyle: "cornflowerblue", min: 30, max: 70}, // Green
-					   {strokeStyle: "#FFDD00", min: 70, max: 80}, // Yellow
-					   {strokeStyle: "#30B32D", min: 80, max: 100}  // Red
-					]
-		};
-		
-		rsiPropriedades.comprimento = gaugeComprimento;
-		rsiPropriedades.altura = gaugeComprimento/2;
-		
-		$('#divGaugeRsi').html('<canvas id="canvasRsiGauge" width="'+rsiPropriedades.comprimento+'" height="'+rsiPropriedades.altura+'"></canvas>');
-		
-		
-		var target = document.getElementById('canvasRsiGauge'); // your canvas element
-		gaugeRsi = new Gauge(target).setOptions(opts); // create gauge!
-		gaugeRsi.setMinValue(0);
-		gaugeRsi.maxValue = 100;
-		gaugeRsi.set(rsiValor); // set actual value
-		gaugeRsi.animationSpeed = 10; // set animation speed (32 is default value)
-		gaugeRsi.setTextField(document.getElementById('gaugeRsiValue'));
-		consultarRsi();
-	}
-}
+	function inicializarGaugeRsi() {
+		var gaugeComprimento = $('#divGaugeRsi').width();
+		if (gaugeComprimento != rsiPropriedades.comprimento) {
+			var opts = {
+				angle: 0, // The span of the gauge arc
+				lineWidth: 0.44, // The line thickness
+				radiusScale: 1, // Relative radius
+				pointer: {
+					length: 0.6, // // Relative to gauge radius
+					strokeWidth: 0.035, // The thickness
+					color: '#000000' // Fill color
+				},
+				limitMax: false,     // If false, max value increases automatically if value > maxValue
+				limitMin: false,     // If true, the min value of the gauge will be fixed
+				colorStart: '#6FADCF',   // Colors
+				colorStop: '#8FC0DA',    // just experiment with them
+				strokeColor: '#E0E0E0',  // to see which ones work best for you
+				generateGradient: true,
+				highDpiSupport: true,     // High resolution support
 
-function consultarRsi() {
-	$.ajax({
-		url : '/indicador/rsi/WIN@N',
-		success : function(result) {
-			console.log("RSI");
-			console.log(result);
-			rsiValor = result.rsi;
-			gaugeRsi.set(rsiValor);
-		},
-		error: function(error) {
-			console.log("RSI Error");
-			console.log(error);
-			gaugeRsi.set(50);
+				staticLabels: {
+					font: "12px sans-serif",  // Specifies font
+					labels: [0, 20, 30, 70, 80, 100],  // Print labels at these values
+					color: "#000000",  // Optional: Label text color
+					fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+				},
+
+				staticZones: [
+					{strokeStyle: "#30B32D", min: 0, max: 20}, // Red from 100 to 130
+					{strokeStyle: "#FFDD00", min: 20, max: 30}, // Yellow
+					{strokeStyle: "cornflowerblue", min: 30, max: 70}, // Green
+					{strokeStyle: "#FFDD00", min: 70, max: 80}, // Yellow
+					{strokeStyle: "#30B32D", min: 80, max: 100}  // Red
+				]
+			};
+
+			rsiPropriedades.comprimento = gaugeComprimento;
+			rsiPropriedades.altura = gaugeComprimento / 2;
+
+			$('#divGaugeRsi').html('<canvas id="canvasRsiGauge" width="' + rsiPropriedades.comprimento + '" height="' + rsiPropriedades.altura + '"></canvas>');
+
+
+			var target = document.getElementById('canvasRsiGauge'); // your canvas element
+			gaugeRsi = new Gauge(target).setOptions(opts); // create gauge!
+			gaugeRsi.setMinValue(0);
+			gaugeRsi.maxValue = 100;
+			gaugeRsi.set(rsiValor); // set actual value
+			gaugeRsi.animationSpeed = 10; // set animation speed (32 is default value)
+			gaugeRsi.setTextField(document.getElementById('gaugeRsiValue'));
+			consultarRsi();
 		}
-	});
-}
+	}
 
-inicializarGaugeRsi();
+	function consultarRsi() {
+		$.ajax({
+			url: '/indicador/rsi/WIN@N',
+			success: function (result) {
+				console.log("RSI");
+				console.log(result);
+				rsiValor = result.rsi;
+				gaugeRsi.set(rsiValor);
+			},
+			error: function (error) {
+				console.log("RSI Error");
+				console.log(error);
+				gaugeRsi.set(50);
+			}
+		});
+	}
 
-setInterval(function () {
-	consultarRsi();
+	inicializarGaugeRsi();
+
+	setInterval(function () {
+		consultarRsi();
 	}, 5000);
 
 </script>

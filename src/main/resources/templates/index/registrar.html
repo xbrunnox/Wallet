@@ -1,13 +1,15 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Registrar Usuário - Versátil I.A.</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Registrar Usuário - Versátil I.A.</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
+
 <body>
 	<div class="container-fluid">
 		<br>
@@ -60,8 +62,8 @@
 		var conta = $('#idConta').val();
 		var pagamento = $('#idPagamento').val();
 		$.ajax({
-			url : '/assinatura/ativar/' + conta + '/' + pagamento,
-			success : function(resumo) {
+			url: '/assinatura/ativar/' + conta + '/' + pagamento,
+			success: function (resumo) {
 				console.log('ok');
 			}
 		});
@@ -69,8 +71,8 @@
 
 	function consultar() {
 		$.ajax({
-			url : '/delta/resumo',
-			success : function(resumo) {
+			url: '/delta/resumo',
+			success: function (resumo) {
 				console.log(resumo);
 
 				var html = '';
@@ -83,30 +85,30 @@
 				html += '<th align="right">Amplit.</th>';
 				html += '</thead>';
 				html += '<tbody>';
-				$.each(resumo.deltas, function(index, delta) {
+				$.each(resumo.deltas, function (index, delta) {
 					html += '<tr>';
 					// 2021-10-12
 					html += '<td>' + delta.data.substring(8, 10) + '/'
-							+ delta.data.substring(5, 7) + '</td>';
+						+ delta.data.substring(5, 7) + '</td>';
 					html += '<td align="right">'
-							+ formatarDecimal(delta.vwapSuperior) + '<br>'
-							+ formatarNumero(delta.vwapInferior) + '</td>';
+						+ formatarDecimal(delta.vwapSuperior) + '<br>'
+						+ formatarNumero(delta.vwapInferior) + '</td>';
 					html += '<td align="right">' + formatarDecimal(delta.delta)
-							+ '</td>';
+						+ '</td>';
 					html += '<td align="right">'
-							+ formatarDecimal(delta.maxima) + '<br>'
-							+ formatarDecimal(delta.minima) + '</td>';
+						+ formatarDecimal(delta.maxima) + '<br>'
+						+ formatarDecimal(delta.minima) + '</td>';
 					html += '<td align="right">'
-							+ formatarDecimal(delta.amplitude) + '</td>';
+						+ formatarDecimal(delta.amplitude) + '</td>';
 					html += '</tr>';
 				});
 				html += '<tr>';
 				html += '<tbody>';
 				html += '</table>';
 				$('#vwapSuperior')
-						.html(formatarDecimal(resumo.vwapSuperior, 0));
+					.html(formatarDecimal(resumo.vwapSuperior, 0));
 				$('#vwapInferior')
-						.html(formatarDecimal(resumo.vwapInferior, 0));
+					.html(formatarDecimal(resumo.vwapInferior, 0));
 				$('#delta').html(formatarDecimal(resumo.delta, 0));
 				$('#amplitude').html(formatarDecimal(resumo.amplitude, 0));
 				$('#conteudo').html(html);
@@ -124,8 +126,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -133,9 +135,10 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 </script>
+
 </html>

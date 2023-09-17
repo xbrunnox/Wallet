@@ -27,6 +27,7 @@ import br.app.grid.wallet.router.RouterService;
 import br.app.grid.wallet.usuario.UsuarioUtil;
 import br.app.grid.wallet.util.converter.AssinaturaPagamentoResponseConverter;
 import br.app.grid.wallet.util.converter.AssinaturaResponseConverter;
+import br.app.grid.wallet.web.request.AdicionarExpertAssinaturaRequest;
 import br.app.grid.wallet.web.request.AlterarEmailRequest;
 import br.app.grid.wallet.web.request.AlterarVencimentoRequest;
 import br.app.grid.wallet.web.request.ExcluirAssinaturaPagamentoRequest;
@@ -51,6 +52,17 @@ public class AssinaturaController {
 
   @Autowired
   private RouterService routerService;
+
+  /**
+   * Realiza a adição de um Expert na Assinatura.
+   * 
+   * @param request Dados do expert.
+   */
+  @PostMapping("/adicionar-expert")
+  public void adicionarExpert(
+      @RequestBody AdicionarExpertAssinaturaRequest adicionarExpertRequest) {
+    assinaturaService.adicionarExpert(adicionarExpertRequest);
+  }
 
   @GetMapping("/experts/{conta}")
   public AssinaturaExpertsResponse experts(@PathVariable("conta") String conta) {
@@ -168,9 +180,10 @@ public class AssinaturaController {
       throw new RuntimeException("Usuário não está logado.");
     }
   }
-  
+
   @PostMapping("/excluir-pagamento")
-  public void excluirPagamento(@RequestBody ExcluirAssinaturaPagamentoRequest excluirPagamentoRequest) {
+  public void excluirPagamento(
+      @RequestBody ExcluirAssinaturaPagamentoRequest excluirPagamentoRequest) {
     if (UsuarioUtil.isLogged(request)) {
       try {
         System.out.println(new ObjectMapper().writeValueAsString(excluirPagamentoRequest));
@@ -270,6 +283,23 @@ public class AssinaturaController {
         assinaturaService.gravar(assinatura);
         routerService.resume(idConta);
       }
+      return "ok";
+    } else {
+      throw new RuntimeException("Usuário não está logado.");
+    }
+  }
+
+
+  /**
+   * Realiza a exclusão do expert da assinatura com ID indicado.
+   * 
+   * @param idAssinaturaExpert ID do expert na assinatura.
+   * @return
+   */
+  @GetMapping("/excluir-expert/{idAssinaturaExpert}")
+  public String excluirAutomacao(@PathVariable("idAssinaturaExpert") Integer idAssinaturaExpert) {
+    if (UsuarioUtil.isLogged(request)) {
+      assinaturaService.excluirExpert(idAssinaturaExpert);
       return "ok";
     } else {
       throw new RuntimeException("Usuário não está logado.");

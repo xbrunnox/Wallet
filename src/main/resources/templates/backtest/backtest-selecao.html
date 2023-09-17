@@ -1,25 +1,26 @@
 <!doctype html>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Backtest - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Backtest - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Backtest</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Backtest</span>
 		</a>
 	</nav>
 	<br>
@@ -50,8 +51,8 @@
 		<div class="row">
 			<div class="col-6">
 				<select id="back1" class="form-control">
-					<option th:each="backtest : ${backtestList}"
-						th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
+					<option th:each="backtest : ${backtestList}" th:value="${backtest.id}"
+						th:text="${backtest.descricao}"></option>
 				</select>
 			</div>
 			<div class="col-3">
@@ -61,8 +62,8 @@
 		<div class="row">
 			<div class="col-6">
 				<select id="back2" class="form-control">
-					<option th:each="backtest : ${backtestList}"
-						th:value="${backtest.id}" th:text="${backtest.descricao}"></option>
+					<option th:each="backtest : ${backtestList}" th:value="${backtest.id}"
+						th:text="${backtest.descricao}"></option>
 				</select>
 			</div>
 			<div class="col-3">
@@ -94,7 +95,8 @@
 		var vol1 = $('#volume1').val();
 		var vol2 = $('#volume2').val();
 		window.location.href = "/backtest/" + idBack1 + "/" + idBack2 + "/"
-				+ vol1 + "/" + vol2;
+			+ vol1 + "/" + vol2;
 	}
 </script>
+
 </html>

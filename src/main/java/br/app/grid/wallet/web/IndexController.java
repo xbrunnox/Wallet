@@ -54,6 +54,7 @@ import br.app.grid.wallet.dividendo.Dividendo;
 import br.app.grid.wallet.dividendo.DividendoService;
 import br.app.grid.wallet.enums.TimeFrameEnum;
 import br.app.grid.wallet.estrategia.EstrategiaFechamentoItem;
+import br.app.grid.wallet.estrategia.service.EstrategiaAberturaFechamentoService;
 import br.app.grid.wallet.fii.FiiDividendo;
 import br.app.grid.wallet.grafico.SerieInt;
 import br.app.grid.wallet.homebroker.HomeBroker;
@@ -110,6 +111,9 @@ public class IndexController {
 
 	@Autowired
 	private ContaService contaService;
+	
+	@Autowired
+	private EstrategiaAberturaFechamentoService estrategiaAberturaFechamentoService;
 
 	@Autowired
 	private RouterService routerService;
@@ -629,7 +633,8 @@ public class IndexController {
 				BigDecimal volumeMedio = BigDecimal.ZERO;
 				boolean achou = candles.size() > 0;
 				for (Candle candle : candles) {
-					volumeMedio = volumeMedio.add(candle.getAbertura().multiply(BigDecimal.valueOf(candle.getVolume())));
+					volumeMedio = volumeMedio
+							.add(candle.getAbertura().multiply(BigDecimal.valueOf(candle.getVolume())));
 				}
 				if (!achou) {
 					CandlesRequest candleRequest = CandlesRequest.builder().ativo(ativo.getCodigo())
@@ -851,4 +856,317 @@ public class IndexController {
 
 	}
 
+	@GetMapping("/analisar-sem-stop")
+	public void analisarSemStop() {
+
+		LocalDate dataInicial = LocalDate.of(2023, 1, 1);
+		LocalDate dataFinal = LocalDate.of(2023, 8, 22);
+		List<Ativo> ativos = ativoService.getList();
+
+		List<EstrategiaFechamentoItem> itens = new ArrayList<>();
+		DecimalFormat formatter = new DecimalFormat("#,##0.00");
+		for (Ativo ativo : ativos) {
+			List<EstrategiaFechamentoItem> itensDoAtivo = new ArrayList<>();
+			long horaDeInnicio = System.currentTimeMillis();
+			if (ativo.getCategoria().getId().equals(Integer.parseInt("3"))) {
+				System.out.println("Analisando: " + ativo.getCodigo());
+				List<Candle> candles = candleService.getList(ativo.getCodigo(), TimeFrameEnum.D1, dataInicial,
+						dataFinal);
+				if (candles.size() == 0) {
+					candles = new ArrayList<>();
+
+				}
+
+				BigDecimal inicio = BigDecimal.valueOf(0.005);
+				BigDecimal fim = BigDecimal.valueOf(0.050);
+				BigDecimal incremento = BigDecimal.valueOf(0.001);
+				BigDecimal passo = inicio;
+				System.out.println("Candles encontratos: " + candles.size());
+				BigDecimal volumeMedio = BigDecimal.ZERO;
+				boolean achou = candles.size() > 0;
+				for (Candle candle : candles) {
+					volumeMedio = volumeMedio
+							.add(candle.getAbertura().multiply(BigDecimal.valueOf(candle.getVolume())));
+				}
+//				if (!achou) {
+//					CandlesRequest candleRequest = CandlesRequest.builder().ativo(ativo.getCodigo())
+//							.dataFinal(dataFinal).dataInicial(dataInicial).timeFrame(16408).build();
+//					AtivoCandlesResponse response = routerService.getCandles(candleRequest);
+//					for (CandleResponse candle : response.getCandles()) {
+//						Candle cand = CandleConverter.convert(response, candle);
+//						candles.add(cand);
+//						try {
+//							candleService.gravar(cand);
+//						} catch (Exception e) {
+//							System.out.println(e.getMessage());
+//						}
+//					}
+//
+//				}
+				if (candles.size() != 0) {
+					volumeMedio = volumeMedio.divide(BigDecimal.valueOf(candles.size()), 2, RoundingMode.HALF_DOWN);
+				}
+
+				while (passo.compareTo(fim) <= 0 && candles.size() > 0) {
+					int acertos = 0;
+					int erros = 0;
+					List<BigDecimal> resultados = new ArrayList<>();
+					Candle candleAnterior = null;
+					BigDecimal percentualGanho = BigDecimal.ZERO;
+
+					for (Candle candle : candles) {
+						if (candleAnterior != null) {
+							BigDecimal gatilho = candleAnterior.getFechamento()
+									.multiply(BigDecimal.valueOf(1).subtract(passo));
+
+							if (candle.getAbertura().compareTo(gatilho) < 0
+									|| candle.getMinima().compareTo(gatilho) < 0) {
+								// Houve entrada
+								BigDecimal entrada = (candle.getAbertura().compareTo(gatilho) < 0 ? candle.getAbertura()
+										: gatilho);
+								BigDecimal stop = entrada.multiply(BigDecimal.valueOf(0.95));
+								BigDecimal saida = candle.getFechamento();
+//								if (candle.getMinima().compareTo(stop) < 0) {
+//									saida = stop;
+//								}
+								BigDecimal lucro = saida.subtract(entrada);
+								resultados.add(lucro);
+								percentualGanho = percentualGanho.add(saida.divide(entrada, 2, RoundingMode.HALF_DOWN)
+										.subtract(BigDecimal.valueOf(1)).multiply(BigDecimal.valueOf(100)));
+								if (lucro.compareTo(BigDecimal.ZERO) >= 0) {
+									acertos++;
+								} else {
+									erros++;
+								}
+							}
+						}
+						candleAnterior = candle;
+					}
+//			System.out.println("Resultados: " + passo.multiply(BigDecimal.valueOf(100)) + "%");
+					BigDecimal total = BigDecimal.ZERO;
+					for (BigDecimal resultado : resultados) {
+						total = total.add(resultado);
+					}
+					BigDecimal percentual = BigDecimal.ZERO;
+					if ((acertos + erros) > 0) {
+						BigDecimal totalOperacoes = BigDecimal.valueOf(acertos).add(BigDecimal.valueOf(erros));
+						percentual = BigDecimal.valueOf(acertos).multiply(BigDecimal.valueOf(100))
+								.divide(totalOperacoes, 0, RoundingMode.HALF_UP);
+					}
+					System.out.println(ativo.getCodigo() + "\t" + ativo.getNome() + "\t"
+							+ passo.multiply(BigDecimal.valueOf(100)) + "%\t" + (acertos + erros) + "\t" + acertos
+							+ "\t" + erros + "\t" + formatter.format(percentual) + "%\t" + formatter.format(total)
+							+ "\t" + percentualGanho + "%" + "\t" + formatter.format(volumeMedio));
+					itensDoAtivo.add(EstrategiaFechamentoItem.builder().acertos(acertos).codigo(ativo.getCodigo())
+							.ativo(ativo.getNome()).erros(erros).gatilho(passo.multiply(BigDecimal.valueOf(100)))
+							.resultado(total).resultadoPercentual(percentualGanho).volumeNegociado(volumeMedio)
+							.build());
+					passo = passo.add(incremento);
+				}
+			}
+			System.out.println("Tempo decorrido: " + (System.currentTimeMillis() - horaDeInnicio) + " ms");
+			boolean temGanho = false;
+			boolean temLiquidez = false;
+			for (EstrategiaFechamentoItem item : itensDoAtivo) {
+				if (item.getResultadoPercentual().compareTo(BigDecimal.valueOf(30)) > 0) {
+					temGanho = true;
+				}
+				if (item.getVolumeNegociado().compareTo(BigDecimal.valueOf(800000)) > 0
+						|| item.getVolumeNegociado().compareTo(BigDecimal.ZERO) == 0) {
+					temLiquidez = true;
+				}
+			}
+			if (temGanho && temLiquidez)
+				itens.addAll(itensDoAtivo);
+		}
+		// Criando excel
+
+		// Criando o arquivo e uma planilha chamada "Product"
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		HSSFSheet sheet = workbook.createSheet("Product");
+
+		// Definindo alguns padroes de layout
+		sheet.setDefaultColumnWidth(15);
+		sheet.setDefaultRowHeight((short) 400);
+
+		int rownum = 0;
+		int cellnum = 0;
+		Cell cell;
+		Row row;
+
+		// Configurando estilos de células (Cores, alinhamento, formatação, etc..)
+		HSSFDataFormat numberFormat = workbook.createDataFormat();
+
+		CellStyle headerStyle = workbook.createCellStyle();
+		headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		headerStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		headerStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		CellStyle textStyle = workbook.createCellStyle();
+		textStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		textStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		CellStyle numberStyle = workbook.createCellStyle();
+		numberStyle.setDataFormat(numberFormat.getFormat("#,##0.00"));
+		numberStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		// Configurando Header
+		row = sheet.createRow(rownum++);
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Código");
+
+//		row = sheet.createRow(rownum++);
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Ativo");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Gatilho %");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Operações");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Acertos");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Erros");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("% Acerto");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Resultado");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("% Resultado");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Volume Financ.");
+
+		// Adicionando os dados dos produtos na planilha
+		for (EstrategiaFechamentoItem item : itens) {
+			row = sheet.createRow(rownum++);
+			cellnum = 0;
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(textStyle);
+			cell.setCellValue(item.getCodigo());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(textStyle);
+			cell.setCellValue(item.getAtivo());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(textStyle);
+			cell.setCellValue(item.getGatilho().doubleValue());
+
+			cell = row.createCell(cellnum++);
+//			cell.setCellStyle(numberStyle);
+			cell.setCellValue(item.getAcertos() + item.getErros());
+
+			cell = row.createCell(cellnum++);
+//			cell.setCellStyle(numberStyle);
+			cell.setCellValue(item.getAcertos());
+
+			cell = row.createCell(cellnum++);
+//			cell.setCellStyle(numberStyle);
+			cell.setCellValue(item.getErros());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(numberStyle);
+			BigDecimal percentual = BigDecimal.ZERO;
+			if (item.getAcertos() + item.getErros() > 0)
+				percentual = BigDecimal.valueOf(item.getAcertos()).multiply(BigDecimal.valueOf(100))
+						.divide(BigDecimal.valueOf(item.getAcertos() + item.getErros()), 0, RoundingMode.HALF_UP);
+			cell.setCellValue(percentual.doubleValue());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(numberStyle);
+			cell.setCellValue(item.getResultado().doubleValue());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(numberStyle);
+			cell.setCellValue(item.getResultadoPercentual().doubleValue());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(numberStyle);
+			cell.setCellValue(item.getVolumeNegociado().doubleValue());
+		}
+
+		try {
+
+			// Escrevendo o arquivo em disco
+			FileOutputStream out = new FileOutputStream(new File("estatisticas-sem-stop.xls"));
+			workbook.write(out);
+			out.close();
+//		workbook.close();
+			System.out.println("Success!!");
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@GetMapping("/atualizar-diarios")
+	public void atualizarDiarios() {
+		final Integer ACOES = 3;
+		LocalDate dataFinal = LocalDate.now().minusDays(1);
+		List<Ativo> ativos = ativoService.getListByCategoria(ACOES);
+//		ativos = new ArrayList<>();
+//		ativos.add(Ativo.builder().nome("Cielo").codigo("CIEL3").build());
+
+		for (Ativo ativo : ativos) {
+			LocalDate dataInicial = LocalDate.of(2023, 1, 1);
+			long horaDeInicio = System.currentTimeMillis();
+
+			System.out.println("Consultando: " + ativo.getCodigo());
+			List<Candle> candles = candleService.getList(ativo.getCodigo(), TimeFrameEnum.D1, dataInicial, dataFinal);
+
+			if (candles.size() > 0) {
+				dataInicial = candles.get(candles.size() - 1).getDataHora().toLocalDate().plusDays(1);
+			}
+
+			if (dataInicial.compareTo(dataFinal) < 0) {
+
+				CandlesRequest candleRequest = CandlesRequest.builder().ativo(ativo.getCodigo()).dataFinal(dataFinal)
+						.dataInicial(dataInicial).timeFrame(16408).build();
+				AtivoCandlesResponse response = routerService.getCandles(candleRequest);
+				if (response != null && response.getCandles() != null) {
+					System.out.println("Candles encontrados: " + response.getCandles().size() + " - "
+							+ (System.currentTimeMillis() - horaDeInicio) + " ms");
+					for (CandleResponse candle : response.getCandles()) {
+						Candle cand = CandleConverter.convert(response, candle);
+						candles.add(cand);
+						try {
+							System.out.println("Gravando " + ativo.getCodigo() + " - " + cand.getDataHora());
+							candleService.gravar(cand);
+						} catch (Exception e) {
+							System.out.println(e.getMessage());
+						}
+					}
+				}
+			}
+			System.out.println("Tempo decorrido: " + (System.currentTimeMillis() - horaDeInicio) + " ms");
+		}
+		System.out.println("Success!!");
+	}
+	
+	@GetMapping("/atualizar-estrategias")
+	public String atualizarEstatisticas() {
+		estrategiaAberturaFechamentoService.atualizarEstatisticas();
+		return "ok";
+	}
 }

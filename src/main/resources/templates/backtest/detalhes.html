@@ -1,25 +1,27 @@
 <!doctype html>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Backtest - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Backtest - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" th:href="${'/backtest/'+backtest.id}"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600" th:text="${'&nbsp;&nbsp;'+backtest.descricao}">&nbsp;&nbsp;Backtest</span>
+		<a class="navbar-brand" th:href="${'/backtest/'+backtest.id}"> <img src="/vst-ia.png" height="30"
+				class="d-inline-block align-top" alt=""> <span style="font-weight: 600"
+				th:text="${'&nbsp;&nbsp;'+backtest.descricao}">&nbsp;&nbsp;Backtest</span>
 		</a>
 	</nav>
 	<br>
@@ -69,7 +71,7 @@
 <script type="text/javascript" src="/js/versatil.js"></script>
 <script th:inline="javascript">
 	var acumuladoDias = /*[[${dias}]]*/[];
-	
+
 	console.log(acumuladoDias);
 
 	montarGrafico("div-back-1-", acumuladoDias);
@@ -80,11 +82,11 @@
 
 	function montarGrafico(divGrafico, acumulados) {
 
-		$.each(acumulados, function(index, acumuladoDia) {
+		$.each(acumulados, function (index, acumuladoDia) {
 			var categorias = [];
 			var valores = [];
 			var resultadoDia = [];
-			$.each(acumuladoDia.operacoes, function(index, operacao) {
+			$.each(acumuladoDia.operacoes, function (index, operacao) {
 				categorias.push(extractHourMinutesFromOffsetDate(operacao.dataHoraEntrada));
 				valores.push(operacao.acumulado);
 				resultadoDia.push(operacao.lucro);
@@ -106,45 +108,45 @@
 
 			var chartUsuarios = Highcharts.chart(divGrafico + acumuladoDia.data, {
 
-				chart : {
-					type : 'area'
+				chart: {
+					type: 'area'
 				},
 
-				title : {
-					text : acumuladoDia.data,
-					align : 'left'
+				title: {
+					text: acumuladoDia.data,
+					align: 'left'
 				},
 
-				subtitle : {
-					text : 'Versátil IA - ' + acumuladoDia.data,
-					align : 'left'
+				subtitle: {
+					text: 'Versátil IA - ' + acumuladoDia.data,
+					align: 'left'
 				},
 
-				yAxis : {
-					title : {
-						text : ''
+				yAxis: {
+					title: {
+						text: ''
 					},
-					plotLines : [ {
-						color : '#000000',
-						width : 1,
-						value : 0,
-						zIndex : 2
-					} ]
+					plotLines: [{
+						color: '#000000',
+						width: 1,
+						value: 0,
+						zIndex: 2
+					}]
 				},
 
-				xAxis : {
-					categories : categorias
+				xAxis: {
+					categories: categorias
 				},
 
-				plotOptions : {
-					area : {
-						marker : {
-							enabled : false,
-							symbol : 'circle',
-							radius : 4,
-							states : {
-								hover : {
-									enabled : true
+				plotOptions: {
+					area: {
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							radius: 4,
+							states: {
+								hover: {
+									enabled: true
 								}
 							}
 						}
@@ -156,21 +158,21 @@
 					align : 'right',
 					verticalAlign : 'middle'
 				},*/
-				series : series,
+				series: series,
 
-				responsive : {
-					rules : [ {
-						condition : {
-							maxWidth : 500
+				responsive: {
+					rules: [{
+						condition: {
+							maxWidth: 500
 						},
-						chartOptions : {
-							legend : {
-								layout : 'horizontal',
-								align : 'center',
-								verticalAlign : 'bottom'
+						chartOptions: {
+							legend: {
+								layout: 'horizontal',
+								align: 'center',
+								verticalAlign: 'bottom'
 							}
 						}
-					} ]
+					}]
 				}
 
 			});
@@ -180,10 +182,10 @@
 
 	function montarGraficoOld(divGrafico, acumulados) {
 
-		$.each(acumulados, function(index, acumuladoMes) {
+		$.each(acumulados, function (index, acumuladoMes) {
 			var categorias = [];
 			var valores = [];
-			$.each(acumuladoMes.dias, function(index, acumuladoDia) {
+			$.each(acumuladoMes.dias, function (index, acumuladoDia) {
 				categorias.push(acumuladoDia.data.substring(8, 10));
 				valores.push(acumuladoDia.acumulado);
 			});
@@ -195,41 +197,41 @@
 			console.log(serie);
 
 			var chartUsuarios = Highcharts.chart(divGrafico + acumuladoMes.ano
-					+ '' + acumuladoMes.mes, {
+				+ '' + acumuladoMes.mes, {
 
-				chart : {
-					type : 'area'
+				chart: {
+					type: 'area'
 				},
 
-				title : {
-					text : getMes(acumuladoMes.mes) + '/' + acumuladoMes.ano,
-					align : 'left'
+				title: {
+					text: getMes(acumuladoMes.mes) + '/' + acumuladoMes.ano,
+					align: 'left'
 				},
 
-				subtitle : {
-					text : 'Versátil IA - ' + acumuladoMes.descricao,
-					align : 'left'
+				subtitle: {
+					text: 'Versátil IA - ' + acumuladoMes.descricao,
+					align: 'left'
 				},
 
-				yAxis : {
-					title : {
-						text : ''
+				yAxis: {
+					title: {
+						text: ''
 					}
 				},
 
-				xAxis : {
-					categories : categorias
+				xAxis: {
+					categories: categorias
 				},
 
-				plotOptions : {
-					area : {
-						marker : {
-							enabled : false,
-							symbol : 'circle',
-							radius : 1,
-							states : {
-								hover : {
-									enabled : true
+				plotOptions: {
+					area: {
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							radius: 1,
+							states: {
+								hover: {
+									enabled: true
 								}
 							}
 						}
@@ -241,21 +243,21 @@
 					align : 'right',
 					verticalAlign : 'middle'
 				},*/
-				series : series,
+				series: series,
 
-				responsive : {
-					rules : [ {
-						condition : {
-							maxWidth : 500
+				responsive: {
+					rules: [{
+						condition: {
+							maxWidth: 500
 						},
-						chartOptions : {
-							legend : {
-								layout : 'horizontal',
-								align : 'center',
-								verticalAlign : 'bottom'
+						chartOptions: {
+							legend: {
+								layout: 'horizontal',
+								align: 'center',
+								verticalAlign: 'bottom'
 							}
 						}
-					} ]
+					}]
 				}
 
 			});
@@ -275,69 +277,69 @@
 		series.push(serie);
 		console.log(serie);
 
-		$.each(acumulados, function(index, acumuladoMes) {
-			$.each(acumuladoMes.dias, function(index, acumuladoDia) {
+		$.each(acumulados, function (index, acumuladoMes) {
+			$.each(acumuladoMes.dias, function (index, acumuladoDia) {
 				categorias.push(acumuladoDia.data.substring(8, 10) + '-'
-						+ acumuladoDia.data.substring(5, 7));
+					+ acumuladoDia.data.substring(5, 7));
 				valores.push(acumuladoDia.acumuladoGeral);
 			});
 		});
 
 		var chartUsuarios = Highcharts.chart(divGrafico, {
-			chart : {
-				type : 'area'
+			chart: {
+				type: 'area'
 			},
 
-			title : {
-				text : 'Resultado',
-				align : 'left'
+			title: {
+				text: 'Resultado',
+				align: 'left'
 			},
 
-			subtitle : {
-				text : 'Versátil IA',
-				align : 'left'
+			subtitle: {
+				text: 'Versátil IA',
+				align: 'left'
 			},
 
-			yAxis : {
-				title : {
-					text : ''
+			yAxis: {
+				title: {
+					text: ''
 				}
 			},
 
-			xAxis : {
-				categories : categorias
+			xAxis: {
+				categories: categorias
 			},
 
-			plotOptions : {
-				area : {
-					marker : {
-						enabled : false,
-						symbol : 'circle',
-						radius : 4,
-						states : {
-							hover : {
-								enabled : true
+			plotOptions: {
+				area: {
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						radius: 4,
+						states: {
+							hover: {
+								enabled: true
 							}
 						}
 					}
 				}
 			},
 
-			series : series,
+			series: series,
 
-			responsive : {
-				rules : [ {
-					condition : {
-						maxWidth : 500
+			responsive: {
+				rules: [{
+					condition: {
+						maxWidth: 500
 					},
-					chartOptions : {
-						legend : {
-							layout : 'horizontal',
-							align : 'center',
-							verticalAlign : 'bottom'
+					chartOptions: {
+						legend: {
+							layout: 'horizontal',
+							align: 'center',
+							verticalAlign: 'bottom'
 						}
 					}
-				} ]
+				}]
 			}
 
 		});
@@ -345,7 +347,7 @@
 	}
 
 	var monitorResumo = {
-		corretoras : []
+		corretoras: []
 	};
 
 	function getMes(mes) {
@@ -388,8 +390,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -397,30 +399,31 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 
 	// Radialize the colors
 	Highcharts.setOptions({
-		colors : Highcharts.map(Highcharts.getOptions().colors,
-				function(color) {
-					return {
-						radialGradient : {
-							cx : 0.5,
-							cy : 0.3,
-							r : 0.7
-						},
-						stops : [
-								[ 0, color ],
-								[
-										1,
-										Highcharts.color(color).brighten(-0.3)
-												.get('rgb') ] // darken
-						]
-					};
-				})
+		colors: Highcharts.map(Highcharts.getOptions().colors,
+			function (color) {
+				return {
+					radialGradient: {
+						cx: 0.5,
+						cy: 0.3,
+						r: 0.7
+					},
+					stops: [
+						[0, color],
+						[
+							1,
+							Highcharts.color(color).brighten(-0.3)
+								.get('rgb')] // darken
+					]
+				};
+			})
 	});
 </script>
+
 </html>

@@ -1,24 +1,25 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Pagamentos Recebidos - Versátil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Pagamentos Recebidos - Versátil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Pagamentos Recebidos</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Pagamentos Recebidos</span>
 		</a>
 	</nav>
 	<br>
@@ -37,23 +38,23 @@
 					<tbody>
 						<tr th:each="pagamento : ${pagamentosList}">
 							<td><span class="fonte-tabela"
-								th:text="${#temporals.format(pagamento.dataAtualizacao, 'dd/MM/yyyy')}"></span>
+									th:text="${#temporals.format(pagamento.dataAtualizacao, 'dd/MM/yyyy')}"></span>
 								<br> <small><span class="fonte-tabela"
-									th:text="${#temporals.format(pagamento.dataAtualizacao, 'HH:mm:ss')}"></span></small>
+										th:text="${#temporals.format(pagamento.dataAtualizacao, 'HH:mm:ss')}"></span></small>
 							</td>
 							<td><span class="fonte-tabela" th:text="${pagamento.nome}"></span>
 								<br> <small><span class="fonte-tabela"
-									th:text="${pagamento.plataforma +'-'+ pagamento.refPedido}"></span></small></td>
+										th:text="${pagamento.plataforma +'-'+ pagamento.refPedido}"></span></small>
+							</td>
 
+							<td class="fonte-tabela" align="right"><span th:text="${pagamento.email}"></span><br>
+								<small><span th:text="${pagamento.telefone}"></span></small></td>
 							<td class="fonte-tabela" align="right"><span
-								th:text="${pagamento.email}"></span><br> <small><span
-									th:text="${pagamento.telefone}"></span></small></td>
-							<td class="fonte-tabela" align="right"><span
-								th:text="${#numbers.formatDecimal(pagamento.valor, 1, 'POINT', 2, 'COMMA')}"></span></td>
+									th:text="${#numbers.formatDecimal(pagamento.valor, 1, 'POINT', 2, 'COMMA')}"></span>
+							</td>
 						</tr>
 						<tr>
-							<td colspan="4"><span class="fonte-tabela"
-								th:text="${pagamentosList.size()}"></span></td>
+							<td colspan="4"><span class="fonte-tabela" th:text="${pagamentosList.size()}"></span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -78,8 +79,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -87,9 +88,10 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 </script>
+
 </html>

@@ -2,6 +2,8 @@ package br.app.grid.wallet.estrategia;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Entity;
+
 import lombok.Builder;
 import lombok.Data;
 

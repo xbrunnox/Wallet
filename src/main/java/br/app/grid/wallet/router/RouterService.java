@@ -7,9 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.client.EndpointStatusResponse;

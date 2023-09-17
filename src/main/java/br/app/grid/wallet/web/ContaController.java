@@ -72,4 +72,5 @@ public class ContaController {
 		List<Conta> contasInativas = assinaturaService.getContasInativas();
 		return contasInativas;
 	}
+	
 }

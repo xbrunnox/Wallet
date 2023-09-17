@@ -36,6 +36,7 @@ import br.app.grid.wallet.servidor.ServidorAlocacao;
 import br.app.grid.wallet.servidor.ServidorRepository;
 import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.repository.TradeRepository;
+import br.app.grid.wallet.web.request.AdicionarExpertAssinaturaRequest;
 import br.app.grid.wallet.web.request.AlterarEmailRequest;
 import br.app.grid.wallet.web.request.AlterarVencimentoRequest;
 import br.app.grid.wallet.web.request.AssociarTratarPagamentoRequest;
@@ -547,5 +548,25 @@ public class AssinaturaService {
     pagamentoRepository.save(pagamento);
 
     assinaturaPagamentoRepository.delete(assinaturaPagamento);
+  }
+
+  public void excluirExpert(Integer idAssinaturaExpert) {
+    AssinaturaExpert assinaturaExpert = assinaturaExpertRepository.get(idAssinaturaExpert);
+    if (Objects.isNull(assinaturaExpert))
+      throw new BusinessException("Expert não encontrado. [" + idAssinaturaExpert + "]");
+    assinaturaExpertRepository.delete(assinaturaExpert);
+  }
+
+  public void adicionarExpert(AdicionarExpertAssinaturaRequest adicionarExpertRequest) {
+    // TODO Auto-generated method stub
+    Robo robo = roboRepository.getById(adicionarExpertRequest.getExpert());
+    Assinatura assinatura = assinaturaRepository.get(adicionarExpertRequest.getIdAssinatura());
+    AssinaturaExpert assinaturaExpert =
+        AssinaturaExpert.builder().assinatura(assinatura).ativado(true).expert(robo)
+            .volume(Double.parseDouble(adicionarExpertRequest.getAlavancagem() + ""))
+            .volumeMaximo(Double.parseDouble(adicionarExpertRequest.getAlavancagemMaxima() + ""))
+            .build();
+    assinaturaExpertRepository.save(assinaturaExpert);
+
   }
 }

@@ -1,53 +1,51 @@
 <!doctype html>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-	crossorigin="anonymous">
-<title>Detalhes de conta - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
-<style>
-.fonte-tabela {
-	font-weight: 700;
-	font-size: 65%;
-}
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+	<title>Detalhes de conta - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<style>
+		.fonte-tabela {
+			font-weight: 700;
+			font-size: 65%;
+		}
 
-.badge-dollar {
-	color: white;
-	background-color: deepskyblue;
-	font-size: 70%;
-}
+		.badge-dollar {
+			color: white;
+			background-color: deepskyblue;
+			font-size: 70%;
+		}
 
-.badge-green {
-	color: white;
-	background-color: #28a745;
-	font-size: 70%;
-}
+		.badge-green {
+			color: white;
+			background-color: #28a745;
+			font-size: 70%;
+		}
 
-.badge-venda {
-	color: white;
-	background-color: brown;
-	font-size: 70%;
-}
+		.badge-venda {
+			color: white;
+			background-color: brown;
+			font-size: 70%;
+		}
 
-.badge-compra {
-	color: white;
-	background-color: darkslateblue;
-	font-size: 70%;
-}
-</style>
+		.badge-compra {
+			color: white;
+			background-color: darkslateblue;
+			font-size: 70%;
+		}
+	</style>
 </head>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Detalhes de conta</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Detalhes de conta</span>
 		</a>
 	</nav>
 	<br>
@@ -79,8 +77,7 @@
 							<th style="text-align: center; font-size: 70%;">Ativo <br>
 								Vol.
 							</th>
-							<th class="d-none d-sm-block"
-								style="text-align: right; font-size: 70%;">Duração<br>&nbsp;
+							<th class="d-none d-sm-block" style="text-align: right; font-size: 70%;">Duração<br>&nbsp;
 							</th>
 							<th style="text-align: center; font-size: 70%;">Venda <br>
 								Compra
@@ -92,35 +89,34 @@
 					</thead>
 					<tbody>
 						<tr th:each="trade : ${tradesList}">
-							<td th:text="${#temporals.format(trade.dataEntrada, 'dd/MM/yy')}"
-								class="fonte-tabela"></td>
+							<td th:text="${#temporals.format(trade.dataEntrada, 'dd/MM/yy')}" class="fonte-tabela"></td>
 							<td align="center"><span
-								th:class="${trade.ativo.codigo.startsWith('WIN') ? 'badge badge-green': 'badge badge-dollar'}"
-								th:text="${trade.ativo.codigo}"></span><br> <span
-								th:class="${trade.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
-								th:text="${trade.volume +' '+ trade.direcao}"></span></td>
-							<td class="d-none d-sm-block" align="right"><span
-								class="fonte-tabela" th:text="${trade.getDuracaoFormatada()}"></span><br>
-							<span>&nbsp;</span></td>
+									th:class="${trade.ativo.codigo.startsWith('WIN') ? 'badge badge-green': 'badge badge-dollar'}"
+									th:text="${trade.ativo.codigo}"></span><br> <span
+									th:class="${trade.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
+									th:text="${trade.volume +' '+ trade.direcao}"></span></td>
+							<td class="d-none d-sm-block" align="right"><span class="fonte-tabela"
+									th:text="${trade.getDuracaoFormatada()}"></span><br>
+								<span>&nbsp;</span>
+							</td>
 							<td align="center"><span class="fonte-tabela"
-								th:text="${#numbers.formatDecimal(trade.compra, 1, 'POINT', 2, 'COMMA')}"></span><br>
+									th:text="${#numbers.formatDecimal(trade.compra, 1, 'POINT', 2, 'COMMA')}"></span><br>
 								<span class="fonte-tabela"
-								th:text="${#numbers.formatDecimal(trade.venda, 1, 'POINT', 2, 'COMMA')}"></span>
+									th:text="${#numbers.formatDecimal(trade.venda, 1, 'POINT', 2, 'COMMA')}"></span>
 							</td>
 							<td align="right"><span class="fonte-tabela"
-								th:text="${#numbers.formatDecimal(trade.pontos, 1, 'POINT', 2, 'COMMA')}"></span>
+									th:text="${#numbers.formatDecimal(trade.pontos, 1, 'POINT', 2, 'COMMA')}"></span>
 							</td>
 							<td align="right"><span style="font-size: 70%;"
-								th:class="${trade.resultado >= 0 ? 'badge text-bg-success': 'badge text-bg-danger'}"
-								th:text="${#numbers.formatDecimal(trade.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
+									th:class="${trade.resultado >= 0 ? 'badge text-bg-success': 'badge text-bg-danger'}"
+									th:text="${#numbers.formatDecimal(trade.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
 							</td>
 						</tr>
 						<tr>
 							<td th:text="${contas}"></td>
 							<td class="d-none d-sm-block" align="right">&nbsp;</td>
 							<td colspan="3" align="right"><Strong>Total:</Strong></td>
-							<td
-								th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"
+							<td th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"
 								style="font-weight: bold;" align="right"></td>
 						</tr>
 					</tbody>
@@ -168,8 +164,7 @@
 			</div>
 		</div>
 	</div>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
 		crossorigin="anonymous"></script>
 </body>
@@ -194,8 +189,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -203,83 +198,84 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 
 	Highcharts.chart('container', {
 
-		title : {
-			text : 'Resultado'
+		title: {
+			text: 'Resultado'
 		},
 
-		subtitle : {
-			text : 'Trades realizados'
+		subtitle: {
+			text: 'Trades realizados'
 		},
 
-		yAxis : {
-			title : {
-				text : 'Resultado (R$)'
+		yAxis: {
+			title: {
+				text: 'Resultado (R$)'
 			}
 		},
 
-		xAxis : {
-			accessibility : {
-				rangeDescription : 'Período'
+		xAxis: {
+			accessibility: {
+				rangeDescription: 'Período'
 			},
-			categories : [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-					'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+			categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+				'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 		},
 
-		legend : {
-			layout : 'vertical',
-			align : 'right',
-			verticalAlign : 'middle'
+		legend: {
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'middle'
 		},
 
-		series : [
-				{
-					name : 'Installation & Developers',
-					data : [ 43934, 48656, 65165, 81827, 112143, 142383,
-							171533, 165174, 155157, 161454, 154610 ]
-				},
-				{
-					name : 'Manufacturing',
-					data : [ 24916, 37941, 29742, 29851, 32490, 30282, 38121,
-							36885, 33726, 34243, 31050 ]
-				},
-				{
-					name : 'Sales & Distribution',
-					data : [ 11744, 30000, 16005, 19771, 20185, 24377, 32147,
-							30912, 29243, 29213, 25663 ]
-				},
-				{
-					name : 'Operations & Maintenance',
-					data : [ null, null, null, null, null, null, null, null,
-							11164, 11218, 10077 ]
-				},
-				{
-					name : 'Other',
-					data : [ 21908, 5548, 8105, 11248, 8989, 11816, 18274,
-							17300, 13053, 11906, 10073 ]
-				} ],
+		series: [
+			{
+				name: 'Installation & Developers',
+				data: [43934, 48656, 65165, 81827, 112143, 142383,
+					171533, 165174, 155157, 161454, 154610]
+			},
+			{
+				name: 'Manufacturing',
+				data: [24916, 37941, 29742, 29851, 32490, 30282, 38121,
+					36885, 33726, 34243, 31050]
+			},
+			{
+				name: 'Sales & Distribution',
+				data: [11744, 30000, 16005, 19771, 20185, 24377, 32147,
+					30912, 29243, 29213, 25663]
+			},
+			{
+				name: 'Operations & Maintenance',
+				data: [null, null, null, null, null, null, null, null,
+					11164, 11218, 10077]
+			},
+			{
+				name: 'Other',
+				data: [21908, 5548, 8105, 11248, 8989, 11816, 18274,
+					17300, 13053, 11906, 10073]
+			}],
 
-		responsive : {
-			rules : [ {
-				condition : {
-					maxWidth : 500
+		responsive: {
+			rules: [{
+				condition: {
+					maxWidth: 500
 				},
-				chartOptions : {
-					legend : {
-						layout : 'horizontal',
-						align : 'center',
-						verticalAlign : 'bottom'
+				chartOptions: {
+					legend: {
+						layout: 'horizontal',
+						align: 'center',
+						verticalAlign: 'bottom'
 					}
 				}
-			} ]
+			}]
 		}
 
 	});
 </script>
+
 </html>

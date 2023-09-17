@@ -1,46 +1,43 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Posições - Versátil I.A.</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
-<link
-	href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
-	rel="stylesheet" />
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Posições - Versátil I.A.</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 
-.dados-pessoais {
-	display: none;
-}
+	.dados-pessoais {
+		display: none;
+	}
 
-.dados-pessoais-oculto {
-	display: block;
-}
+	.dados-pessoais-oculto {
+		display: block;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Posições</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Posições</span>
 		</a>
 	</nav>
 	<br>
 	<div class="container">
 		<div class="row">
 			<div class="col-3" th:each="grupo: ${posicoesGrupos}">
-				<span th:text="${grupo.ativo}"></span>&nbsp;<span
-					th:text="${grupo.volume}"></span><span th:text="${grupo.direcao}"></span>&nbsp;-&nbsp;<span
-					th:text="${grupo.posicoes.size()}"></span>
+				<span th:text="${grupo.ativo}"></span>&nbsp;<span th:text="${grupo.volume}"></span><span
+					th:text="${grupo.direcao}"></span>&nbsp;-&nbsp;<span th:text="${grupo.posicoes.size()}"></span>
 			</div>
 		</div>
 		<br>
@@ -68,35 +65,36 @@
 							<td>
 								<!-- span class="fonte-tabela" th:text="${posicao.data}"></span-->
 								<span class="fonte-tabela"
-								th:text="${#temporals.format(posicao.data, 'dd/MM/yy')}"></span>
+									th:text="${#temporals.format(posicao.data, 'dd/MM/yy')}"></span>
 								<br> <span class="fonte-tabela"
-								th:text="${#temporals.format(posicao.data, 'HH:mm:ss')}"></span>
+									th:text="${#temporals.format(posicao.data, 'HH:mm:ss')}"></span>
 							</td>
 							<td><span class="fonte-tabela" th:text="${posicao.conta}"></span><br>
 								<span class="fonte-tabela" th:text="${posicao.corretora}"></span>
 							</td>
 							<td><span class="fonte-tabela" th:text="${posicao.ativo}"></span><br>
-								<span class="fonte-tabela"
-								th:text="${posicao.volume + posicao.direcao}"></span></td>
+								<span class="fonte-tabela" th:text="${posicao.volume + posicao.direcao}"></span>
+							</td>
 							<td><span class="fonte-tabela"
-								th:text="${#numbers.formatDecimal(posicao.abertura, 1, 'POINT', 2, 'COMMA')}"></span><br>
-								<span class="fonte-tabela" th:text="${posicao.servidor}"></span></td>
+									th:text="${#numbers.formatDecimal(posicao.abertura, 1, 'POINT', 2, 'COMMA')}"></span><br>
+								<span class="fonte-tabela" th:text="${posicao.servidor}"></span>
+							</td>
 							<td><span class="fonte-tabela"
-								th:text="${#numbers.formatDecimal(posicao.profit, 1, 'POINT', 2, 'COMMA')}"></span><br>
+									th:text="${#numbers.formatDecimal(posicao.profit, 1, 'POINT', 2, 'COMMA')}"></span><br>
 								<span class="fonte-tabela" th:text="${posicao.expert}"></span>
 							</td>
 							<td align="right">
 								<!-- Comprar --> <a
-								th:href="@{javascript:comprar('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
-								class="btn btn-sm btn-success"><i class="bi bi-plus-lg"></i></a>
+									th:href="@{javascript:comprar('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
+									class="btn btn-sm btn-success"><i class="bi bi-plus-lg"></i></a>
 
 								<!-- Vender --> <a
-								th:href="@{javascript:vender('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
-								class="btn btn-sm btn-primary"><i class="bi bi-dash-lg"></i></a>
+									th:href="@{javascript:vender('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
+									class="btn btn-sm btn-primary"><i class="bi bi-dash-lg"></i></a>
 
 								<!-- Encerrar --> <a
-								th:href="@{javascript:fecharPosicao('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
-								class="btn btn-sm btn-danger"><i class="bi bi-x-lg"></i></a>
+									th:href="@{javascript:fecharPosicao('{conta}','{ativo}')(conta=${posicao.conta},ativo=${posicao.ativo})}"
+									class="btn btn-sm btn-danger"><i class="bi bi-x-lg"></i></a>
 							</td>
 						</tr>
 					</tbody>
@@ -107,8 +105,7 @@
 	</div>
 </body>
 <script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
-<script
-	src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script type="text/javascript" src="/js/jquery.form.js"></script>
 <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
 <script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
@@ -116,8 +113,8 @@
 <script>
 	function fecharPosicao(conta, ativo) {
 		$.ajax({
-			url : "/posicao/fechar/" + conta + "/" + ativo,
-			success : function(retorno) {
+			url: "/posicao/fechar/" + conta + "/" + ativo,
+			success: function (retorno) {
 				location.reload();
 			}
 		});
@@ -126,9 +123,9 @@
 	function comprar(conta, ativo) {
 		console.log("Comprando " + ativo + " em " + conta);
 		$.ajax({
-			url : '/metatrader/order/market/' + conta + '/' + ativo
-					+ '/1.0/BUY',
-			success : function(resultado) {
+			url: '/metatrader/order/market/' + conta + '/' + ativo
+				+ '/1.0/BUY',
+			success: function (resultado) {
 				alert(resultado);
 				location.reload();
 			}
@@ -138,9 +135,9 @@
 	function vender(conta, ativo) {
 		console.log("Vendendo " + ativo + " em " + conta);
 		$.ajax({
-			url : '/metatrader/order/market/' + conta + '/' + ativo
-					+ '/1.0/SELL',
-			success : function(resultado) {
+			url: '/metatrader/order/market/' + conta + '/' + ativo
+				+ '/1.0/SELL',
+			success: function (resultado) {
 				alert(resultado);
 				location.reload();
 			}
@@ -157,8 +154,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -166,8 +163,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 
@@ -184,7 +181,7 @@
 		$("#divP7").css("display", "block");
 	}
 
-	$('#customSwitch1').change(function() {
+	$('#customSwitch1').change(function () {
 		if (this.checked) {
 			$('.dados-pessoais').css('display', 'none');
 			$('.dados-pessoais-oculto').css('display', 'block');
@@ -194,4 +191,5 @@
 		}
 	});
 </script>
+
 </html>

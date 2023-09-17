@@ -1,19 +1,20 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Associar Pagamento - Versátil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Associar Pagamento - Versátil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
+
 <body>
 	<div class="container-fluid">
 		<nav class="navbar navbar-light bg-light">
-			<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-				height="30" class="d-inline-block align-top" alt=""> <span
-				style="font-weight: 600">&nbsp;&nbsp;Associar Pagamento</span>
+			<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top"
+					alt=""> <span style="font-weight: 600">&nbsp;&nbsp;Associar Pagamento</span>
 			</a>
 		</nav>
 		<br> <input type="hidden" id="idConta" th:value="${conta.id}">
@@ -52,9 +53,8 @@
 					</thead>
 					<tbody>
 						<tr th:each="pagamento : ${pagamentosList}">
-							<td><a
-								th:href="@{/assinatura/associarPagamento/{idAssinatura}/{idPagamento}(idAssinatura=${assinatura.id},idPagamento=${pagamento.id})}"
-								class="btn btn-sm btn-primary">Associar</a></td>
+							<td><a th:href="@{/assinatura/associarPagamento/{idAssinatura}/{idPagamento}(idAssinatura=${assinatura.id},idPagamento=${pagamento.id})}"
+									class="btn btn-sm btn-primary">Associar</a></td>
 							<td th:text="${pagamento.dataAtualizacao}"></td>
 							<td th:text="${pagamento.nome}"></td>
 							<td th:text="${pagamento.telefone}"></td>
@@ -78,8 +78,8 @@
 		var conta = $('#idConta').val();
 		var pagamento = $('#idPagamento').val();
 		$.ajax({
-			url : '/assinatura/ativar/' + conta + '/' + pagamento,
-			success : function(resumo) {
+			url: '/assinatura/ativar/' + conta + '/' + pagamento,
+			success: function (resumo) {
 				console.log('ok');
 				alert("Ativado com sucesso");
 				document.location.href = '/'
@@ -90,8 +90,8 @@
 	function ativarComPendencia() {
 		var conta = $('#idConta').val();
 		$.ajax({
-			url : '/assinatura/ativarComPendencia/' + conta,
-			success : function(resumo) {
+			url: '/assinatura/ativarComPendencia/' + conta,
+			success: function (resumo) {
 				console.log('ok');
 				alert("Ativado com sucesso");
 				document.location.href = '/'
@@ -109,8 +109,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -118,9 +118,10 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 </script>
+
 </html>

@@ -1,63 +1,58 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Resultados - Versátil I.A.</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
-<link
-	href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
-	rel="stylesheet" />
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Resultados - Versátil I.A.</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
 </head>
 <script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
 <!-- script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
 	crossorigin="anonymous"></script-->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
 	integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
 	crossorigin="anonymous"></script>
-<script
-	src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script type="text/javascript" src="/js/jquery.form.js"></script>
 <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
 <script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-<script type="text/javascript"
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 
-.dados-pessoais {
-	display: none;
-}
+	.dados-pessoais {
+		display: none;
+	}
 
-.dados-pessoais-oculto {
-	display: block;
-}
+	.dados-pessoais-oculto {
+		display: block;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Resultados</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Resultados</span>
 		</a>
 	</nav>
 	<br>
 	<div class="container">
 		<input type="hidden" id="automacao" th:value="${automacao}"> <br>
 		<div class="nav nav-tabs">
-			<button id="menuResultadoIndividual" class="nav-link active"
-				onclick="javascript:resultadoIndividual();">Por Licença</button>
-			<button id="menuResultadoAcumulado" class="nav-link"
-				onclick="javascript:resultadoAcumulado();">Por Mês</button>
+			<button id="menuResultadoIndividual" class="nav-link active" onclick="javascript:resultadoIndividual();">Por
+				Licença</button>
+			<button id="menuResultadoAcumulado" class="nav-link" onclick="javascript:resultadoAcumulado();">Por
+				Mês</button>
 		</div>
 
 
@@ -68,16 +63,14 @@
 					<div id='divGraficoAcumulado'></div>
 					<div class="row">
 						<div class="col-4">
-							<Strong> Positivos<br> <span
-								id="divAcumuladoPositivo" style="color: darkgreen;"></span></Strong>
+							<Strong> Positivos<br> <span id="divAcumuladoPositivo"
+									style="color: darkgreen;"></span></Strong>
 						</div>
 						<div class="col-4" align="center">
-							<Strong> Negativos<br> <span
-								id="divAcumuladoNegativo"></span></Strong>
+							<Strong> Negativos<br> <span id="divAcumuladoNegativo"></span></Strong>
 						</div>
 						<div class="col-4" align="right">
-							<Strong>Total</Strong><br> <span id="divTotalAcumulado"
-								class="badge badge-success"
+							<Strong>Total</Strong><br> <span id="divTotalAcumulado" class="badge badge-success"
 								style="font-size: 85%; margin-top: 3px;"></span>
 						</div>
 					</div>
@@ -88,9 +81,8 @@
 		</div>
 		<div id='divResultadoIndividual'>
 			<div class="custom-control custom-switch" align="right">
-				<input type="checkbox" class="custom-control-input" checked
-					id="customSwitch1"> <label class="custom-control-label"
-					for="customSwitch1"><i class="bi bi-eye-slash"></i></label>
+				<input type="checkbox" class="custom-control-input" checked id="customSwitch1"> <label
+					class="custom-control-label" for="customSwitch1"><i class="bi bi-eye-slash"></i></label>
 			</div>
 			<div class="row">
 				<div class="col-12">
@@ -104,20 +96,20 @@
 						</thead>
 						<tbody>
 							<tr th:each="conta : ${contasList}">
-								<td><div class="dados-pessoais">
-										<a th:href="@{'/detalhes/' + ${conta.id}}"> <span
-											class="fonte-tabela" th:text="${conta.id}"></span></a><br> <small><span
-											class="fonte-tabela"
-											th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small>
+								<td>
+									<div class="dados-pessoais">
+										<a th:href="@{'/detalhes/' + ${conta.id}}"> <span class="fonte-tabela"
+												th:text="${conta.id}"></span></a><br> <small><span class="fonte-tabela"
+												th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small>
 
 									</div>
 									<div class="dados-pessoais-oculto">
-										<a th:href="@{'/detalhes/' + ${conta.id}}"><span
-											class="fonte-tabela"
-											th:text="${conta.id.substring(0,4)+'**'}"></span></a><br> <small><span
-											class="fonte-tabela"
-											th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small>
-									</div></td>
+										<a th:href="@{'/detalhes/' + ${conta.id}}"><span class="fonte-tabela"
+												th:text="${conta.id.substring(0,4)+'**'}"></span></a><br> <small><span
+												class="fonte-tabela"
+												th:text="${#temporals.format(conta.dataDeVencimento, 'dd/MM/yyyy')}"></span></small>
+									</div>
+								</td>
 								<td>
 									<div class="dados-pessoais">
 										<span class="fonte-tabela" th:text="${conta.nome}"></span><br>
@@ -125,21 +117,21 @@
 									</div>
 									<div class="dados-pessoais-oculto">
 										<span class="fonte-tabela">*****</span><br> <small><span
-											th:text="${conta.corretora}"></span></small>
+												th:text="${conta.corretora}"></span></small>
 									</div>
 								</td>
 
 								<td align="right"><a th:href="@{'/trade/' + ${conta.id}}">
 										<span
-										th:class="${conta.resultado >= 0 ? 'badge badge-success': 'badge badge-danger'}"
-										th:text="${#numbers.formatDecimal(conta.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
-								</a></td>
+											th:class="${conta.resultado >= 0 ? 'badge badge-success': 'badge badge-danger'}"
+											th:text="${#numbers.formatDecimal(conta.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
+									</a></td>
 							</tr>
 							<tr>
 								<td th:text="${contas}" class="fonte-tabela"></td>
 								<td align="right" class="fonte-tabela"><Strong>Total:</Strong></td>
 								<td style="font-weight: bold;" align="right"><span
-									th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"></span>
+										th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"></span>
 								</td>
 							</tr>
 						</tbody>
@@ -151,8 +143,7 @@
 	</div>
 </body>
 <script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
-<script
-	src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script type="text/javascript" src="/js/jquery.form.js"></script>
 <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
 <script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
@@ -173,8 +164,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -182,8 +173,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 
@@ -200,7 +191,7 @@
 		$("#divP7").css("display", "block");
 	}
 
-	$('#customSwitch1').change(function() {
+	$('#customSwitch1').change(function () {
 		if (this.checked) {
 			$('.dados-pessoais').css('display', 'none');
 			$('.dados-pessoais-oculto').css('display', 'block');
@@ -215,64 +206,64 @@
 		var html = '';
 		acumulados.reverse();
 		$
-				.each(
-						acumulados,
-						function(index, acumuladoMes) {
-							html += '<div class="card">';
-							html += '<div class="card-body">';
-							html += '<div id="' + divGrafico + '-' 
-							+ acumuladoMes.mes + '-' + acumuladoMes.ano + '">';
-							html += '</div>';
-							html += '<div class="row">';
-							html += '<div class="col-4">';
-							html += '<Strong> Positivos<br> <span style="color: darkgreen;">';
-							html += acumuladoMes.positivos;
-							html += '&nbsp;<span class="badge badge-success">';
-							html += formatarDecimal(
-									acumuladoMes.positivos
-											* 100
-											/ (acumuladoMes.positivos + acumuladoMes.negativos),
-									1)
-									+ '%';
-							html += '</span>';
-							html += '</span></Strong>';
-							html += '</div>';
-							html += '<div class="col-4" align="center">';
-							html += '<Strong> Negativos<br> <span>';
-							html += acumuladoMes.negativos;
-							html += '&nbsp;<span class="badge badge-danger">';
-							html += formatarDecimal(
-									acumuladoMes.negativos
-											* 100
-											/ (acumuladoMes.positivos + acumuladoMes.negativos),
-									1)
-									+ '%';
-							html += '</span>';
-							html += '</span></Strong>';
-							html += '</div>';
-							html += '<div class="col-4" align="right">';
-							html += '<Strong>Total</Strong><br><span id="divTotalAcumulado-'
-									+ acumuladoMes.mes
-									+ '-'
-									+ acumuladoMes.ano
-									+ '" class="badge badge-success" style="font-size: 85%; margin-top: 3px;">';
-							html += formatarDecimal(acumuladoMes.acumuladoMes,
-									2);
-							html += '</span>';
-							html += '</div>';
-							html += '</div>';
-							html += '</div>';
-							html += '</div>';
-							html += '<br>';
-						});
+			.each(
+				acumulados,
+				function (index, acumuladoMes) {
+					html += '<div class="card">';
+					html += '<div class="card-body">';
+					html += '<div id="' + divGrafico + '-'
+						+ acumuladoMes.mes + '-' + acumuladoMes.ano + '">';
+					html += '</div>';
+					html += '<div class="row">';
+					html += '<div class="col-4">';
+					html += '<Strong> Positivos<br> <span style="color: darkgreen;">';
+					html += acumuladoMes.positivos;
+					html += '&nbsp;<span class="badge badge-success">';
+					html += formatarDecimal(
+						acumuladoMes.positivos
+						* 100
+						/ (acumuladoMes.positivos + acumuladoMes.negativos),
+						1)
+						+ '%';
+					html += '</span>';
+					html += '</span></Strong>';
+					html += '</div>';
+					html += '<div class="col-4" align="center">';
+					html += '<Strong> Negativos<br> <span>';
+					html += acumuladoMes.negativos;
+					html += '&nbsp;<span class="badge badge-danger">';
+					html += formatarDecimal(
+						acumuladoMes.negativos
+						* 100
+						/ (acumuladoMes.positivos + acumuladoMes.negativos),
+						1)
+						+ '%';
+					html += '</span>';
+					html += '</span></Strong>';
+					html += '</div>';
+					html += '<div class="col-4" align="right">';
+					html += '<Strong>Total</Strong><br><span id="divTotalAcumulado-'
+						+ acumuladoMes.mes
+						+ '-'
+						+ acumuladoMes.ano
+						+ '" class="badge badge-success" style="font-size: 85%; margin-top: 3px;">';
+					html += formatarDecimal(acumuladoMes.acumuladoMes,
+						2);
+					html += '</span>';
+					html += '</div>';
+					html += '</div>';
+					html += '</div>';
+					html += '</div>';
+					html += '<br>';
+				});
 		$('#' + divGrafico).html(html);
 		acumulados.reverse();
 
-		$.each(acumulados, function(index, acumuladoMes) {
+		$.each(acumulados, function (index, acumuladoMes) {
 			var categorias = [];
 			var valores = [];
 			var resultadoDia = [];
-			$.each(acumuladoMes.dias, function(index, acumuladoDia) {
+			$.each(acumuladoMes.dias, function (index, acumuladoDia) {
 				categorias.push(acumuladoDia.data.substring(8, 10));
 				valores.push(acumuladoDia.acumuladoMes);
 				resultadoDia.push(acumuladoDia.resultado);
@@ -294,47 +285,47 @@
 			console.log(serie);
 
 			var chartUsuarios = Highcharts.chart(divGrafico + '-'
-					+ acumuladoMes.mes + '-' + acumuladoMes.ano, {
+				+ acumuladoMes.mes + '-' + acumuladoMes.ano, {
 
-				chart : {
-					type : 'area'
+				chart: {
+					type: 'area'
 				},
 
-				title : {
-					text : getMes(acumuladoMes.mes) + '/' + acumuladoMes.ano,
-					align : 'left'
+				title: {
+					text: getMes(acumuladoMes.mes) + '/' + acumuladoMes.ano,
+					align: 'left'
 				},
 
-				subtitle : {
-					text : 'Versátil IA - ' + acumuladoMes.descricao,
-					align : 'left'
+				subtitle: {
+					text: 'Versátil IA - ' + acumuladoMes.descricao,
+					align: 'left'
 				},
 
-				yAxis : {
-					title : {
-						text : ''
+				yAxis: {
+					title: {
+						text: ''
 					},
-					plotLines : [ {
-						color : '#000000',
-						width : 1,
-						value : 0,
-						zIndex : 2
-					} ]
+					plotLines: [{
+						color: '#000000',
+						width: 1,
+						value: 0,
+						zIndex: 2
+					}]
 				},
 
-				xAxis : {
-					categories : categorias
+				xAxis: {
+					categories: categorias
 				},
 
-				plotOptions : {
-					area : {
-						marker : {
-							enabled : false,
-							symbol : 'circle',
-							radius : 4,
-							states : {
-								hover : {
-									enabled : true
+				plotOptions: {
+					area: {
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							radius: 4,
+							states: {
+								hover: {
+									enabled: true
 								}
 							}
 						}
@@ -346,21 +337,21 @@
 					align : 'right',
 					verticalAlign : 'middle'
 				},*/
-				series : series,
+				series: series,
 
-				responsive : {
-					rules : [ {
-						condition : {
-							maxWidth : 500
+				responsive: {
+					rules: [{
+						condition: {
+							maxWidth: 500
 						},
-						chartOptions : {
-							legend : {
-								layout : 'horizontal',
-								align : 'center',
-								verticalAlign : 'bottom'
+						chartOptions: {
+							legend: {
+								layout: 'horizontal',
+								align: 'center',
+								verticalAlign: 'bottom'
 							}
 						}
-					} ]
+					}]
 				}
 
 			});
@@ -379,69 +370,69 @@
 		series.push(serie);
 		console.log(serie);
 
-		$.each(acumulados, function(index, acumuladoMes) {
-			$.each(acumuladoMes.dias, function(index, acumuladoDia) {
+		$.each(acumulados, function (index, acumuladoMes) {
+			$.each(acumuladoMes.dias, function (index, acumuladoDia) {
 				categorias.push(acumuladoDia.data.substring(8, 10) + '-'
-						+ acumuladoDia.data.substring(5, 7));
+					+ acumuladoDia.data.substring(5, 7));
 				valores.push(acumuladoDia.acumulado);
 			});
 		});
 
 		var chartUsuarios = Highcharts.chart(divGrafico, {
-			chart : {
-				type : 'area'
+			chart: {
+				type: 'area'
 			},
 
-			title : {
-				text : 'Resultado Acumulado',
-				align : 'left'
+			title: {
+				text: 'Resultado Acumulado',
+				align: 'left'
 			},
 
-			subtitle : {
-				text : 'Versátil IA',
-				align : 'left'
+			subtitle: {
+				text: 'Versátil IA',
+				align: 'left'
 			},
 
-			yAxis : {
-				title : {
-					text : ''
+			yAxis: {
+				title: {
+					text: ''
 				}
 			},
 
-			xAxis : {
-				categories : categorias
+			xAxis: {
+				categories: categorias
 			},
 
-			plotOptions : {
-				area : {
-					marker : {
-						enabled : false,
-						symbol : 'circle',
-						radius : 4,
-						states : {
-							hover : {
-								enabled : true
+			plotOptions: {
+				area: {
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						radius: 4,
+						states: {
+							hover: {
+								enabled: true
 							}
 						}
 					}
 				}
 			},
 
-			series : series,
+			series: series,
 
-			responsive : {
-				rules : [ {
-					condition : {
-						maxWidth : 500
+			responsive: {
+				rules: [{
+					condition: {
+						maxWidth: 500
 					},
-					chartOptions : {
-						legend : {
-							layout : 'horizontal',
-							align : 'center',
-							verticalAlign : 'bottom'
+					chartOptions: {
+						legend: {
+							layout: 'horizontal',
+							align: 'center',
+							verticalAlign: 'bottom'
 						}
 					}
-				} ]
+				}]
 			}
 
 		});
@@ -479,34 +470,34 @@
 	function consultarResultados(expert) {
 		var automacao = $('#automacao').val();
 		$
-				.ajax({
-					url : '/resultado/global/' + automacao,
-					success : function(resultado) {
-						console.log(resultado);
-						$('#divTotalAcumulado').html(
-								formatarDecimal(resultado.acumulado, 2));
-						$('#divAcumuladoPositivo')
-								.html(
-										resultado.positivos
-												+ ' <span class="badge badge-success">'
-												+ formatarDecimal(
-														resultado.positivos
-																* 100
-																/ (resultado.positivos + resultado.negativos),
-														1) + '%</span>');
-						$('#divAcumuladoNegativo')
-								.html(
-										resultado.negativos
-												+ ' <span class="badge badge-danger">'
-												+ formatarDecimal(
-														resultado.negativos
-																* 100
-																/ (resultado.positivos + resultado.negativos),
-														1) + '%</span>');
-						montarResultado('divGraficoAcumulado', resultado.meses);
-						montarGrafico('divGrafico', resultado.meses);
-					}
-				});
+			.ajax({
+				url: '/resultado/global/' + automacao,
+				success: function (resultado) {
+					console.log(resultado);
+					$('#divTotalAcumulado').html(
+						formatarDecimal(resultado.acumulado, 2));
+					$('#divAcumuladoPositivo')
+						.html(
+							resultado.positivos
+							+ ' <span class="badge badge-success">'
+							+ formatarDecimal(
+								resultado.positivos
+								* 100
+								/ (resultado.positivos + resultado.negativos),
+								1) + '%</span>');
+					$('#divAcumuladoNegativo')
+						.html(
+							resultado.negativos
+							+ ' <span class="badge badge-danger">'
+							+ formatarDecimal(
+								resultado.negativos
+								* 100
+								/ (resultado.positivos + resultado.negativos),
+								1) + '%</span>');
+					montarResultado('divGraficoAcumulado', resultado.meses);
+					montarGrafico('divGrafico', resultado.meses);
+				}
+			});
 	}
 
 	function resultadoIndividual() {
@@ -515,15 +506,15 @@
 		$('#menuResultadoAcumulado').attr("class", "nav-link");
 		$('#menuResultadoIndividual').attr("class", "nav-link active");
 		$('#divResumo').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 
 		$('#divResultadoAcumulado').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 
 		$('#divResultadoIndividual').css({
-			'display' : 'block'
+			'display': 'block'
 		});
 
 	}
@@ -533,11 +524,11 @@
 		$('#menuResultadoIndividual').attr("class", "nav-link");
 
 		$('#divResultadoIndividual').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 
 		$('#divResultadoAcumulado').css({
-			'display' : 'block'
+			'display': 'block'
 		});
 		consultarResultados('DELTA');
 
@@ -545,4 +536,5 @@
 
 	consultarResultados('DELTA');
 </script>
+
 </html>

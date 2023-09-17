@@ -22,5 +22,15 @@ public class AtivoService {
 	public List<Ativo> getList() {
 		return repository.getList();
 	}
+	
+	/**
+	 * Retorna a lista de ativos de acordo com a categoria.
+	 * @param idCategoria ID da categoria.
+	 * @return Lista de ativos com a categoria indicada.
+	 */
+	public List<Ativo> getListByCategoria(Integer idCategoria) {
+		return repository.getListByCategoria(idCategoria);
+	}
+	
 
 }

@@ -1,24 +1,25 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Assinaturas - Versátil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Assinaturas - Versátil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Assinaturas</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Assinaturas</span>
 		</a>
 	</nav>
 	<br>
@@ -36,10 +37,11 @@
 						<tr th:each="assinatura : ${assinaturasList}">
 							<td><span class="fonte-tabela" th:text="${assinatura.conta.id}"></span>
 								<br> <small><span class="fonte-tabela"
-									th:text="${#temporals.format(assinatura.dataVencimento, 'dd/MM/yyyy')}"></span></small>
+										th:text="${#temporals.format(assinatura.dataVencimento, 'dd/MM/yyyy')}"></span></small>
 							</td>
 							<td><span class="fonte-tabela" th:text="${assinatura.conta.nome}"></span><br>
-								<small><span th:text="${assinatura.conta.corretora}"></span></small></td>
+								<small><span th:text="${assinatura.conta.corretora}"></span></small>
+							</td>
 						</tr>
 						<tr>
 							<td><span th:text="${assinaturasList.size()}"></span></td>
@@ -66,8 +68,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -75,9 +77,10 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 </script>
+
 </html>

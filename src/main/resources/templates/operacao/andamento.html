@@ -1,63 +1,58 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=0.5, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
-<title>Acompanhamento Diário - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
-<link
-	href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
-	rel="stylesheet" />
-<style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=0.5, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+	<title>Acompanhamento Diário - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
+	<style>
+		.fonte-tabela {
+			font-weight: 600;
+			font-size: 80%;
+		}
 
-.badge-dollar {
-	color: white;
-	background-color: deepskyblue;
-}
+		.badge-dollar {
+			color: white;
+			background-color: deepskyblue;
+		}
 
-.badge-venda {
-	color: white;
-	background-color: brown;
-}
+		.badge-venda {
+			color: white;
+			background-color: brown;
+		}
 
-.badge-compra {
-	color: white;
-	background-color: darkslateblue;
-}
+		.badge-compra {
+			color: white;
+			background-color: darkslateblue;
+		}
 
-.dados-pessoais {
-	display: none;
-}
+		.dados-pessoais {
+			display: none;
+		}
 
-.dados-pessoais-oculto {
-	display: block;
-}
-</style>
+		.dados-pessoais-oculto {
+			display: block;
+		}
+	</style>
 </head>
 <script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
 <!-- script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
 	crossorigin="anonymous"></script-->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
 	integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
 	crossorigin="anonymous"></script>
-<script
-	src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script type="text/javascript" src="/js/jquery.form.js"></script>
 <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
 <script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-<script type="text/javascript"
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
 <script>
 	function formatarNumero(numero) {
 		if (!numero)
@@ -69,8 +64,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -78,16 +73,16 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 
 	function sincronizar(conta) {
 		console.log("Sincronizando " + conta);
 		$.ajax({
-			url : '/metatrader/sincronizar/' + conta,
-			success : function(resumo) {
+			url: '/metatrader/sincronizar/' + conta,
+			success: function (resumo) {
 				alert(resumo);
 
 			}
@@ -97,9 +92,9 @@
 	function comprar(conta, ativo) {
 		console.log("Comprando " + ativo + " em " + conta);
 		$.ajax({
-			url : '/metatrader/order/market/' + conta + '/' + ativo
-					+ '/1.0/BUY',
-			success : function(resultado) {
+			url: '/metatrader/order/market/' + conta + '/' + ativo
+				+ '/1.0/BUY',
+			success: function (resultado) {
 				alert(resultado);
 
 			}
@@ -109,9 +104,9 @@
 	function vender(conta, ativo) {
 		console.log("Vendendo " + ativo + " em " + conta);
 		$.ajax({
-			url : '/metatrader/order/market/' + conta + '/' + ativo
-					+ '/1.0/SELL',
-			success : function(resultado) {
+			url: '/metatrader/order/market/' + conta + '/' + ativo
+				+ '/1.0/SELL',
+			success: function (resultado) {
 				alert(resultado);
 			}
 		});
@@ -123,13 +118,13 @@
 		$('#menuResumo').attr("class", "nav-link");
 		$('#menuAndamento').attr("class", "nav-link active");
 		$('#divResumo').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 		$('#divTrades').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 		$('#divAndamento').css({
-			'display' : 'block'
+			'display': 'block'
 		});
 	}
 
@@ -139,13 +134,13 @@
 		$('#menuAndamento').attr("class", "nav-link");
 		$('#menuOperacoes').attr("class", "nav-link active");
 		$('#divResumo').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 		$('#divTrades').css({
-			'display' : 'block'
+			'display': 'block'
 		});
 		$('#divAndamento').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 	}
 
@@ -155,33 +150,29 @@
 		$('#menuAndamento').attr("class", "nav-link");
 		$('#menuResumo').attr("class", "nav-link active");
 		$('#divResumo').css({
-			'display' : 'block'
+			'display': 'block'
 		});
 		$('#divTrades').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 		$('#divAndamento').css({
-			'display' : 'none'
+			'display': 'none'
 		});
 	}
 </script>
 
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Acompanhamento Diário</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Acompanhamento Diário</span>
 		</a>
 	</nav>
 	<div class="container">
 		<br>
 		<div class="nav nav-tabs">
-			<button id="menuAndamento" class="nav-link active"
-				onclick="javascript:andamento();">Em Andamento</button>
-			<button id="menuResumo" class="nav-link"
-				onclick="javascript:resumo();">Resumo por conta</button>
-			<button id="menuOperacoes" class="nav-link"
-				onclick="javascript:operacoes();">Operações</button>
+			<button id="menuAndamento" class="nav-link active" onclick="javascript:andamento();">Em Andamento</button>
+			<button id="menuResumo" class="nav-link" onclick="javascript:resumo();">Resumo por conta</button>
+			<button id="menuOperacoes" class="nav-link" onclick="javascript:operacoes();">Operações</button>
 		</div>
 		<div id="divAndamento" class="row" style="display: block;">
 			<div class="col-12">
@@ -200,8 +191,7 @@
 						<tr th:each="operacao : ${operacoesList}">
 							<td>
 								<div class="btn-group" role="group">
-									<button type="button"
-										class="btn btn-info dropdown-toggle btn-sm"
+									<button type="button" class="btn btn-info dropdown-toggle btn-sm"
 										data-toggle="dropdown" aria-expanded="false">
 										<i class="bi bi-gear-fill"></i>
 									</button>
@@ -212,25 +202,23 @@
 									</div>
 								</div>
 							</td>
-							<td><span
-								th:text="${#temporals.format(operacao.data, 'dd/MM/yy')}"
-								class="fonte-tabela"></span><br> <small> <span
-									th:text="${#temporals.format(operacao.data, 'HH:mm:ss')}"></span></small></td>
+							<td><span th:text="${#temporals.format(operacao.data, 'dd/MM/yy')}"
+									class="fonte-tabela"></span><br> <small> <span
+										th:text="${#temporals.format(operacao.data, 'HH:mm:ss')}"></span></small></td>
 							<td><span th:text="${operacao.conta}" class="fonte-tabela"></span>&nbsp;
-								<span th:if="${!operacao.online}"><i
-									class="bi bi-plug-fill" style="color: red;"></i></span><br> <small><span
-									th:text="${operacao.corretora}"></span></small></td>
-							<td><span th:text="${operacao.servidor}"
-								class="fonte-tabela"></span><br> <small><span
-									th:text="${operacao.maquina}"></span></small></td>
+								<span th:if="${!operacao.online}"><i class="bi bi-plug-fill"
+										style="color: red;"></i></span><br> <small><span
+										th:text="${operacao.corretora}"></span></small>
+							</td>
+							<td><span th:text="${operacao.servidor}" class="fonte-tabela"></span><br> <small><span
+										th:text="${operacao.maquina}"></span></small></td>
 							<td align="center"><span
-								th:class="${operacao.ativo.startsWith('WIN') ? 'badge badge-info': 'badge badge-success'}"
-								th:text="${operacao.ativo}"></span><br> <span
-								th:class="${operacao.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
-								th:text="${operacao.volume +' '+ operacao.direcao}"></span></td>
-							<td align="right"><span
-								style="font-weight: 700; font-size: 80%;"
-								th:text="${#numbers.formatDecimal(operacao.preco, 1, 'POINT', 2, 'COMMA')}"></span>
+									th:class="${operacao.ativo.startsWith('WIN') ? 'badge badge-info': 'badge badge-success'}"
+									th:text="${operacao.ativo}"></span><br> <span
+									th:class="${operacao.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
+									th:text="${operacao.volume +' '+ operacao.direcao}"></span></td>
+							<td align="right"><span style="font-weight: 700; font-size: 80%;"
+									th:text="${#numbers.formatDecimal(operacao.preco, 1, 'POINT', 2, 'COMMA')}"></span>
 							</td>
 
 						</tr>
@@ -248,9 +236,8 @@
 			<div class="row">
 				<div class="col-8">
 					<div class="custom-control custom-switch">
-						<input type="checkbox" class="custom-control-input" checked
-							id="customSwitch1"> <label class="custom-control-label"
-							for="customSwitch1"><i class="bi bi-eye-slash"></i></label>
+						<input type="checkbox" class="custom-control-input" checked id="customSwitch1"> <label
+							class="custom-control-label" for="customSwitch1"><i class="bi bi-eye-slash"></i></label>
 					</div>
 				</div>
 				<div class="col-4" align="right">
@@ -276,8 +263,7 @@
 							<tr th:each="resumo : ${resumosList}">
 								<td>
 									<div class="btn-group" role="group">
-										<button type="button"
-											class="btn btn-info dropdown-toggle btn-sm"
+										<button type="button" class="btn btn-info dropdown-toggle btn-sm"
 											data-toggle="dropdown" aria-expanded="false">
 											<i class="bi bi-gear-fill"></i>
 										</button>
@@ -289,19 +275,22 @@
 									</div>
 								</td>
 								<td><span th:text="${resumo.conta}" class="fonte-tabela"></span><br>
-									<small><span th:text="${resumo.maquina}"></span></small></td>
-								<td><div class="dados-pessoais">
+									<small><span th:text="${resumo.maquina}"></span></small>
+								</td>
+								<td>
+									<div class="dados-pessoais">
 										<span class="fonte-tabela" th:text="${resumo.nome}"></span><br>
 										<small><span th:text="${resumo.corretora}"></span></small>
 									</div>
 									<div class="dados-pessoais-oculto">
 										<span class="fonte-tabela">*****</span><br> <small><span
-											th:text="${resumo.corretora}"></span></small>
-									</div></td>
+												th:text="${resumo.corretora}"></span></small>
+									</div>
+								</td>
 								<td th:text="${resumo.operacoes}" class="fonte-tabela"></td>
 								<td align="right"><span
-									th:class="${resumo.total >= 0 ? 'badge badge-success': 'badge badge-danger'}"
-									th:text="${#numbers.formatDecimal(resumo.total, 1, 'POINT', 2, 'COMMA')}"></span>
+										th:class="${resumo.total >= 0 ? 'badge badge-success': 'badge badge-danger'}"
+										th:text="${#numbers.formatDecimal(resumo.total, 1, 'POINT', 2, 'COMMA')}"></span>
 								</td>
 
 							</tr>
@@ -309,9 +298,9 @@
 								<td th:text="${resumosList.size()}"></td>
 								<td colspan="3" align="right"><Strong>Total:</Strong></td>
 								<td align="right"><span
-									th:class="${total >= 0 ? 'badge badge-success': 'badge badge-danger'}"
-									th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"
-									style="font-weight: bold; font-size: 14px;"></span></td>
+										th:class="${total >= 0 ? 'badge badge-success': 'badge badge-danger'}"
+										th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"
+										style="font-weight: bold; font-size: 14px;"></span></td>
 							</tr>
 					</table>
 				</div>
@@ -342,35 +331,32 @@
 							<tr th:each="trade : ${tradesList}">
 								<td th:text="${trade.conta}" class="fonte-tabela"></td>
 								<td><span
-									th:class="${trade.ativo.startsWith('WIN') ? 'badge badge-success': 'badge badge-dollar'}"
-									th:text="${trade.ativo}"></span></td>
+										th:class="${trade.ativo.startsWith('WIN') ? 'badge badge-success': 'badge badge-dollar'}"
+										th:text="${trade.ativo}"></span></td>
 								<td><span
-									th:class="${trade.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
-									th:text="${trade.volume +' '+ trade.direcao}"></span></td>
-								<td align="right"><span
-									style="font-weight: 700; font-size: 80%;"
-									th:text="${#numbers.formatDecimal(trade.compra, 1, 'POINT', 2, 'COMMA')}"></span>
+										th:class="${trade.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
+										th:text="${trade.volume +' '+ trade.direcao}"></span></td>
+								<td align="right"><span style="font-weight: 700; font-size: 80%;"
+										th:text="${#numbers.formatDecimal(trade.compra, 1, 'POINT', 2, 'COMMA')}"></span>
+								</td>
+								<td align="right"><span style="font-weight: 700; font-size: 80%;"
+										th:text="${#numbers.formatDecimal(trade.venda, 1, 'POINT', 2, 'COMMA')}"></span>
+								</td>
+								<td align="right"><span style="font-weight: 700; font-size: 80%;"
+										th:text="${#numbers.formatDecimal(trade.pontos, 1, 'POINT', 2, 'COMMA')}"></span>
 								</td>
 								<td align="right"><span
-									style="font-weight: 700; font-size: 80%;"
-									th:text="${#numbers.formatDecimal(trade.venda, 1, 'POINT', 2, 'COMMA')}"></span>
-								</td>
-								<td align="right"><span
-									style="font-weight: 700; font-size: 80%;"
-									th:text="${#numbers.formatDecimal(trade.pontos, 1, 'POINT', 2, 'COMMA')}"></span>
-								</td>
-								<td align="right"><span
-									th:class="${trade.resultado >= 0 ? 'badge badge-success': 'badge badge-danger'}"
-									th:text="${#numbers.formatDecimal(trade.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
+										th:class="${trade.resultado >= 0 ? 'badge badge-success': 'badge badge-danger'}"
+										th:text="${#numbers.formatDecimal(trade.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
 								</td>
 							</tr>
 							<tr>
 								<td th:text="${tradesList.size()}"></td>
 								<td colspan="5" align="right"><Strong>Total:</Strong></td>
 								<td align="right"><span
-									th:class="${total >= 0 ? 'badge badge-success': 'badge badge-danger'}"
-									th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"
-									style="font-weight: bold; font-size: 14px;"></span></td>
+										th:class="${total >= 0 ? 'badge badge-success': 'badge badge-danger'}"
+										th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"
+										style="font-weight: bold; font-size: 14px;"></span></td>
 							</tr>
 						</tbody>
 					</table>
@@ -381,7 +367,7 @@
 	</div>
 </body>
 <script type="text/javascript">
-	$('#customSwitch1').change(function() {
+	$('#customSwitch1').change(function () {
 		if (this.checked) {
 			$('.dados-pessoais').css('display', 'none');
 			$('.dados-pessoais-oculto').css('display', 'block');
@@ -391,4 +377,5 @@
 		}
 	});
 </script>
+
 </html>

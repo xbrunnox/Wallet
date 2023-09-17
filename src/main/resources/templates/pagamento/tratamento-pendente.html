@@ -1,23 +1,25 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Pagamentos (Tratamento Pendente) - Versátil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Pagamentos (Tratamento Pendente) - Versátil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/assinaturas"> <img
-			src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+		<a class="navbar-brand" href="/assinaturas"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top"
+				alt="">
 			<span style="font-weight: 600; font-size: 16px;">&nbsp;&nbsp;Pagamentos
 				(Tratamento Pendente)</span>
 		</a>
@@ -38,26 +40,26 @@
 					<tbody>
 						<tr th:each="pagamento : ${pagamentosList}">
 							<td><span class="fonte-tabela"
-								th:text="${#temporals.format(pagamento.dataAtualizacao, 'dd/MM/yy')}"></span>
+									th:text="${#temporals.format(pagamento.dataAtualizacao, 'dd/MM/yy')}"></span>
 								<br> <small><span class="fonte-tabela"
-									th:text="${#temporals.format(pagamento.dataAtualizacao, 'HH:mm:ss')}"></span></small>
+										th:text="${#temporals.format(pagamento.dataAtualizacao, 'HH:mm:ss')}"></span></small>
 							</td>
 							<td><span class="fonte-tabela" th:text="${pagamento.nome}"></span>
 								<br> <small><span class="fonte-tabela"
-									th:text="${pagamento.plataforma +'-'+ pagamento.refPedido}"></span></small></td>
+										th:text="${pagamento.plataforma +'-'+ pagamento.refPedido}"></span></small>
+							</td>
 
 							<td class="fonte-tabela d-none d-sm-block" align="right"><span
-								th:text="${pagamento.email}"></span><br> <small><span
-									th:text="${pagamento.telefone}"></span></small></td>
+									th:text="${pagamento.email}"></span><br> <small><span
+										th:text="${pagamento.telefone}"></span></small></td>
 							<td class="fonte-tabela" align="right"><a
-								th:href="'javascript:associarPagamento('+${pagamento.id}+');'">
+									th:href="'javascript:associarPagamento('+${pagamento.id}+');'">
 									<span
-									th:text="${#numbers.formatDecimal(pagamento.valor, 1, 'POINT', 2, 'COMMA')}"></span>
-							</a>
+										th:text="${#numbers.formatDecimal(pagamento.valor, 1, 'POINT', 2, 'COMMA')}"></span>
+								</a>
 						</tr>
 						<tr>
-							<td colspan="4"><span class="fonte-tabela"
-								th:text="${pagamentosList.size()}"></span></td>
+							<td colspan="4"><span class="fonte-tabela" th:text="${pagamentosList.size()}"></span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -66,15 +68,14 @@
 		</div>
 	</div>
 	<!-- Modal -->
-	<div class="modal fade" id="associarPagamentoModal" tabindex="-1"
-		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="associarPagamentoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">Associar
 						Pagamento</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -115,8 +116,7 @@
 						<div class="col-3" align="right">&nbsp;</div>
 						<div class="col-5">
 							<div class="custom-control custom-checkbox">
-								<input class="custom-control-input" type="checkbox"
-									id="apenasAssociarCheck"> <label
+								<input class="custom-control-input" type="checkbox" id="apenasAssociarCheck"> <label
 									class="custom-control-label" for="apenasAssociarCheck">Apenas
 									associar</label>
 							</div>
@@ -126,10 +126,8 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary"
-						onclick="javascript:associar();">Associar</button>
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" onclick="javascript:associar();">Associar</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 				</div>
 			</div>
 		</div>
@@ -145,24 +143,24 @@
 		console.log('ID Pagamento: ' + idPagamento);
 
 		$.ajax({
-			url : '/pagamento/get/' + idPagamento,
-			success : function(pagamento) {
+			url: '/pagamento/get/' + idPagamento,
+			success: function (pagamento) {
 				console.log(pagamento);
 				$('#idPagamento').val(pagamento.id);
 				$('#valorPagamento').val(formatarDecimal(pagamento.valor, 2));
 				$('#nomePagamento').val(pagamento.nome);
 
 				$.ajax({
-					url : '/assinatura/list/',
-					success : function(assinaturas) {
+					url: '/assinatura/list/',
+					success: function (assinaturas) {
 						console.log(assinaturas);
-						$.each(assinaturas, function(key, assinatura) {
+						$.each(assinaturas, function (key, assinatura) {
 							$("#assinaturaSelect").append(
-									'<option value=' + assinatura.id + '>'
-											+ assinatura.conta + ' - '
-											+ assinatura.nome + ' - '
-											+ assinatura.dataVencimento
-											+ '</option>');
+								'<option value=' + assinatura.id + '>'
+								+ assinatura.conta + ' - '
+								+ assinatura.nome + ' - '
+								+ assinatura.dataVencimento
+								+ '</option>');
 						})
 					}
 				});
@@ -170,7 +168,7 @@
 		});
 
 		$('#associarPagamentoModal').modal({
-			show : true
+			show: true
 		});
 	}
 
@@ -180,22 +178,22 @@
 		requestAssociar.idPagamento = $('#idPagamento').val();
 		requestAssociar.idAssinatura = $('#assinaturaSelect').val();
 		requestAssociar.apenasAssociar = $('#apenasAssociarCheck').is(
-				":checked");
+			":checked");
 
 		console.log('Associando ' + requestAssociar.idPagamento + ' para '
-				+ requestAssociar.idAssinatura);
+			+ requestAssociar.idAssinatura);
 		console.log(requestAssociar);
 		$.ajax({
-			url : "/pagamento/associar-tratar",
-			type : "POST",
-			data : JSON.stringify(requestAssociar),
+			url: "/pagamento/associar-tratar",
+			type: "POST",
+			data: JSON.stringify(requestAssociar),
 			// dataType : "json",
-			contentType : "application/json; charset=utf-8",
-			success : function() {
+			contentType: "application/json; charset=utf-8",
+			success: function () {
 				alert('Associado com sucesso');
 				location.reload(true);
 			}
-		}).fail(function(response) {
+		}).fail(function (response) {
 			var error = JSON.parse(response.responseText);
 			console.log(error);
 			alert(error.message);
@@ -212,8 +210,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -221,9 +219,10 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 </script>
+
 </html>

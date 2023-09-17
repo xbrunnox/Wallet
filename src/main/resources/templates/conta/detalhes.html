@@ -1,62 +1,61 @@
 <!doctype html>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
-	integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-	crossorigin="anonymous"></script>
-<!-- link
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+		integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+		crossorigin="anonymous"></script>
+	<!-- link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
 	rel="stylesheet"
 	integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
 	crossorigin="anonymous" -->
-<title>Detalhes de conta - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
-<style>
-.fonte-tabela {
-	font-weight: 700;
-	font-size: 65%;
-}
+	<title>Detalhes de conta - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<style>
+		.fonte-tabela {
+			font-weight: 700;
+			font-size: 65%;
+		}
 
-.badge-dollar {
-	color: white;
-	background-color: deepskyblue;
-	font-size: 70%;
-}
+		.badge-dollar {
+			color: white;
+			background-color: deepskyblue;
+			font-size: 70%;
+		}
 
-.badge-green {
-	color: white;
-	background-color: #28a745;
-	font-size: 70%;
-}
+		.badge-green {
+			color: white;
+			background-color: #28a745;
+			font-size: 70%;
+		}
 
-.badge-venda {
-	color: white;
-	background-color: brown;
-	font-size: 70%;
-}
+		.badge-venda {
+			color: white;
+			background-color: brown;
+			font-size: 70%;
+		}
 
-.badge-compra {
-	color: white;
-	background-color: darkslateblue;
-	font-size: 70%;
-}
-</style>
+		.badge-compra {
+			color: white;
+			background-color: darkslateblue;
+			font-size: 70%;
+		}
+	</style>
 </head>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Detalhes de conta</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Detalhes de conta</span>
 		</a>
 	</nav>
 	<br>
@@ -80,8 +79,7 @@
 			<div class="col-4">
 				<span
 					th:text="${assinatura != null ? #temporals.format(assinatura.dataVencimento, 'dd/MM/yyyy'):''}"></span>
-				&nbsp;<a href="javascript:alterarVencimentoModal();"><i
-					class="bi bi-pencil-square"></i></a>
+				&nbsp;<a href="javascript:alterarVencimentoModal();"><i class="bi bi-pencil-square"></i></a>
 			</div>
 		</div>
 		<div class="row">
@@ -101,33 +99,28 @@
 				<label><strong>E-mail:</strong></label>
 			</div>
 			<div class="col-10">
-				<span
-					th:text="${assinatura != null ? assinatura.emailPagamento : ''}"></span>
-				&nbsp;<a href="javascript:alterarEmailModal();"><i
-					class="bi bi-pencil-square"></i></a>
+				<span th:text="${assinatura != null ? assinatura.emailPagamento : ''}"></span>
+				&nbsp;<a href="javascript:alterarEmailModal();"><i class="bi bi-pencil-square"></i></a>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-2" align="right">
 				<label><strong>Telefone:</strong></label>
 			</div>
-			<div class="col-10"
-				th:text="${assinatura != null ? assinatura.telefone : ''}"></div>
+			<div class="col-10" th:text="${assinatura != null ? assinatura.telefone : ''}"></div>
 		</div>
 		<div class="row">
 			<div class="col-2" align="right">
 				<label><strong>Instalação:</strong></label>
 			</div>
-			<div class="col-10"
-				th:text="${assinatura != null ? assinatura.maquina : ''}"></div>
+			<div class="col-10" th:text="${assinatura != null ? assinatura.maquina : ''}"></div>
 		</div>
 
 		<div class="row">
 			<div class="col-2" align="right">
 				<label><strong>Total:</strong></label>
 			</div>
-			<div class="col-10"
-				th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"></div>
+			<div class="col-10" th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"></div>
 		</div>
 		<br> <br>
 
@@ -138,17 +131,14 @@
 					<h5>Sub Contas</h5>
 				</div>
 				<div class="col-4" align="right">
-					<button class="btn btn-sm btn-primary"
-						onclick="javascript:adicionarSubConta();">+</button>
+					<button class="btn btn-sm btn-primary" onclick="javascript:adicionarSubConta();">+</button>
 				</div>
 			</div>
 			<hr style="margin-top: auto;">
-			<div class="row"
-				th:if="${subContaList == null || subContaList.isEmpty()}">
+			<div class="row" th:if="${subContaList == null || subContaList.isEmpty()}">
 				<div class="col-12">Não possui subcontas.</div>
 			</div>
-			<div class="row"
-				th:if="${subContaList != null && subContaList.size() > 0}">
+			<div class="row" th:if="${subContaList != null && subContaList.size() > 0}">
 				<div class="col-12">
 					<table class="table table-striped">
 						<thead>
@@ -170,6 +160,53 @@
 				</div>
 			</div>
 			<br>
+
+			<div class="row">
+				<div class="col-8">
+					<h5>Automações</h5>
+				</div>
+				<div class="col-4" align="right">
+					<!--a class="btn btn-primary btn-sm" th:href="@{'/expert/delta/' + ${assinatura.id}}"> <span>Subst.
+							por Delta</span></a-->
+					<button class="btn btn-sm btn-primary" onclick="javascript:exibirAdicionarExpertModal();">+</button>
+				</div>
+			</div>
+			<hr style="margin-top: auto;">
+			<div class="row">
+				<div class="col">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Expert</th>
+								<th>Alav.</th>
+								<th>Alav. Máx.</th>
+								<th>&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="expert : ${expertList}">
+								<td><span th:text="${expert.id}"></span>
+								</td>
+								<td><span th:text="${expert.expert.id}"></span></td>
+								<td><span th:text="${expert.volume}"></span></td>
+								<td><span th:text="${expert.volumeMaximo}"></span></td>
+								<td align="right">
+									<a class="btn btn-sm btn-danger"
+										th:href="@{'javascript:excluirExpert(' + ${expert.id} +');'}">
+										<i class="bi bi-trash"></i> </a>
+									<!--
+									<a
+										th:href="@{/assinatura/excluir-expert/{idExpert}(idExpert=${expert.id})}"
+										class="btn btn-sm btn-danger">Excluir</a>
+										-->
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<br> <br>
 			<div class="row">
 				<div class="col">
 					<h5>Pagamentos Recebidos</h5>
@@ -191,25 +228,26 @@
 						<tbody>
 							<tr th:each="assinaturaPagamento : ${pagamentosList}">
 								<td class="fonte-tabela"><span
-									th:text="${#temporals.format(assinaturaPagamento.pagamento.dataAtualizacao, 'dd/MM/yyyy')}"></span>
+										th:text="${#temporals.format(assinaturaPagamento.pagamento.dataAtualizacao, 'dd/MM/yyyy')}"></span>
 									<br> <small><span
-										th:text="${#temporals.format(assinaturaPagamento.pagamento.dataAtualizacao, 'HH:mm:ss')}"></span></small>
+											th:text="${#temporals.format(assinaturaPagamento.pagamento.dataAtualizacao, 'HH:mm:ss')}"></span></small>
 								</td>
-								<td class="fonte-tabela"><span
-									th:text="${assinaturaPagamento.pagamento.nome}"></span> <br>
+								<td class="fonte-tabela"><span th:text="${assinaturaPagamento.pagamento.nome}"></span>
+									<br>
 									<small><span
-										th:text="${assinaturaPagamento.pagamento.plataforma +'-'+ assinaturaPagamento.pagamento.refPedido}"></span></small></td>
+											th:text="${assinaturaPagamento.pagamento.plataforma +'-'+ assinaturaPagamento.pagamento.refPedido}"></span></small>
+								</td>
 
 								<td class="fonte-tabela" align="right"><span
-									th:text="${assinaturaPagamento.pagamento.email}"></span><br>
-									<small><span
-										th:text="${assinaturaPagamento.pagamento.telefone}"></span></small></td>
+										th:text="${assinaturaPagamento.pagamento.email}"></span><br>
+									<small><span th:text="${assinaturaPagamento.pagamento.telefone}"></span></small>
+								</td>
 								<td class="fonte-tabela" align="right"><span
-									th:text="${#numbers.formatDecimal(assinaturaPagamento.pagamento.valor, 1, 'POINT', 2, 'COMMA')}"></span></td>
+										th:text="${#numbers.formatDecimal(assinaturaPagamento.pagamento.valor, 1, 'POINT', 2, 'COMMA')}"></span>
+								</td>
 								<td>
 									<div class="btn-group">
-										<button type="button"
-											class="btn btn-sm btn-danger dropdown-toggle"
+										<button type="button" class="btn btn-sm btn-danger dropdown-toggle"
 											data-toggle="dropdown" aria-expanded="false">
 											<i class="bi bi-gear-fill"></i>
 										</button>
@@ -224,53 +262,17 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="4"><span class="fonte-tabela"
-									th:text="${pagamentosList.size()}"></span></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<br> <br>
-
-
-			<div class="row">
-				<div class="col">
-					<h5>Automações</h5>
-				</div>
-				<div class="col" align="right">
-					<a class="btn btn-primary btn-sm"
-						th:href="@{'/expert/delta/' + ${assinatura.id}}"> <span>Subst.
-							por Delta</span></a>
-				</div>
-			</div>
-			<hr style="margin-top: auto;">
-			<div class="row">
-				<div class="col">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>ID</th>
-								<th>Expert</th>
-								<th>Alavancagem</th>
-								<th>Alavancagem Máxima</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="expert : ${expertList}">
-								<td class="fonte-tabela"><span th:text="${expert.id}"></span>
+								<td colspan="4"><span class="fonte-tabela" th:text="${pagamentosList.size()}"></span>
 								</td>
-								<td class="fonte-tabela"><span
-									th:text="${expert.expert.id}"></span></td>
-								<td class="fonte-tabela"><span th:text="${expert.volume}"></span></td>
-								<td class="fonte-tabela"><span
-									th:text="${expert.volumeMaximo}"></span></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
 			<br> <br>
+
+
+
 
 			<div class="row">
 				<div class="col">
@@ -287,8 +289,8 @@
 								<th style="text-align: center; font-size: 70%;">Ativo <br>
 									Vol.
 								</th>
-								<th class="d-none d-sm-block"
-									style="text-align: right; font-size: 70%;">Duração<br>&nbsp;
+								<th class="d-none d-sm-block" style="text-align: right; font-size: 70%;">
+									Duração<br>&nbsp;
 								</th>
 								<th style="text-align: center; font-size: 70%;">Venda <br>
 									Compra
@@ -300,36 +302,35 @@
 						</thead>
 						<tbody>
 							<tr th:each="trade : ${tradesList}">
-								<td
-									th:text="${#temporals.format(trade.dataEntrada, 'dd/MM/yy')}"
-									class="fonte-tabela"></td>
+								<td th:text="${#temporals.format(trade.dataEntrada, 'dd/MM/yy')}" class="fonte-tabela">
+								</td>
 								<td align="center"><span
-									th:class="${trade.ativo.codigo.startsWith('WIN') ? 'badge badge-green': 'badge badge-dollar'}"
-									th:text="${trade.ativo.codigo}"></span><br> <span
-									th:class="${trade.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
-									th:text="${trade.volume +' '+ trade.direcao}"></span></td>
-								<td class="d-none d-sm-block" align="right"><span
-									class="fonte-tabela" th:text="${trade.getDuracaoFormatada()}"></span><br>
-									<span>&nbsp;</span></td>
+										th:class="${trade.ativo.codigo.startsWith('WIN') ? 'badge badge-green': 'badge badge-dollar'}"
+										th:text="${trade.ativo.codigo}"></span><br> <span
+										th:class="${trade.direcao.equals('C') ? 'badge badge-compra': 'badge badge-venda'}"
+										th:text="${trade.volume +' '+ trade.direcao}"></span></td>
+								<td class="d-none d-sm-block" align="right"><span class="fonte-tabela"
+										th:text="${trade.getDuracaoFormatada()}"></span><br>
+									<span>&nbsp;</span>
+								</td>
 								<td align="center"><span class="fonte-tabela"
-									th:text="${#numbers.formatDecimal(trade.compra, 1, 'POINT', 2, 'COMMA')}"></span><br>
+										th:text="${#numbers.formatDecimal(trade.compra, 1, 'POINT', 2, 'COMMA')}"></span><br>
 									<span class="fonte-tabela"
-									th:text="${#numbers.formatDecimal(trade.venda, 1, 'POINT', 2, 'COMMA')}"></span>
+										th:text="${#numbers.formatDecimal(trade.venda, 1, 'POINT', 2, 'COMMA')}"></span>
 								</td>
 								<td align="right"><span class="fonte-tabela"
-									th:text="${#numbers.formatDecimal(trade.pontos, 1, 'POINT', 2, 'COMMA')}"></span>
+										th:text="${#numbers.formatDecimal(trade.pontos, 1, 'POINT', 2, 'COMMA')}"></span>
 								</td>
 								<td align="right"><span style="font-size: 70%;"
-									th:class="${trade.resultado >= 0 ? 'badge text-bg-success': 'badge text-bg-danger'}"
-									th:text="${#numbers.formatDecimal(trade.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
+										th:class="${trade.resultado >= 0 ? 'badge text-bg-success': 'badge text-bg-danger'}"
+										th:text="${#numbers.formatDecimal(trade.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
 								</td>
 							</tr>
 							<tr>
 								<td th:text="${contas}"></td>
 								<td class="d-none d-sm-block" align="right">&nbsp;</td>
 								<td colspan="3" align="right"><Strong>Total:</Strong></td>
-								<td
-									th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"
+								<td th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"
 									style="font-weight: bold;" align="right"></td>
 							</tr>
 						</tbody>
@@ -378,17 +379,16 @@
 			</div>
 		</div>
 	</div>
+
 	<!-- Modal -->
-	<div class="modal fade" id="adicionarSubContaModal" tabindex="-1"
-		role="dialog" aria-labelledby="adicionarSubContaModalLabel"
-		aria-hidden="true">
+	<div class="modal fade" id="adicionarSubContaModal" tabindex="-1" role="dialog"
+		aria-labelledby="adicionarSubContaModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="adicionarSubContaModalLabel">Adicionar
 						Sub Conta</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -421,23 +421,74 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary"
 						onclick="javascript:associarSubConta();">Adicionar</button>
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- Modal Alterar Vencimento -->
-	<div class="modal fade" id="alterarVencimentoModal" tabindex="-1"
-		role="dialog" aria-labelledby="alterarVencimentoModalLabel"
+
+	<!-- Modal Adicionar Expert-->
+	<div class="modal fade" id="adicionarExpertModal" tabindex="-1" role="dialog" aria-labelledby="adicionarExpertLabel"
 		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="adicionarExpertModalLabel">Adicionar
+						Automação</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-5" align="right">
+							<strong><label>Automação:</label></strong>
+						</div>
+						<div class="col-7">
+							<select class="form-control" id="expertAdicionarExpert" name="expertAdicionarExpert">
+								<option value="DELTA">DELTA</option>
+								<option value="DELTA+">DELTA+</option>
+								<option value="ULTRA">ULTRA</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-5" align="right">
+							<strong><label>Alavancagem:</label></strong>
+						</div>
+						<div class="col-7">
+							<input type="number" class="form-control" id="alavancagemAdicionarExpert" min="1" max="5"
+								value="1" name="alavancagemAdicionarExpert">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-5" align="right">
+							<strong><label>Alavancagem Máx:</label></strong>
+						</div>
+						<div class="col-7">
+							<input type="number" class="form-control" id="alavancagemMaximaAdicionarExpert" min="1"
+								max="5" value="1" name="alavancagemMaximaAdicionarExpert">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						onclick="javascript:adicionarExpert();">Adicionar</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Alterar Vencimento -->
+	<div class="modal fade" id="alterarVencimentoModal" tabindex="-1" role="dialog"
+		aria-labelledby="alterarVencimentoModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">Alterar
 						Vencimento</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -455,11 +506,9 @@
 							<label>Novo Vencimento:</label>
 						</div>
 						<div class="col-4">
-							<div id="novoVencimentoDatePicker" class="input-group date"
-								data-date-format="dd/mm/yyyy">
-								<input id="novoVencimento" class="form-control" type="text"
-									readonly /> <span class="input-group-addon"> <i
-									class="glyphicon glyphicon-calendar"></i>
+							<div id="novoVencimentoDatePicker" class="input-group date" data-date-format="dd/mm/yyyy">
+								<input id="novoVencimento" class="form-control" type="text" readonly /> <span
+									class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i>
 								</span>
 							</div>
 							<!-- 
@@ -471,8 +520,7 @@
 							<label>Motivo:</label>
 						</div>
 						<div class="col-9">
-							<textarea class="form-control" id="motivoAlteracaoVencimento"
-								rows="3" cols=""></textarea>
+							<textarea class="form-control" id="motivoAlteracaoVencimento" rows="3" cols=""></textarea>
 						</div>
 					</div>
 				</div>
@@ -480,23 +528,20 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary"
 						onclick="javascript:alterarVencimento();">Gravar</button>
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<!-- Modal Alterar Email -->
-	<div class="modal fade" id="alterarEmailModal" tabindex="-1"
-		role="dialog" aria-labelledby="alterarEmailModalLabel"
+	<div class="modal fade" id="alterarEmailModal" tabindex="-1" role="dialog" aria-labelledby="alterarEmailModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">Alterar E-mail</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -520,26 +565,22 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary"
-						onclick="javascript:alterarEmail();">Gravar</button>
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" onclick="javascript:alterarEmail();">Gravar</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<!-- Modal Excluir Pagamento -->
-	<div class="modal fade" id="excluirPagamentoModal" tabindex="-1"
-		role="dialog" aria-labelledby="excluirPagamentoModalLabel"
-		aria-hidden="true">
+	<div class="modal fade" id="excluirPagamentoModal" tabindex="-1" role="dialog"
+		aria-labelledby="excluirPagamentoModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="excluirPagamentoModalLabel">Excluir
 						Pagamento</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -555,8 +596,8 @@
 							<label><strong>Valor:</strong></label>
 						</div>
 						<div class="col-3">
-							<input id="valorPagamentoExcluir" class="form-control"
-								type="text" style="text-align: right;"/>
+							<input id="valorPagamentoExcluir" class="form-control" type="text"
+								style="text-align: right;" />
 						</div>
 					</div>
 					<div class="row">
@@ -572,8 +613,7 @@
 							<label><strong>Produto:</strong></label>
 						</div>
 						<div class="col-9">
-							<input id="produtoPagamentoExcluir" class="form-control"
-								type="text" />
+							<input id="produtoPagamentoExcluir" class="form-control" type="text" />
 						</div>
 					</div>
 					<div class="row">
@@ -581,8 +621,7 @@
 							<label><strong>Plataforma:</strong></label>
 						</div>
 						<div class="col-3">
-							<input id="plataformaPagamentoExcluir" class="form-control"
-								type="text" />
+							<input id="plataformaPagamentoExcluir" class="form-control" type="text" />
 						</div>
 						<div class="col-2" align="right">
 							<label><strong>Data:</strong></label>
@@ -596,8 +635,7 @@
 							<label><strong>Email:</strong></label>
 						</div>
 						<div class="col-9">
-							<input id="emailPagamentoExcluir" class="form-control"
-								type="text" />
+							<input id="emailPagamentoExcluir" class="form-control" type="text" />
 						</div>
 					</div>
 					<div class="row"></div>
@@ -606,8 +644,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-danger"
 						onclick="javascript:excluirPagamento();">Excluir</button>
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 				</div>
 			</div>
 		</div>
@@ -623,9 +660,8 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js">
-	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js">
+
 </script>
 <!-- script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
@@ -635,38 +671,38 @@
 <script>
 	function alterarVencimentoModal() {
 		$.ajax({
-			url : '/assinatura/get/' + $('#idAssinatura').val(),
-			success : function(assinatura) {
+			url: '/assinatura/get/' + $('#idAssinatura').val(),
+			success: function (assinatura) {
 				$('#vencimentoAtual').val(
-						assinatura.dataVencimento.split('-').reverse()
-								.join('/'));
+					assinatura.dataVencimento.split('-').reverse()
+						.join('/'));
 			}
 		});
 
 		$('#alterarVencimentoModal').modal({
-			show : true
+			show: true
 		});
 	}
 
 	function alterarEmailModal() {
 		$.ajax({
-			url : '/assinatura/get/' + $('#idAssinatura').val(),
-			success : function(assinatura) {
+			url: '/assinatura/get/' + $('#idAssinatura').val(),
+			success: function (assinatura) {
 				console.log(assinatura);
 				$('#emailAtual').val(assinatura.email);
 			}
 		});
 
 		$('#alterarEmailModal').modal({
-			show : true
+			show: true
 		});
 	}
 
 	function excluirPagamentoModal(idPagamento) {
 		console.log('Excluindo pagamento ' + idPagamento);
 		$.ajax({
-			url : '/assinatura/get-pagamento/' + idPagamento,
-			success : function(pagamento) {
+			url: '/assinatura/get-pagamento/' + idPagamento,
+			success: function (pagamento) {
 				console.log(pagamento);
 
 				$('#idPagamentoExcluir').val(pagamento.id);
@@ -675,11 +711,11 @@
 				$('#plataformaPagamentoExcluir').val(pagamento.plataforma);
 				$('#emailPagamentoExcluir').val(pagamento.email);
 				$('#dataPagamentoExcluir').val(
-						parseISOLocal(pagamento.data).toLocaleString());
+					parseISOLocal(pagamento.data).toLocaleString());
 				$('#produtoPagamentoExcluir').val(pagamento.produto);
 
 				$('#excluirPagamentoModal').modal({
-					show : true
+					show: true
 				});
 			}
 		});
@@ -696,15 +732,39 @@
 		request.idAssinatura = $('#idAssinatura').val();
 
 		$.ajax({
-			url : "/assinatura/excluir-pagamento",
-			type : "POST",
-			data : JSON.stringify(request),
+			url: "/assinatura/excluir-pagamento",
+			type: "POST",
+			data: JSON.stringify(request),
 			// dataType : "json",
-			contentType : "application/json; charset=utf-8",
-			success : function() {
+			contentType: "application/json; charset=utf-8",
+			success: function () {
 				location.reload(true);
 			}
-		}).fail(function(response) {
+		}).fail(function (response) {
+			var error = JSON.parse(response.responseText);
+			console.log(error);
+			alert(error.message);
+		});
+	}
+
+	function adicionarExpert() {
+		var request = {};
+		request.idAssinatura = $('#idAssinatura').val();
+		request.expert = ($('#expertAdicionarExpert').val());
+		request.alavancagem = ($('#alavancagemAdicionarExpert').val());
+		request.alavancagemMaxima = $('#alavancagemMaximaAdicionarExpert').val();
+		console.log(request);
+
+		$.ajax({
+			url: "/assinatura/adicionar-expert",
+			type: "POST",
+			data: JSON.stringify(request),
+			// dataType : "json",
+			contentType: "application/json; charset=utf-8",
+			success: function () {
+				location.reload(true);
+			}
+		}).fail(function (response) {
 			var error = JSON.parse(response.responseText);
 			console.log(error);
 			alert(error.message);
@@ -714,24 +774,24 @@
 	function alterarVencimento() {
 		var request = {};
 		request.dataVencimento = ($('#vencimentoAtual').val()).split('/')
-				.reverse().join('-');
+			.reverse().join('-');
 		request.novoVencimento = ($('#novoVencimento').val()).split('/')
-				.reverse().join('-');
+			.reverse().join('-');
 		request.idAssinatura = $('#idAssinatura').val();
 		request.motivo = $('#motivoAlteracaoVencimento').val();
 
 		console.log(request);
 
 		$.ajax({
-			url : "/assinatura/alterar-vencimento",
-			type : "POST",
-			data : JSON.stringify(request),
+			url: "/assinatura/alterar-vencimento",
+			type: "POST",
+			data: JSON.stringify(request),
 			// dataType : "json",
-			contentType : "application/json; charset=utf-8",
-			success : function() {
+			contentType: "application/json; charset=utf-8",
+			success: function () {
 				location.reload(true);
 			}
-		}).fail(function(response) {
+		}).fail(function (response) {
 			var error = JSON.parse(response.responseText);
 			console.log(error);
 			alert(error.message);
@@ -748,15 +808,15 @@
 		console.log(request);
 
 		$.ajax({
-			url : "/assinatura/alterar-email",
-			type : "POST",
-			data : JSON.stringify(request),
+			url: "/assinatura/alterar-email",
+			type: "POST",
+			data: JSON.stringify(request),
 			// dataType : "json",
-			contentType : "application/json; charset=utf-8",
-			success : function() {
+			contentType: "application/json; charset=utf-8",
+			success: function () {
 				location.reload(true);
 			}
-		}).fail(function(response) {
+		}).fail(function (response) {
 			var error = JSON.parse(response.responseText);
 			console.log(error);
 			alert(error.message);
@@ -767,21 +827,21 @@
 	function adicionarSubConta() {
 		console.log('Exibindo modal de subcontas')
 		$.ajax({
-			url : '/conta/inativas',
-			success : function(contas) {
+			url: '/conta/inativas',
+			success: function (contas) {
 				console.log(contas);
-				$.each(contas, function(key, conta) {
+				$.each(contas, function (key, conta) {
 					$("#selectSubContas").append(
-							'<option value=' + conta.id + '>' + conta.id
-									+ ' - ' + conta.nome + '</option>');
+						'<option value=' + conta.id + '>' + conta.id
+						+ ' - ' + conta.nome + '</option>');
 				})
 			}
 		});
 		$.ajax({
-			url : '/automacao/ativas',
-			success : function(automacoes) {
+			url: '/automacao/ativas',
+			success: function (automacoes) {
 				console.log(automacoes);
-				$.each(automacoes, function(key, automacao) {
+				$.each(automacoes, function (key, automacao) {
 					/**
 					$("#selectAutomacoesAtivas").append(
 							'<option value=' + automacao.id + '>'
@@ -792,7 +852,13 @@
 		});
 
 		$('#adicionarSubContaModal').modal({
-			show : true
+			show: true
+		});
+	}
+
+	function exibirAdicionarExpertModal() {
+		$('#adicionarExpertModal').modal({
+			show: true
 		});
 	}
 
@@ -802,18 +868,32 @@
 		var idAssinatura = $('#idAssinatura').val();
 
 		console.log('Associando ' + subConta + ' com ' + automacao
-				+ ' na assinatura ' + idAssinatura);
+			+ ' na assinatura ' + idAssinatura);
 
 		$.ajax({
-			url : '/subconta/associar/' + idAssinatura + '/' + subConta + '/'
-					+ automacao,
-			success : function() {
+			url: '/subconta/associar/' + idAssinatura + '/' + subConta + '/'
+				+ automacao,
+			success: function () {
 				alert('Associado com sucesso');
 				location.reload(true);
 			},
-			error : function(errorMessage) {
+			error: function (errorMessage) {
 				console.log(errorMessage);
 				alert('Não foi possível associar esta conta.');
+			}
+		});
+	}
+
+	function excluirExpert(idExpert) {
+		$.ajax({
+			url: '/assinatura/excluir-expert/' + idExpert,
+			success: function () {
+				alert('Expert removido com sucesso');
+				location.reload(true);
+			},
+			error: function (errorMessage) {
+				console.log(errorMessage);
+				alert('Não foi possível remover expert. [' + errorMessage + ']');
 			}
 		});
 	}
@@ -828,8 +908,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -837,91 +917,92 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 
 	Highcharts.chart('container', {
 
-		title : {
-			text : 'Resultado'
+		title: {
+			text: 'Resultado'
 		},
 
-		subtitle : {
-			text : 'Trades realizados'
+		subtitle: {
+			text: 'Trades realizados'
 		},
 
-		yAxis : {
-			title : {
-				text : 'Resultado (R$)'
+		yAxis: {
+			title: {
+				text: 'Resultado (R$)'
 			}
 		},
 
-		xAxis : {
-			accessibility : {
-				rangeDescription : 'Período'
+		xAxis: {
+			accessibility: {
+				rangeDescription: 'Período'
 			},
-			categories : [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-					'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+			categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+				'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 		},
 
-		legend : {
-			layout : 'vertical',
-			align : 'right',
-			verticalAlign : 'middle'
+		legend: {
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'middle'
 		},
 
-		series : [
-				{
-					name : 'Installation & Developers',
-					data : [ 43934, 48656, 65165, 81827, 112143, 142383,
-							171533, 165174, 155157, 161454, 154610 ]
-				},
-				{
-					name : 'Manufacturing',
-					data : [ 24916, 37941, 29742, 29851, 32490, 30282, 38121,
-							36885, 33726, 34243, 31050 ]
-				},
-				{
-					name : 'Sales & Distribution',
-					data : [ 11744, 30000, 16005, 19771, 20185, 24377, 32147,
-							30912, 29243, 29213, 25663 ]
-				},
-				{
-					name : 'Operations & Maintenance',
-					data : [ null, null, null, null, null, null, null, null,
-							11164, 11218, 10077 ]
-				},
-				{
-					name : 'Other',
-					data : [ 21908, 5548, 8105, 11248, 8989, 11816, 18274,
-							17300, 13053, 11906, 10073 ]
-				} ],
+		series: [
+			{
+				name: 'Installation & Developers',
+				data: [43934, 48656, 65165, 81827, 112143, 142383,
+					171533, 165174, 155157, 161454, 154610]
+			},
+			{
+				name: 'Manufacturing',
+				data: [24916, 37941, 29742, 29851, 32490, 30282, 38121,
+					36885, 33726, 34243, 31050]
+			},
+			{
+				name: 'Sales & Distribution',
+				data: [11744, 30000, 16005, 19771, 20185, 24377, 32147,
+					30912, 29243, 29213, 25663]
+			},
+			{
+				name: 'Operations & Maintenance',
+				data: [null, null, null, null, null, null, null, null,
+					11164, 11218, 10077]
+			},
+			{
+				name: 'Other',
+				data: [21908, 5548, 8105, 11248, 8989, 11816, 18274,
+					17300, 13053, 11906, 10073]
+			}],
 
-		responsive : {
-			rules : [ {
-				condition : {
-					maxWidth : 500
+		responsive: {
+			rules: [{
+				condition: {
+					maxWidth: 500
 				},
-				chartOptions : {
-					legend : {
-						layout : 'horizontal',
-						align : 'center',
-						verticalAlign : 'bottom'
+				chartOptions: {
+					legend: {
+						layout: 'horizontal',
+						align: 'center',
+						verticalAlign: 'bottom'
 					}
 				}
-			} ]
+			}]
 		}
 
 	});
 </script>
 <script>
-	$(function() {
+	$(function () {
 		$("#novoVencimentoDatePicker").datepicker({
-			autoclose : true,
-			todayHighlight : true,
+			autoclose: true,
+			todayHighlight: true,
 		}).datepicker('update', new Date());
 	});
 </script>
+
 </html>

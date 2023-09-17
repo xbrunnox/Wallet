@@ -1,24 +1,25 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Home Broker - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Home Broker - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Home Broker</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Home Broker</span>
 		</a>
 	</nav>
 	<br>
@@ -34,8 +35,8 @@
 							</div>
 							<div class="col-6 col-sm-2" align="right">
 								<select class="form-control" id="expert">
-									<option th:each="automacao : ${automacaoList}"
-										th:value="${automacao.id}" th:text="${automacao.id}"></option>
+									<option th:each="automacao : ${automacaoList}" th:value="${automacao.id}"
+										th:text="${automacao.id}"></option>
 								</select>
 							</div>
 							<div class="col-6 col-sm-2" align="right">
@@ -98,8 +99,7 @@
 			</div>
 			<div class="col-12" th:each="homeBroker : ${homeBrokerList}">
 				<div class="card">
-					<h5
-						th:class="${homeBroker.ativo.startsWith('WIN') ? 'card-header bg-info text-white': 'card-header bg-success text-white'}"
+					<h5 th:class="${homeBroker.ativo.startsWith('WIN') ? 'card-header bg-info text-white': 'card-header bg-success text-white'}"
 						th:text="${homeBroker.automacao} + ' - ' + ${homeBroker.ativo}"></h5>
 					<div class="card-body">
 						<div class="row">
@@ -108,9 +108,9 @@
 							</div>
 							<div class="col-6 col-sm-2" align="right">
 								<select class="form-control" th:id="'expert'+${homeBroker.id}">
-									<option th:each="automacao : ${automacaoList}"
-										th:value="${automacao.id}" th:text="${automacao.id}"
-										th:selected="${automacao.id == homeBroker.automacao}"></option>
+									<option th:each="automacao : ${automacaoList}" th:value="${automacao.id}"
+										th:text="${automacao.id}" th:selected="${automacao.id == homeBroker.automacao}">
+									</option>
 								</select>
 							</div>
 							<div class="col-6 col-sm-2" align="right">
@@ -132,8 +132,7 @@
 								<strong>Volume:</strong>
 							</div>
 							<div class="col-6 col-sm-2">
-								<input class="form-control" value="1"
-									th:id="'volume'+${homeBroker.id}">
+								<input class="form-control" value="1" th:id="'volume'+${homeBroker.id}">
 							</div>
 							<div class="col-6 col-sm-2" align="right">
 								<strong>Stop Loss:</strong>
@@ -145,8 +144,7 @@
 								<strong>Take Profit:</strong>
 							</div>
 							<div class="col-6 col-sm-2" align="right">
-								<input class="form-control"
-									th:id="'takeProfit'+${homeBroker.id}">
+								<input class="form-control" th:id="'takeProfit'+${homeBroker.id}">
 							</div>
 						</div>
 						<div class="row">
@@ -163,11 +161,14 @@
 						<hr>
 						<div class="row">
 							<div class="col-12" align="right">
-								<button class="btn btn-success" th:onclick="'javascript:comprar('+${homeBroker.id}+');'">Comprar</button>
+								<button class="btn btn-success"
+									th:onclick="'javascript:comprar('+${homeBroker.id}+');'">Comprar</button>
 								&nbsp;
-								<button class="btn btn-primary" th:onclick="'javascript:vender('+${homeBroker.id}+');'">Vender</button>
+								<button class="btn btn-primary"
+									th:onclick="'javascript:vender('+${homeBroker.id}+');'">Vender</button>
 								&nbsp;
-								<button class="btn btn-danger" th:onclick="'javascript:zerar('+${homeBroker.id}+');'">Zerar</button>
+								<button class="btn btn-danger"
+									th:onclick="'javascript:zerar('+${homeBroker.id}+');'">Zerar</button>
 							</div>
 						</div>
 					</div>
@@ -184,66 +185,67 @@
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	function comprar(home) {
-		var idHome = (home == 0 ? '': home);
+		var idHome = (home == 0 ? '' : home);
 		var marketOrder = {};
-		marketOrder.conta = $('#conta'+idHome).val();
-		marketOrder.ativo = $('#ativo'+idHome).val();
-		marketOrder.expert = $('#expert'+idHome).val();
+		marketOrder.conta = $('#conta' + idHome).val();
+		marketOrder.ativo = $('#ativo' + idHome).val();
+		marketOrder.expert = $('#expert' + idHome).val();
 		marketOrder.direcao = 'BUY';
-		marketOrder.volume = $('#volume'+idHome).val();
-		marketOrder.tipo = $('#tipo'+idHome).val();
-		marketOrder.stopLoss = $('#stopLoss'+idHome).val();
-		marketOrder.takeProfit = $('#takeProfit'+idHome).val();
-		
+		marketOrder.volume = $('#volume' + idHome).val();
+		marketOrder.tipo = $('#tipo' + idHome).val();
+		marketOrder.stopLoss = $('#stopLoss' + idHome).val();
+		marketOrder.takeProfit = $('#takeProfit' + idHome).val();
+
 		console.log(marketOrder);
 		$.ajax({
-			url : "/metatrader/order/market",
-			type : "POST",
-			data : JSON.stringify(marketOrder),
+			url: "/metatrader/order/market",
+			type: "POST",
+			data: JSON.stringify(marketOrder),
 			// dataType : "json",
-			contentType : "application/json; charset=utf-8",
-			success : function() {
+			contentType: "application/json; charset=utf-8",
+			success: function () {
 				alert('Success');
 			}
-		}).done(function(data) {
+		}).done(function (data) {
 			console.log("Done: ");
 			console.log(data);
-		}).fail(function(response) {
+		}).fail(function (response) {
 			var error = JSON.parse(response.responseText);
 			console.log(error);
 		});
 	}
 
 	function vender(home) {
-		var idHome = (home == 0 ? '': home);
+		var idHome = (home == 0 ? '' : home);
 		var marketOrder = {};
-		marketOrder.conta = $('#conta'+idHome).val();
-		marketOrder.ativo = $('#ativo'+idHome).val();
-		marketOrder.expert = $('#expert'+idHome).val();
+		marketOrder.conta = $('#conta' + idHome).val();
+		marketOrder.ativo = $('#ativo' + idHome).val();
+		marketOrder.expert = $('#expert' + idHome).val();
 		marketOrder.direcao = 'SELL';
-		marketOrder.volume = $('#volume'+idHome).val();
-		marketOrder.tipo = $('#tipo'+idHome).val();
-		marketOrder.stopLoss = $('#stopLoss'+idHome).val();
-		marketOrder.takeProfit = $('#takeProfit'+idHome).val();
-		
+		marketOrder.volume = $('#volume' + idHome).val();
+		marketOrder.tipo = $('#tipo' + idHome).val();
+		marketOrder.stopLoss = $('#stopLoss' + idHome).val();
+		marketOrder.takeProfit = $('#takeProfit' + idHome).val();
+
 		console.log(marketOrder);
-		
+
 		$.ajax({
-			url : "/metatrader/order/market",
-			type : "POST",
-			data : JSON.stringify(marketOrder),
+			url: "/metatrader/order/market",
+			type: "POST",
+			data: JSON.stringify(marketOrder),
 			// dataType : "json",
-			contentType : "application/json; charset=utf-8",
-			success : function() {
+			contentType: "application/json; charset=utf-8",
+			success: function () {
 				alert('Success');
 			}
-		}).done(function(data) {
+		}).done(function (data) {
 			console.log("Done: ");
 			console.log(data);
-		}).fail(function(response) {
+		}).fail(function (response) {
 			var error = JSON.parse(response.responseText);
 			console.log(error);
 		});
 	}
 </script>
+
 </html>

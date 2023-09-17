@@ -1,24 +1,25 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Informações de contas - Versátil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Informações de contas - Versátil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Informações de Conta</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Informações de Conta</span>
 		</a>
 	</nav>
 	<br>
@@ -39,13 +40,11 @@
 						<tr th:each="info : ${infoList}">
 							<td><span class="fonte-tabela" th:text="${info.conta}"></span></td>
 							<td><span class="fonte-tabela" th:text="${info.nome}"></span><br>
-								<small><span th:text="${info.corretora}"></span></small></td>
-							<td class="fonte-tabela" align="right"><span
-								th:text="${info.balance}"></span></td>
-							<td class="fonte-tabela" align="right"><span
-								th:text="${info.equity}"></span></td>
-							<td class="fonte-tabela" align="right"><span
-								th:text="${info.profit}"></span></td>
+								<small><span th:text="${info.corretora}"></span></small>
+							</td>
+							<td class="fonte-tabela" align="right"><span th:text="${info.balance}"></span></td>
+							<td class="fonte-tabela" align="right"><span th:text="${info.equity}"></span></td>
+							<td class="fonte-tabela" align="right"><span th:text="${info.profit}"></span></td>
 
 						</tr>
 					</tbody>
@@ -71,8 +70,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -80,9 +79,10 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 </script>
+
 </html>

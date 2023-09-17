@@ -14,4 +14,7 @@ public interface AtivoRepository extends CrudRepository<Ativo, Integer> {
 	@Query("FROM Ativo")
 	List<Ativo> getList();
 
+	@Query("FROM Ativo at WHERE at.categoria.id = :idCategoria")
+	List<Ativo> getListByCategoria(Integer idCategoria);
+
 }

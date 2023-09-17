@@ -1,25 +1,26 @@
 <!doctype html>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Monitor - Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Monitor - Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
-.fonte-tabela {
-	font-weight: 600;
-	font-size: 80%;
-}
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
 </style>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Monitor</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Monitor</span>
 		</a>
 	</nav>
 	<br>
@@ -59,25 +60,25 @@
 	var monitor = /*[[${chartData}]]*/[];
 
 	var monitorResumo = {
-		corretoras : [ {
-			name : 'Chrome',
-			y : 10
+		corretoras: [{
+			name: 'Chrome',
+			y: 10
 		}, {
-			name : 'Edge',
-			y : 20
+			name: 'Edge',
+			y: 20
 		}, {
-			name : 'Firefox',
-			y : 30
+			name: 'Firefox',
+			y: 30
 		}, {
-			name : 'Safari',
-			y : 50
+			name: 'Safari',
+			y: 50
 		}, {
-			name : 'Internet Explorer',
-			y : 16
+			name: 'Internet Explorer',
+			y: 16
 		}, {
-			name : 'Other',
-			y : 5
-		} ]
+			name: 'Other',
+			y: 5
+		}]
 	};
 
 	console.log(monitor);
@@ -92,8 +93,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -101,46 +102,46 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 
 	var chartUsuarios = Highcharts.chart('container', {
 
-		chart : {
-			type : 'area'
+		chart: {
+			type: 'area'
 		},
 
-		title : {
-			text : 'Usuários online',
-			align : 'left'
+		title: {
+			text: 'Usuários online',
+			align: 'left'
 		},
 
-		subtitle : {
-			text : 'Versátil IA',
-			align : 'left'
+		subtitle: {
+			text: 'Versátil IA',
+			align: 'left'
 		},
 
-		yAxis : {
-			title : {
-				text : ''
+		yAxis: {
+			title: {
+				text: ''
 			}
 		},
 
-		xAxis : {
-			categories : monitor[0].categorias
+		xAxis: {
+			categories: monitor[0].categorias
 		},
 
-		plotOptions : {
-			area : {
-				marker : {
-					enabled : false,
-					symbol : 'circle',
-					radius : 4,
-					states : {
-						hover : {
-							enabled : true
+		plotOptions: {
+			area: {
+				marker: {
+					enabled: false,
+					symbol: 'circle',
+					radius: 4,
+					states: {
+						hover: {
+							enabled: true
 						}
 					}
 				}
@@ -152,157 +153,157 @@
 			align : 'right',
 			verticalAlign : 'middle'
 		},*/
-		series : monitor,
+		series: monitor,
 
-		responsive : {
-			rules : [ {
-				condition : {
-					maxWidth : 500
+		responsive: {
+			rules: [{
+				condition: {
+					maxWidth: 500
 				},
-				chartOptions : {
-					legend : {
-						layout : 'horizontal',
-						align : 'center',
-						verticalAlign : 'bottom'
+				chartOptions: {
+					legend: {
+						layout: 'horizontal',
+						align: 'center',
+						verticalAlign: 'bottom'
 					}
 				}
-			} ]
+			}]
 		}
 
 	});
 
 	// Radialize the colors
 	Highcharts.setOptions({
-		colors : Highcharts.map(Highcharts.getOptions().colors,
-				function(color) {
-					return {
-						radialGradient : {
-							cx : 0.5,
-							cy : 0.3,
-							r : 0.7
-						},
-						stops : [
-								[ 0, color ],
-								[
-										1,
-										Highcharts.color(color).brighten(-0.3)
-												.get('rgb') ] // darken
-						]
-					};
-				})
+		colors: Highcharts.map(Highcharts.getOptions().colors,
+			function (color) {
+				return {
+					radialGradient: {
+						cx: 0.5,
+						cy: 0.3,
+						r: 0.7
+					},
+					stops: [
+						[0, color],
+						[
+							1,
+							Highcharts.color(color).brighten(-0.3)
+								.get('rgb')] // darken
+					]
+				};
+			})
 	});
 
 	// Build the chart
 	var chartCorretoras = Highcharts.chart('chartCorretoras', {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false,
-			type : 'pie'
+		chart: {
+			plotBackgroundColor: null,
+			plotBorderWidth: null,
+			plotShadow: false,
+			type: 'pie'
 		},
-		title : {
-			text : 'Usuários online por corretora',
-			align : 'left'
+		title: {
+			text: 'Usuários online por corretora',
+			align: 'left'
 		},
-		tooltip : {
-			pointFormat : '{series.name}: <b>{point.y}</b>'
+		tooltip: {
+			pointFormat: '{series.name}: <b>{point.y}</b>'
 		},
-		accessibility : {
-			point : {
-				valueSuffix : '%'
+		accessibility: {
+			point: {
+				valueSuffix: '%'
 			}
 		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					format : '<b>{point.name}</b>: {point.y}',
-					connectorColor : 'silver'
+		plotOptions: {
+			pie: {
+				allowPointSelect: true,
+				cursor: 'pointer',
+				dataLabels: {
+					enabled: true,
+					format: '<b>{point.name}</b>: {point.y}',
+					connectorColor: 'silver'
 				}
 			}
 		},
-		series : [ {
-			name : 'Share',
-			data : monitorResumo.corretoras
-		} ]
+		series: [{
+			name: 'Share',
+			data: monitorResumo.corretoras
+		}]
 	});
-	
-	
+
+
 	// Build the chart
 	var chartServidores = Highcharts.chart('chartServidores', {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false,
-			type : 'pie'
+		chart: {
+			plotBackgroundColor: null,
+			plotBorderWidth: null,
+			plotShadow: false,
+			type: 'pie'
 		},
-		title : {
-			text : 'Usuários online por servidor',
-			align : 'left'
+		title: {
+			text: 'Usuários online por servidor',
+			align: 'left'
 		},
-		tooltip : {
-			pointFormat : '{series.name}: <b>{point.y}</b>'
+		tooltip: {
+			pointFormat: '{series.name}: <b>{point.y}</b>'
 		},
-		accessibility : {
-			point : {
-				valueSuffix : '%'
+		accessibility: {
+			point: {
+				valueSuffix: '%'
 			}
 		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					format : '<b>{point.name}</b>: {point.y}',
-					connectorColor : 'silver'
+		plotOptions: {
+			pie: {
+				allowPointSelect: true,
+				cursor: 'pointer',
+				dataLabels: {
+					enabled: true,
+					format: '<b>{point.name}</b>: {point.y}',
+					connectorColor: 'silver'
 				}
 			}
 		},
-		series : [ {
-			name : 'Share',
-			data : monitorResumo.servidores
-		} ]
+		series: [{
+			name: 'Share',
+			data: monitorResumo.servidores
+		}]
 	});
 
 	function consultarStatus() {
 		$.ajax({
-			url : '/monitor/resumo',
-			success : function(retorno) {
+			url: '/monitor/resumo',
+			success: function (retorno) {
 				console.log(retorno);
 				var corretoras = [];
 				var servidores = [];
-				$.each(retorno.corretoras, function(index, corretora) {
+				$.each(retorno.corretoras, function (index, corretora) {
 					var nCorretora = {};
 					nCorretora.name = corretora.corretora;
 					nCorretora.y = corretora.quantidade;
 					corretoras.push(nCorretora);
 				});
-				$.each(retorno.servidores, function(index, servidor) {
+				$.each(retorno.servidores, function (index, servidor) {
 					var nServidor = {};
 					nServidor.name = servidor.servidor;
 					nServidor.y = servidor.quantidade;
 					servidores.push(nServidor);
 				});
 				monitor[0].data.push(retorno.usuariosOnline);
-				monitor[0].categorias.push(retorno.horario.substring(11,16));
+				monitor[0].categorias.push(retorno.horario.substring(11, 16));
 				monitor[1].data.push(retorno.expertsOnline);
-				monitor[1].categorias.push(retorno.horario.substring(11,16));
+				monitor[1].categorias.push(retorno.horario.substring(11, 16));
 				monitorResumo.corretoras = corretoras;
 				monitorResumo.servidores = servidores;
 				chartUsuarios.series[0].update({
-					data : monitor[0].data
+					data: monitor[0].data
 				});
 				chartUsuarios.series[1].update({
-					data : monitor[1].data
+					data: monitor[1].data
 				});
 				chartCorretoras.series[0].update({
-					data : corretoras
+					data: corretoras
 				});
 				chartServidores.series[0].update({
-					data : servidores
+					data: servidores
 				});
 			}
 		});
@@ -311,4 +312,5 @@
 	setInterval(consultarStatus, 120000);
 	consultarStatus();
 </script>
+
 </html>

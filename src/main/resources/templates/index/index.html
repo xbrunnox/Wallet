@@ -1,20 +1,21 @@
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<link rel="shortcut icon" type="image/png" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-<link rel="stylesheet" href="/css/bootstrap.css">
-<title>Versatil IA</title>
-<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="shortcut icon" type="image/png" href="/favicon.png">
+	<link rel="apple-touch-icon" href="/favicon.png">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Versatil IA</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
+
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png"
-			height="30" class="d-inline-block align-top" alt=""> <span
-			style="font-weight: 600">&nbsp;&nbsp;Versátil I.A.</span>
+		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+			<span style="font-weight: 600">&nbsp;&nbsp;Versátil I.A.</span>
 		</a>
 	</nav>
 	<br>
@@ -23,26 +24,22 @@
 		<div class="row">
 			<div class="col-12">
 				<div class="list-group">
-					<a href="/operacao/andamento"
-						class="list-group-item list-group-item-action">Acompanhamento
+					<a href="/operacao/andamento" class="list-group-item list-group-item-action">Acompanhamento
 						Diário</a>
 					<!--  -->
-					<a href="/assinaturas"
-						class="list-group-item list-group-item-action">Assinaturas</a>
+					<a href="/assinaturas" class="list-group-item list-group-item-action">Assinaturas</a>
 					<!--  -->
-					<a href="/backtests" class="list-group-item list-group-item-action"
-						aria-current="true"> Backtest</a>
+					<a href="/backtests" class="list-group-item list-group-item-action" aria-current="true">
+						Backtest</a>
 					<!--  -->
-					<a href="/contas" class="list-group-item list-group-item-action"
-						aria-current="true"> Contas</a>
+					<a href="/contas" class="list-group-item list-group-item-action" aria-current="true"> Contas</a>
 					<!--  -->
 					<a href="/inativas" class="list-group-item list-group-item-action">Contas
 						Inativas</a>
 					<!--  -->
 					<a href="/dashboard" class="list-group-item list-group-item-action">Dashboard</a>
 					<!--  -->
-					<a href="/home-broker"
-						class="list-group-item list-group-item-action">Home Broker</a>
+					<a href="/home-broker" class="list-group-item list-group-item-action">Home Broker</a>
 					<!--  -->
 					<a href="/logs" class="list-group-item list-group-item-action">Logs</a>
 					<!--  -->
@@ -52,15 +49,12 @@
 					<!--  -->
 					<a href="/posicoes" class="list-group-item list-group-item-action">Posições</a>
 					<!--  -->
-					<a href="/resultados"
-						class="list-group-item list-group-item-action">Resultados</a>
+					<a href="/resultados" class="list-group-item list-group-item-action">Resultados</a>
 					<!--  -->
-					<a href="/resultados/DELTA"
-						class="list-group-item list-group-item-action">Resultados
+					<a href="/resultados/DELTA" class="list-group-item list-group-item-action">Resultados
 						(Delta)</a>
 					<!--  -->
-					<a href="/resultados/SWING"
-						class="list-group-item list-group-item-action">Resultados
+					<a href="/resultados/SWING" class="list-group-item list-group-item-action">Resultados
 						(Swing)</a>
 					<!--  -->
 					<a href="/status" class="list-group-item list-group-item-action">Status</a>
@@ -85,8 +79,8 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : 2,
-			maximumFractionDigits : 2
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		}); // "9.876.543,21"
 	}
 
@@ -94,9 +88,10 @@
 		if (!numero)
 			return '-';
 		return numero.toLocaleString('pt-BR', {
-			minimumFractionDigits : casasDecimais,
-			maximumFractionDigits : casasDecimais
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
 		}); // "9.876.543,21"
 	}
 </script>
+
 </html>
