@@ -569,4 +569,32 @@ public class AssinaturaService {
     assinaturaExpertRepository.save(assinaturaExpert);
 
   }
+
+  /**
+   * Desabilita a assinatura indicada.
+   * 
+   * @param idAssinatura ID da assinatura.
+   */
+  public void desabilitar(Integer idAssinatura) {
+    Assinatura assinatura = assinaturaRepository.get(idAssinatura);
+    if (assinatura == null) {
+      throw new BusinessException("Assinatura não encontrada. [" + idAssinatura + "]");
+    }
+    assinatura.setDesabilitada(true);
+    gravar(assinatura);
+  }
+
+  /**
+   * Habilita a assinatura indicada.
+   * 
+   * @param idAssinatura ID da assinatura.
+   */
+  public void habilitar(Integer idAssinatura) {
+    Assinatura assinatura = assinaturaRepository.get(idAssinatura);
+    if (assinatura == null) {
+      throw new BusinessException("Assinatura não encontrada. [" + idAssinatura + "]");
+    }
+    assinatura.setDesabilitada(false);
+    gravar(assinatura);
+  }
 }

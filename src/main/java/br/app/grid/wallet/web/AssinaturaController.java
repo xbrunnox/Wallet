@@ -132,6 +132,26 @@ public class AssinaturaController {
       return new ModelAndView("redirect:/login");
     }
   }
+  
+  @GetMapping("/desabilitar/{idAssinatura}")
+  public String desabilitar(@PathVariable("idAssinatura") Integer idAssinatura) {
+    if (UsuarioUtil.isLogged(request)) {
+      assinaturaService.desabilitar(idAssinatura);
+      return "ok";
+    } else {
+      throw new BusinessException("Usuário não está logado.");
+    }
+  }
+  
+  @GetMapping("/habilitar/{idAssinatura}")
+  public String habilitar(@PathVariable("idAssinatura") Integer idAssinatura) {
+    if (UsuarioUtil.isLogged(request)) {
+      assinaturaService.habilitar(idAssinatura);
+      return "ok";
+    } else {
+      throw new BusinessException("Usuário não está logado.");
+    }
+  }
 
   @GetMapping("/todas")
   public ModelAndView todas() {

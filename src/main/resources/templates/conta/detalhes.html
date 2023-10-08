@@ -122,6 +122,17 @@
 			</div>
 			<div class="col-10" th:text="${#numbers.formatDecimal(total, 1,'POINT', 2, 'COMMA')}"></div>
 		</div>
+		<div class="row">
+			<div class="col-2" align="right">
+				<label><strong>Status:</strong></label>
+			</div>
+			<div class="col-10">
+				<span th:if="${!assinatura.desabilitada}" style="color: #28a745;"><b>Habilitada</b>&nbsp;<a
+						th:href="@{'javascript:desabilitar(' + ${assinatura.id} +');'}">Desabilitar</a></span>
+				<span th:if="${assinatura.desabilitada}" style="color: rgb(206, 20, 0);"><b>Desabilitada</b>&nbsp;<a
+						th:href="@{'javascript:habilitar(' + ${assinatura.id} +');'}">Habilitar</a></span>
+			</div>
+		</div>
 		<br> <br>
 
 		<div th:if="${assinatura != null}">
@@ -737,6 +748,34 @@
 			data: JSON.stringify(request),
 			// dataType : "json",
 			contentType: "application/json; charset=utf-8",
+			success: function () {
+				location.reload(true);
+			}
+		}).fail(function (response) {
+			var error = JSON.parse(response.responseText);
+			console.log(error);
+			alert(error.message);
+		});
+	}
+
+	function desabilitar(idAssinatura) {
+		$.ajax({
+			url: "/assinatura/desabilitar/" + idAssinatura,
+			type: "GET",
+			success: function () {
+				location.reload(true);
+			}
+		}).fail(function (response) {
+			var error = JSON.parse(response.responseText);
+			console.log(error);
+			alert(error.message);
+		});
+	}
+
+	function habilitar(idAssinatura) {
+		$.ajax({
+			url: "/assinatura/habilitar/" + idAssinatura,
+			type: "GET",
 			success: function () {
 				location.reload(true);
 			}
