@@ -11,18 +11,22 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ContaInfoResponse {
 
-	private String conta;
+  private Integer idAfiliado;
+  
+  private Integer idAssinatura;
 
-	private String nome;
-	
-	private String corretora;
+  private String conta;
 
-	private Boolean ativo;
+  private String nome;
 
-	private String expiracao;
-	
-	private Boolean pausado;
-	
-	private String maquina;
+  private String corretora;
+
+  private Boolean ativo;
+
+  private String expiracao;
+
+  private Boolean pausado;
+
+  private String maquina;
 
 }

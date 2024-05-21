@@ -43,5 +43,6 @@ public class ExpertController {
 		assinaturaService.gravar(expert);
 		return new ModelAndView("redirect:/detalhes/" + assinatura.getConta().getId());
 	}
+	
 
 }

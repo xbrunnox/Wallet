@@ -23,49 +23,52 @@ import lombok.Data;
 @AllArgsConstructor
 public class ResultadoGlobalResponse {
 
-	private String expert;
+  private String afiliado;
 
-	private List<ResultadoGlobalMes> meses;
+  private String expert;
 
-	private BigDecimal acumulado;
+  private List<ResultadoGlobalMes> meses;
 
-	private int positivos;
+  private BigDecimal acumulado;
 
-	private int negativos;
+  private int positivos;
 
-	public void add(List<TradeResultadoDiaVO> resultadosDia) {
-		if (meses == null)
-			meses = new ArrayList<>();
+  private int negativos;
 
-		Map<String, ResultadoGlobalMes> mapaMeses = new HashMap<>();
-		for (ResultadoGlobalMes globalMes : meses) {
-			mapaMeses.put(globalMes.getAno() + "-" + globalMes.getMes(), globalMes);
-		}
+  public void add(List<TradeResultadoDiaVO> resultadosDia) {
+    if (meses == null)
+      meses = new ArrayList<>();
 
-		for (TradeResultadoDiaVO resultadoDia : resultadosDia) {
-			ResultadoGlobalMes globalMes = mapaMeses
-					.get(resultadoDia.getData().getYear() + "-" + resultadoDia.getData().getMonthValue());
-			if (globalMes == null) {
-				globalMes = ResultadoGlobalMes.builder().mes(resultadoDia.getData().getMonthValue())
-						.ano(resultadoDia.getData().getYear()).build();
-				mapaMeses.put(resultadoDia.getData().getYear() + "-" + resultadoDia.getData().getMonthValue(),
-						globalMes);
-				meses.add(globalMes);
-			}
-			globalMes.add(resultadoDia);
-		}
-	}
+    Map<String, ResultadoGlobalMes> mapaMeses = new HashMap<>();
+    for (ResultadoGlobalMes globalMes : meses) {
+      mapaMeses.put(globalMes.getAno() + "-" + globalMes.getMes(), globalMes);
+    }
 
-	public void atualizarAcumulados() {
-		Collections.sort(meses);
-		BigDecimal saldo = BigDecimal.ZERO;
-		for (ResultadoGlobalMes resultadoMes : meses) {
-			resultadoMes.setAcumuladoAnterior(saldo);
-			saldo = saldo.add(resultadoMes.atualizarAcumulado());
-			resultadoMes.setAcumulado(saldo);
-			positivos += resultadoMes.getPositivos();
-			negativos += resultadoMes.getNegativos();
-		}
-		acumulado = saldo;
-	}
+    for (TradeResultadoDiaVO resultadoDia : resultadosDia) {
+      ResultadoGlobalMes globalMes = mapaMeses
+          .get(resultadoDia.getData().getYear() + "-" + resultadoDia.getData().getMonthValue());
+      if (globalMes == null) {
+        globalMes = ResultadoGlobalMes.builder().mes(resultadoDia.getData().getMonthValue())
+            .ano(resultadoDia.getData().getYear()).build();
+        mapaMeses.put(
+            resultadoDia.getData().getYear() + "-" + resultadoDia.getData().getMonthValue(),
+            globalMes);
+        meses.add(globalMes);
+      }
+      globalMes.add(resultadoDia);
+    }
+  }
+
+  public void atualizarAcumulados() {
+    Collections.sort(meses);
+    BigDecimal saldo = BigDecimal.ZERO;
+    for (ResultadoGlobalMes resultadoMes : meses) {
+      resultadoMes.setAcumuladoAnterior(saldo);
+      saldo = saldo.add(resultadoMes.atualizarAcumulado());
+      resultadoMes.setAcumulado(saldo);
+      positivos += resultadoMes.getPositivos();
+      negativos += resultadoMes.getNegativos();
+    }
+    acumulado = saldo;
+  }
 }

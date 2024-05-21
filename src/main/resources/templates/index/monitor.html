@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=0.7, shrink-to-fit=yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="stylesheet" href="/css/bootstrap.css">
-	<title>Monitor - Versatil IA</title>
+	<title>Monitor</title>
 	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
@@ -19,31 +19,41 @@
 
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+		<a class="navbar-brand" href="/"> 
+			<img th:src="${'https://download.versatil-ia.com.br/' + afiliado.logo}" height="30"
+				class="d-inline-block align-top" alt="${'https://download.versatil-ia.com.br/tradingnow-favicon.png'}">
 			<span style="font-weight: 600">&nbsp;&nbsp;Monitor</span>
 		</a>
 	</nav>
 	<br>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-12">
-				<figure class="highcharts-figure">
-					<div id="container"></div>
-				</figure>
-			</div>
-		</div>
-		<div class="row">
 			<div class="col-6">
-				<figure class="highcharts-figure">
-					<div id="chartCorretoras"></div>
-				</figure>
+				<div class="row">
+					<div class="col-12">
+						<h5>Automações Online</h5>
+					</div>
+				</div>
+				<div id="divAutomacoes"></div>
+				<div class="row">
+					<div class="col-12">
+						<figure class="highcharts-figure">
+							<div id="container"></div>
+						</figure>
+					</div>
+				</div>
 			</div>
 			<div class="col-6">
 				<figure class="highcharts-figure">
 					<div id="chartServidores"></div>
 				</figure>
+				<br>
+				<figure class="highcharts-figure">
+					<div id="chartCorretoras"></div>
+				</figure>
 			</div>
 		</div>
+
 	</div>
 </body>
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -60,25 +70,7 @@
 	var monitor = /*[[${chartData}]]*/[];
 
 	var monitorResumo = {
-		corretoras: [{
-			name: 'Chrome',
-			y: 10
-		}, {
-			name: 'Edge',
-			y: 20
-		}, {
-			name: 'Firefox',
-			y: 30
-		}, {
-			name: 'Safari',
-			y: 50
-		}, {
-			name: 'Internet Explorer',
-			y: 16
-		}, {
-			name: 'Other',
-			y: 5
-		}]
+		corretoras: []
 	};
 
 	console.log(monitor);
@@ -275,6 +267,34 @@
 				console.log(retorno);
 				var corretoras = [];
 				var servidores = [];
+				console.log(retorno.experts);
+				var html = '<ul>';
+				var htmlAutomacoes = '<table class="table table-bordered table-striped table-condensed">';
+				htmlAutomacoes += '<thead>';
+				htmlAutomacoes += '<th>Automação</th>';
+				htmlAutomacoes += '<th>Conta</th>';
+				htmlAutomacoes += '<th>IP</th>';
+				htmlAutomacoes += '</thead>';
+				htmlAutomacoes += '<tbody>';
+				$.each(retorno.experts, function (index, expert) {
+					htmlAutomacoes += '<tr>';
+					htmlAutomacoes += '<td>';
+
+					htmlAutomacoes += expert.expert;
+					htmlAutomacoes += '</td>';
+					htmlAutomacoes += '<td>';
+					htmlAutomacoes += expert.licenca;
+					htmlAutomacoes += '</td>';
+					htmlAutomacoes += '<td>';
+					htmlAutomacoes += expert.ip;
+					htmlAutomacoes += '</td>';
+					htmlAutomacoes += '</tr>';
+					html += '<li><span class="badge badge-success">' + expert.expert + '</span>: ' + expert.licenca + '</li>';
+				});
+				htmlAutomacoes += "</tbody>";
+				htmlAutomacoes += "</table>";
+				html += '</ul>';
+				$('#divAutomacoes').html(html);
 				$.each(retorno.corretoras, function (index, corretora) {
 					var nCorretora = {};
 					nCorretora.name = corretora.corretora;

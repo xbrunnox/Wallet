@@ -19,17 +19,20 @@ import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.assinatura.view.AssinaturaView;
 import br.app.grid.wallet.exception.BusinessException;
+import br.app.grid.wallet.exception.UnauthorizedException;
 import br.app.grid.wallet.licenca.Conta;
 import br.app.grid.wallet.licenca.ContaService;
 import br.app.grid.wallet.pagamento.Pagamento;
 import br.app.grid.wallet.pagamento.PagamentoService;
 import br.app.grid.wallet.router.RouterService;
 import br.app.grid.wallet.usuario.UsuarioUtil;
+import br.app.grid.wallet.util.VersatilUtil;
 import br.app.grid.wallet.util.converter.AssinaturaPagamentoResponseConverter;
 import br.app.grid.wallet.util.converter.AssinaturaResponseConverter;
 import br.app.grid.wallet.web.request.AdicionarExpertAssinaturaRequest;
 import br.app.grid.wallet.web.request.AlterarEmailRequest;
 import br.app.grid.wallet.web.request.AlterarVencimentoRequest;
+import br.app.grid.wallet.web.request.AtivarAssinaturaRequest;
 import br.app.grid.wallet.web.request.ExcluirAssinaturaPagamentoRequest;
 import br.app.grid.wallet.web.response.AssinaturaPagamentoResponse;
 import br.app.grid.wallet.web.response.AssinaturaResponse;
@@ -80,6 +83,7 @@ public class AssinaturaController {
     ModelAndView view = new ModelAndView("assinatura/iniciar_ativacao");
     view.addObject("conta", conta);
     view.addObject("pagamentosList", pagamentos);
+    view.addObject("afiliado", UsuarioUtil.getAfiliado(request));
     return view;
   }
 
@@ -96,6 +100,7 @@ public class AssinaturaController {
     view.addObject("assinatura", assinatura);
     view.addObject("conta", assinatura.getConta());
     view.addObject("pagamentosList", pagamentos);
+    view.addObject("afiliado", UsuarioUtil.getAfiliado(request));
     return view;
   }
 
@@ -108,6 +113,7 @@ public class AssinaturaController {
     assinaturaService.associarPagamento(idAssinatura, idPagamento);
 
     ModelAndView view = new ModelAndView("redirect:/ativas");
+    view.addObject("afiliado", UsuarioUtil.getAfiliado(request));
     return view;
   }
 
@@ -123,6 +129,24 @@ public class AssinaturaController {
     }
   }
 
+  /**
+   * Realiza a ativação de uma conta.
+   * 
+   * @param ativarRequest Request de ativação.
+   * @return Assinatura.
+   */
+  @PostMapping(path = "/ativar")
+  public Assinatura ativar(@RequestBody AtivarAssinaturaRequest ativarRequest) {
+    System.out.println(VersatilUtil.toJson(ativarRequest));
+    if (UsuarioUtil.isLogged(request)) {
+      Assinatura assinatura =
+          assinaturaService.ativarAssinatura(ativarRequest, UsuarioUtil.getAfiliado(request));
+      return assinatura;
+    } else {
+      throw new UnauthorizedException("Usuário não tem permissão.");
+    }
+  }
+
   @GetMapping("/ativarComPendencia/{conta}")
   public ModelAndView ativarComPendencia(@PathVariable("conta") String idConta) {
     if (UsuarioUtil.isLogged(request)) {
@@ -132,7 +156,7 @@ public class AssinaturaController {
       return new ModelAndView("redirect:/login");
     }
   }
-  
+
   @GetMapping("/desabilitar/{idAssinatura}")
   public String desabilitar(@PathVariable("idAssinatura") Integer idAssinatura) {
     if (UsuarioUtil.isLogged(request)) {
@@ -142,7 +166,7 @@ public class AssinaturaController {
       throw new BusinessException("Usuário não está logado.");
     }
   }
-  
+
   @GetMapping("/habilitar/{idAssinatura}")
   public String habilitar(@PathVariable("idAssinatura") Integer idAssinatura) {
     if (UsuarioUtil.isLogged(request)) {
@@ -158,6 +182,7 @@ public class AssinaturaController {
     if (UsuarioUtil.isLogged(request)) {
       List<Assinatura> assinaturasAtivas = assinaturaService.getList();
       ModelAndView view = new ModelAndView("assinatura/todas");
+      view.addObject("afiliado", UsuarioUtil.getAfiliado(request));
       view.addObject("assinaturasList", assinaturasAtivas);
       return view;
     } else {

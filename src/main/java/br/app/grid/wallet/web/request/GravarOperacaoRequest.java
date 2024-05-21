@@ -25,6 +25,8 @@ public class GravarOperacaoRequest {
 	private BigDecimal volume;
 
 	private Double preco;
+	
+	private Integer idAfiliado;
 
 	private String direcao;
 

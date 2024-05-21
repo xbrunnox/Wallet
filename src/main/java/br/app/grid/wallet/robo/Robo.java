@@ -2,7 +2,9 @@ package br.app.grid.wallet.robo;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import br.app.grid.wallet.afiliado.Afiliado;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,27 +13,40 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+/**
+ * <b>Robo</b><br>
+ * Entidade que representa uma automação.
+ * 
+ * @author Brunno José Guimarães de Almeida.
+ * @since
+ */
 public class Robo {
 
-	@Id
-	private String id;
+  @Id
+  private String id;
 
-	private String ativo;
+  private String ativo;
 
-	private Double volume;
+  @ManyToOne
+  @JoinColumn(name = "id_afiliado")
+  private Afiliado afiliado;
 
-	private Double alvo;
-	
-	private Double stop;
-	
-	private Double tolerancia;
-	
-	private Double minimo;
-	
-	private int tentativas;
+  private String descricao;
 
-	private int timeframe;
-	
-	private Boolean enabled;
+  private Double volume;
+
+  private Double alvo;
+
+  private Double stop;
+
+  private Double tolerancia;
+
+  private Double minimo;
+
+  private int tentativas;
+
+  private int timeframe;
+
+  private Boolean enabled;
 
 }

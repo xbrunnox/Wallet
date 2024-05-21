@@ -1,5 +1,6 @@
 package br.app.grid.wallet.web;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import br.app.grid.wallet.historico.HistoricoService;
 import br.app.grid.wallet.resumo.Resumo;
 import br.app.grid.wallet.resumo.ResumoPosicao;
 import br.app.grid.wallet.resumo.ResumoService;
+import br.app.grid.wallet.usuario.UsuarioUtil;
 
 /**
  * @author Brunno José Guimarães de Almeida.
@@ -36,6 +38,9 @@ public class WalletController {
 
 	@Autowired
 	private HistoricoService historicoService;
+	
+	@Autowired
+	private HttpServletRequest request;
 
 	@GetMapping("/atualizar")
 	public @ResponseBody String atualizar() {
@@ -48,6 +53,7 @@ public class WalletController {
 		Carteira carteira = carteiraService.get(idCarteira);
 		ModelAndView view = new ModelAndView("wallet/resumo");
 		view.addObject("carteira", carteira);
+		view.addObject("afiliado", UsuarioUtil.getAfiliado(request));
 		System.out.println("Retornou");
 		return view;
 	}

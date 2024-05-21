@@ -58,6 +58,7 @@ public class BacktestOperacaoService {
         dia.setAcumulado(acumulado);
         dia.setAcumuladoGeral(acumuladoGeral);
       }
+      mes.atualizarEstatisticas();
     }
     return retorno;
   }
@@ -85,20 +86,22 @@ public class BacktestOperacaoService {
       ultimoDia.setAcumulado(acumulado);
       acumuladoDia = acumuladoDia.add(operacao.getLucro());
       operacao.setAcumulado(acumuladoDia);
-      
+    }
+    for (BacktestDiaVO dia : retorno) {
+      dia.atualizarEstatisticas();
     }
     return retorno;
   }
 
   public void gravar(BacktestOperacao operacao) {
     operacaoRepository.save(operacao);
-    
+
   }
 
   public void gravar(List<BacktestOperacao> operacoes) {
     for (BacktestOperacao operacao : operacoes)
       gravar(operacao);
-    
+
   }
 
 }

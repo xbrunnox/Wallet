@@ -15,18 +15,20 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @Builder
-@Table(name="trade_resultado_dia_view")
+@Table(name = "trade_resultado_dia_view")
 @NoArgsConstructor
 @AllArgsConstructor
 public class TradeResultadoDiaVO {
-	
-	@Id
-	private Integer fakeId;
-	
-	private LocalDate data;
-	
-	private String expert;
-	
-	private BigDecimal resultado;
+
+  @Id
+  private Integer fakeId;
+
+  private Integer idAfiliado;
+
+  private LocalDate data;
+
+  private String expert;
+
+  private BigDecimal resultado;
 
 }

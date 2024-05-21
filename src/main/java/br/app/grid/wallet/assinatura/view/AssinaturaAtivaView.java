@@ -1,10 +1,8 @@
 package br.app.grid.wallet.assinatura.view;
 
 import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +17,8 @@ public class AssinaturaAtivaView {
 	
 	@Id
 	private int id;
+	
+	private Integer idAfiliado;
 	
 	private String conta;
 	

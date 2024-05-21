@@ -2,11 +2,9 @@ package br.app.grid.wallet.trade.vo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +20,8 @@ public class TradeVO {
 
 	@Id
 	private Long id;
+	
+	private Integer idAfiliado;
 
 	private String conta;
 

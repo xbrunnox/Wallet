@@ -34,6 +34,7 @@ import br.app.grid.wallet.router.RouterService;
 import br.app.grid.wallet.trade.Trade;
 import br.app.grid.wallet.trade.TradeService;
 import br.app.grid.wallet.usuario.UsuarioUtil;
+import br.app.grid.wallet.util.VersatilUtil;
 import br.app.grid.wallet.web.request.GravarOperacaoRequest;
 import br.app.grid.wallet.web.request.MarketOrderRequest;
 
@@ -67,8 +68,11 @@ public class MetatraderController {
 
   @GetMapping("/sincronizar/{conta}")
   public String sincronizar(@PathVariable(name = "conta") String conta) {
+    System.out.println("Sincronizando");
     ContaHistoricoMT historico =
         routerService.getHistoricoMetatrader(conta, LocalDate.now(), LocalDate.now());
+    System.out.println("Historico");
+    System.out.println(VersatilUtil.toJson(historico));
     if (historico != null && historico.getOperacoes() != null
         && historico.getOperacoes().size() > 0) {
       List<Operacao> operacoesDoDia = operacaoService.getList(conta, LocalDate.now());
@@ -82,11 +86,12 @@ public class MetatraderController {
       }
 
       for (OperacaoMT operacaoMt : historico.getOperacoes()) {
-        GravarOperacaoRequest operacao = GravarOperacaoRequest.builder()
-            .ativo(operacaoMt.getAtivo()).conta(conta).data(operacaoMt.getHorario())
-            .direcao(operacaoMt.getDirecao() == DirecaoOperacaoEnum.BUY ? "C" : "V")
-            .expert(operacaoMt.getExpert()).preco(operacaoMt.getPreco().doubleValue()).tipo("E")
-            .volume(operacaoMt.getVolume()).build();
+        GravarOperacaoRequest operacao =
+            GravarOperacaoRequest.builder().ativo(operacaoMt.getAtivo()).conta(conta)
+                .data(operacaoMt.getHorario()).idAfiliado(historico.getIdAfiliado())
+                .direcao(operacaoMt.getDirecao() == DirecaoOperacaoEnum.BUY ? "C" : "V")
+                .expert(operacaoMt.getExpert()).preco(operacaoMt.getPreco().doubleValue()).tipo("E")
+                .volume(operacaoMt.getVolume()).build();
         operacaoService.save(operacao);
       }
     } else if (historico == null) {
@@ -124,8 +129,9 @@ public class MetatraderController {
         GravarOperacaoRequest operacao = GravarOperacaoRequest.builder()
             .ativo(operacaoMt.getAtivo()).conta(conta).data(operacaoMt.getHorario())
             .direcao(operacaoMt.getDirecao() == DirecaoOperacaoEnum.BUY ? "C" : "V")
-            .expert(operacaoMt.getExpert()).preco(operacaoMt.getPreco().doubleValue()).tipo("E")
-            .volume(operacaoMt.getVolume()).build();
+            .idAfiliado(historico.getIdAfiliado()).expert(operacaoMt.getExpert())
+            .preco(operacaoMt.getPreco().doubleValue()).tipo("E").volume(operacaoMt.getVolume())
+            .build();
         operacaoService.save(operacao);
       }
     } else if (historico == null) {
@@ -141,6 +147,7 @@ public class MetatraderController {
     List<AccountInfoMeta> infos = routerService.getAccountInfo();
     ModelAndView view = new ModelAndView("metatrader/account-info");
     view.addObject("infoList", infos);
+    view.addObject("afiliado", UsuarioUtil.getAfiliado(request));
     return view;
 
   }

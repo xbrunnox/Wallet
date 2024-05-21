@@ -40,6 +40,7 @@ public class TradeController {
 		ModelAndView view = new ModelAndView("index/trades");
 		view.addObject("tradesList", trades);
 //		view.addObject("contas", contas.size());
+		view.addObject("afiliado", UsuarioUtil.getAfiliado(request));
 		view.addObject("total", total);
 		return view;
 	}

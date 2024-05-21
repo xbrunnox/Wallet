@@ -1,0 +1,65 @@
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<title>Automações</title>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+</head>
+<style>
+	.fonte-tabela {
+		font-weight: 600;
+		font-size: 80%;
+	}
+</style>
+
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<a class="navbar-brand" href="/configuracoes">
+			<img th:src="${'https://download.versatil-ia.com.br/' + afiliado.logo}" height="30"
+				class="d-inline-block align-top" alt="${'https://download.versatil-ia.com.br/tradingnow-favicon.png'}">
+			<span style="font-weight: 600">&nbsp;&nbsp;Automações</span>
+		</a>
+	</nav>
+	<br>
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="col-12">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th class="fonte-tabela">ID</th>
+							<th class="fonte-tabela">Volume</th>
+							<th class="fonte-tabela">Ativa</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="automacao : ${automacaoList}">
+							<td th:text="${automacao.id}">
+							</td>
+							<td th:text="${automacao.volume}">
+							</td>
+							<td th:text="${automacao.enabled ? 'Sim' : 'Não'}">
+							</td>
+							<td>&nbsp;</td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+<script type="text/javascript" src="/js/jquery.price_format.1.7.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/versatil.js"></script>
+
+</html>

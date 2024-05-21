@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="stylesheet" href="/css/bootstrap.css">
-	<title>Pagamentos (Tratamento Pendente) - Versátil IA</title>
+	<title>Pagamentos (Tratamento Pendente)</title>
 	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
@@ -18,8 +18,9 @@
 
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/assinaturas"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top"
-				alt="">
+		<a class="navbar-brand" href="/assinaturas"> 
+			<img th:src="${'https://download.versatil-ia.com.br/' + afiliado.logo}" height="30"
+				class="d-inline-block align-top" alt="${'https://download.versatil-ia.com.br/tradingnow-favicon.png'}">
 			<span style="font-weight: 600; font-size: 16px;">&nbsp;&nbsp;Pagamentos
 				(Tratamento Pendente)</span>
 		</a>

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="stylesheet" href="/css/bootstrap.css">
-	<title>Assinaturas Ativas - Versátil IA</title>
+	<title>Assinaturas Ativas</title>
 	<link rel="stylesheet" href="/css/font-awesome.min.css">
 </head>
 <style>
@@ -18,8 +18,9 @@
 
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/assinaturas"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top"
-				alt="">
+		<a class="navbar-brand" href="/assinaturas"> <img
+				th:src="${'https://download.versatil-ia.com.br/' + afiliado.logo}" height="30"
+				class="d-inline-block align-top" alt="${'https://download.versatil-ia.com.br/tradingnow-favicon.png'}">
 			<span style="font-weight: 600">&nbsp;&nbsp;Assinaturas Ativas</span>
 		</a>
 	</nav>
@@ -32,7 +33,7 @@
 						<tr>
 							<th>Conta</th>
 							<th>Nome / Corretora</th>
-							<th style="text-align: right;">Observação</th>
+							<th style="text-align: right;">Resultado</th>
 
 						</tr>
 					</thead>
@@ -46,8 +47,11 @@
 							<td><span class="fonte-tabela" th:text="${assinatura.nome}"></span><br>
 								<small><span th:text="${assinatura.corretora}"></span></small>
 							</td>
-
-							<td class="fonte-tabela" align="right"><span th:text="${assinatura.observacao}"></span></td>
+							<td align="right">
+								<span
+									th:class="${assinatura.resultado >= 0 ? 'badge badge-success': 'badge badge-danger'}"
+									th:text="${#numbers.formatDecimal(assinatura.resultado, 1, 'POINT', 2, 'COMMA')}"></span>
+							</td>
 						</tr>
 						<tr>
 							<td><span th:text="${ativasList.size()}"></span></td>

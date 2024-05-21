@@ -14,7 +14,9 @@
 
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+		<a class="navbar-brand" href="/">
+			<img th:src="${'https://download.versatil-ia.com.br/' + afiliado.logo}" height="30"
+				class="d-inline-block align-top" alt="${'https://download.versatil-ia.com.br/tradingnow-favicon.png'}">
 			<span style="font-weight: 600">&nbsp;&nbsp;Assinaturas</span>
 		</a>
 	</nav>
@@ -24,12 +26,18 @@
 		<div class="row">
 			<div class="col-12">
 				<div class="list-group">
+					<!-- Ativação de Contas-->
+					<a href="/ativacao" class="list-group-item list-group-item-action">Ativação de
+						Contas</a>
 					<!--  -->
 					<a href="/ativas" class="list-group-item list-group-item-action">Assinaturas
 						Ativas</a>
 					<!--  -->
 					<a href="/pendencias" class="list-group-item list-group-item-action">Assinaturas com
 						Pendências</a>
+					<!--  -->
+					<a href="/assinaturas-inativas" class="list-group-item list-group-item-action">Assinaturas
+						Inativas</a>
 					<!--  -->
 					<a href="/pagamento/recebido" class="list-group-item list-group-item-action">Pagamentos
 						Recebidos</a>

@@ -24,28 +24,99 @@
 		</a>
 	</nav>
 	<br>
-	<div class="container-fluid">
+	<div class="container">
 		<div class="row">
 			<div class="col-12">
-				<div class="card">
-					<form method="POST" enctype="multipart/form-data" action="/backtest/upload">
-						<input type="hidden" name="idBacktest" th:value="${backtest.id}">
-						<table>
-							<tr>
-								<td>File to upload:</td>
-								<td><input type="file" name="file" /></td>
-							</tr>
-							<tr>
-								<td></td>
-								<td><input type="submit" value="Upload" /></td>
-							</tr>
-						</table>
-					</form>
+				<h5>Resultado por mês</h5>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-2" th:each="acumuladoMes : ${meses1}" align="center">
+				<small>
+					<span
+						th:text="${T(br.app.grid.wallet.util.converter.DataConverter).nomeDoMesAbreviado(acumuladoMes.mes) + '/' + (acumuladoMes.ano % 2000)}"></span>
+				</small><br>
+				<span class="badge badge-success" th:if="${acumuladoMes.total >= 0.0}"
+					th:text="${'+'+#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span>
+				<span class="badge badge-danger" th:if="${acumuladoMes.total < 0.0}"
+					th:text="${#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span>
+			</div>
+		</div>
+		<br>
+		<hr>
+		<br>
+		<div class="row">
+			<div class="col-12">
+				<div class="row" th:each="acumuladoMes : ${meses1}">
+					<div class="col-12">
+						<figure class="highcharts-figure">
+							<div th:id="@{'div-back-1-' + ${acumuladoMes.ano}+''+${acumuladoMes.mes}}"></div>
+						</figure>
+					</div>
+					<div class="col-6">
+						Operações: &nbsp;<strong><span
+								th:text="${acumuladoMes.ganhos + acumuladoMes.stops}"></span></strong>&nbsp;<a
+							class="btn btn-sm btn-primary" style="font-size: 0.6rem; padding: 0.10rem 0.5rem"
+							th:href="${'/backtest/detalhes/'+ idBacktest +'/'+acumuladoMes.mes+'/'+acumuladoMes.ano}">Detalhar</a><br>
+						Ganhos:&nbsp;<strong><span th:text="${acumuladoMes.ganhos}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${acumuladoMes.ganhos * 100 / (acumuladoMes.ganhos + acumuladoMes.stops)}+'%'"></span><br>
+						Stops:&nbsp;<strong><span th:text="${acumuladoMes.stops}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${acumuladoMes.stops * 100 / (acumuladoMes.ganhos + acumuladoMes.stops)}+'%'"></span>
+					</div>
+					<div class="col-6" align="right">
+						Dias de Ganho:&nbsp;<strong><span
+								th:text="${acumuladoMes.diasDeGanho}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${acumuladoMes.diasDeGanho * 100 / (acumuladoMes.diasDeGanho + acumuladoMes.diasDePerda)}+'%'"></span><br>
+						Dias de Perda:&nbsp;<strong><span
+								th:text="${acumuladoMes.diasDePerda}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${acumuladoMes.diasDePerda * 100 / (acumuladoMes.diasDeGanho + acumuladoMes.diasDePerda)}+'%'"></span><br>
+						Maior Ganho:&nbsp;<strong><span style="color: #28a745"
+								th:text="${'+' + #numbers.formatDecimal(acumuladoMes.maiorGanhoNoDia, 1, 'POINT', 2, 'COMMA')}"></span></strong><br>
+						Maior Perda:&nbsp;<strong><span style="color: #dc3545" 
+								th:text="${#numbers.formatDecimal(acumuladoMes.maiorPerdaNoDia, 1, 'POINT', 2, 'COMMA')}"></span></strong><br>
+						Resultado:&nbsp;<strong><span
+								th:text="${#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span></strong>
+						<br><br>
+
+					</div>
+					<br> <br> <br><br> <br> <br>
+					<div class="col-12" align="right">
+						<hr>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<figure class="highcharts-figure">
+							<div th:id="div-resultado-1"></div>
+						</figure>
+					</div>
+					<div class="col-6">
+						Operações: &nbsp;<strong><span th:text="${ganhos + stops}"></span></strong><br>
+						Ganhos:&nbsp;<strong><span th:text="${ganhos}"></span></strong>&nbsp;<span
+							class="badge badge-success" th:text="${ganhos * 100 / (ganhos + stops)}+'%'"></span><br>
+						Stops:&nbsp;<strong><span th:text="${erros}"></span></strong>&nbsp;<span
+							class="badge badge-danger" th:text="${stops * 100 / (ganhos + stops)}+'%'"></span>
+					</div>
+					<div class="col-6" align="right">
+						Dias de Ganho:&nbsp;<strong><span th:text="${diasDeGanho}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${diasDeGanho * 100 / (diasDeGanho + diasDePerda)}+'%'"></span><br>
+						Dias de Perca:&nbsp;<strong><span th:text="${diasDePerda}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${diasDePerda * 100 / (diasDeGanho + diasDePerda)}+'%'"></span><br>
+						Resultado Acum.:&nbsp;<strong><span
+								th:text="${#numbers.formatDecimal(resultado1, 1, 'POINT', 2, 'COMMA')}"></span></strong>
+						<br><br>
+					</div>
 				</div>
 			</div>
 		</div>
 		<br>
-		<div class="row">
+		<!--div class="row">
 			<div class="col-12">
 				<table class="table table-bordered table-condensed table-striped">
 					<thead>
@@ -69,7 +140,27 @@
 					</tbody>
 				</table>
 			</div>
-
+		</div-->
+		<br>
+		<br><br><br><br><br><br><br><br>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<form method="POST" enctype="multipart/form-data" action="/backtest/upload">
+						<input type="hidden" name="idBacktest" th:value="${backtest.id}">
+						<table>
+							<tr>
+								<td>File to upload:</td>
+								<td><input type="file" name="file" /></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td><input type="submit" value="Upload" /></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
@@ -92,6 +183,268 @@
 		window.location.href = "/backtest/" + idBack1 + "/" + idBack2 + "/"
 			+ vol1 + "/" + vol2;
 	}
+</script>
+<script th:inline="javascript">
+	var acumuladoMeses = /*[[${meses1}]]*/[];
+	montarGrafico("div-back-1-", acumuladoMeses);
+	montarResultado("div-resultado-1", acumuladoMeses);
+
+	function montarGrafico(divGrafico, acumulados) {
+
+		$.each(acumulados, function (index, acumuladoMes) {
+			var categorias = [];
+			var valores = [];
+			var resultadoDia = [];
+			$.each(acumuladoMes.dias, function (index, acumuladoDia) {
+				categorias.push(acumuladoDia.data.substring(8, 10));
+				valores.push(acumuladoDia.acumulado);
+				resultadoDia.push(acumuladoDia.saldo);
+			});
+			var serie = {};
+			serie.type = 'spline';
+			serie.data = valores;
+			serie.name = "Acumulado";
+			var serie2 = {};
+			serie2.type = 'column';
+			serie2.data = resultadoDia;
+			serie2.name = "Resultado";
+			serie2.color = '#336600';
+			serie2.negativeColor = '#FF0000';
+			var series = [];
+			series.push(serie2);
+			series.push(serie);
+			console.log(serie);
+
+			var chartUsuarios = Highcharts.chart(divGrafico + acumuladoMes.ano
+				+ '' + acumuladoMes.mes, {
+
+				chart: {
+					type: 'area'
+				},
+
+				title: {
+					text: getMes(acumuladoMes.mes) + '/' + acumuladoMes.ano,
+					align: 'left'
+				},
+
+				subtitle: {
+					text: 'Versátil IA - ' + acumuladoMes.descricao,
+					align: 'left'
+				},
+
+				yAxis: {
+					title: {
+						text: ''
+					},
+					plotLines: [{
+						color: '#000000',
+						width: 1,
+						value: 0,
+						zIndex: 2
+					}]
+				},
+
+				xAxis: {
+					categories: categorias
+				},
+
+				plotOptions: {
+					area: {
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							radius: 4,
+							states: {
+								hover: {
+									enabled: true
+								}
+							}
+						}
+					}
+				},
+
+				/**legend : {
+					layout : 'vertical',
+					align : 'right',
+					verticalAlign : 'middle'
+				},*/
+				series: series,
+
+				responsive: {
+					rules: [{
+						condition: {
+							maxWidth: 500
+						},
+						chartOptions: {
+							legend: {
+								layout: 'horizontal',
+								align: 'center',
+								verticalAlign: 'bottom'
+							}
+						}
+					}]
+				}
+
+			});
+		});
+
+	}
+
+	function montarResultado(divGrafico, acumulados) {
+		var categorias = [];
+		var valores = [];
+
+		var serie = {};
+		serie.data = valores;
+		serie.name = "Resultado";
+
+		var series = [];
+		series.push(serie);
+		console.log(serie);
+
+		$.each(acumulados, function (index, acumuladoMes) {
+			$.each(acumuladoMes.dias, function (index, acumuladoDia) {
+				categorias.push(acumuladoDia.data.substring(8, 10) + '-'
+					+ acumuladoDia.data.substring(5, 7));
+				valores.push(acumuladoDia.acumuladoGeral);
+			});
+		});
+
+		var chartUsuarios = Highcharts.chart(divGrafico, {
+			chart: {
+				type: 'area'
+			},
+
+			title: {
+				text: 'Resultado',
+				align: 'left'
+			},
+
+			subtitle: {
+				text: 'Versátil IA',
+				align: 'left'
+			},
+
+			yAxis: {
+				title: {
+					text: ''
+				}
+			},
+
+			xAxis: {
+				categories: categorias
+			},
+
+			plotOptions: {
+				area: {
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						radius: 4,
+						states: {
+							hover: {
+								enabled: true
+							}
+						}
+					}
+				}
+			},
+
+			series: series,
+
+			responsive: {
+				rules: [{
+					condition: {
+						maxWidth: 500
+					},
+					chartOptions: {
+						legend: {
+							layout: 'horizontal',
+							align: 'center',
+							verticalAlign: 'bottom'
+						}
+					}
+				}]
+			}
+
+		});
+
+	}
+
+	function getMes(mes) {
+		if (mes == 1) {
+			return "Janeiro";
+		} else if (mes == 2) {
+			return "Fevereiro";
+		} else if (mes == 3) {
+			return "Março";
+		} else if (mes == 4) {
+			return "Abril";
+		} else if (mes == 5) {
+			return "Maio";
+		} else if (mes == 6) {
+			return "Junho";
+		} else if (mes == 7) {
+			return "Julho";
+		} else if (mes == 8) {
+			return "Agosto";
+		} else if (mes == 9) {
+			return "Setembro";
+		} else if (mes == 10) {
+			return "Outubro";
+		} else if (mes == 11) {
+			return "Novembro";
+		} else if (mes == 12) {
+			return "Dezembro";
+		}
+	}
+
+	//console.log(monitor);
+
+	function formatarNumero(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR'); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		}); // "9.876.543,21"
+	}
+
+	function formatarDecimal(numero, casasDecimais) {
+		if (!numero)
+			return '-';
+		return numero.toLocaleString('pt-BR', {
+			minimumFractionDigits: casasDecimais,
+			maximumFractionDigits: casasDecimais
+		}); // "9.876.543,21"
+	}
+
+	// Radialize the colors
+	Highcharts.setOptions({
+		colors: Highcharts.map(Highcharts.getOptions().colors,
+			function (color) {
+				return {
+					radialGradient: {
+						cx: 0.5,
+						cy: 0.3,
+						r: 0.7
+					},
+					stops: [
+						[0, color],
+						[
+							1,
+							Highcharts.color(color).brighten(-0.3)
+								.get('rgb')] // darken
+					]
+				};
+			})
+	});
 </script>
 
 </html>

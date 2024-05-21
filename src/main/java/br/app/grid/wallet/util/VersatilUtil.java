@@ -73,4 +73,11 @@ public class VersatilUtil {
     return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
   }
 
+  public static String getHoursAndMinutes() {
+    LocalDateTime dataHora = LocalDateTime.now();
+    int horas = dataHora.getHour();
+    int minutos = dataHora.getMinute();
+    return (horas < 10 ? "0" : "") + horas + ":" + (minutos < 10 ? "0" : "") + minutos;
+  }
+
 }

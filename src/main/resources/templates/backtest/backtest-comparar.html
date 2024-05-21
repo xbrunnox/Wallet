@@ -27,17 +27,60 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-6">
+				<div class="row">
+					<div class="col-12">
+						<h5>Resultado por mês</h5>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-2" th:each="acumuladoMes : ${meses1}" align="center">
+						<small>
+							<span
+								th:text="${T(br.app.grid.wallet.util.converter.DataConverter).nomeDoMesAbreviado(acumuladoMes.mes) + '/' + (acumuladoMes.ano % 2000)}"></span>
+						</small><br>
+						<span class="badge badge-success" th:if="${acumuladoMes.total >= 0.0}"
+							th:text="${'+'+#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span>
+						<span class="badge badge-danger" th:if="${acumuladoMes.total < 0.0}"
+							th:text="${#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span>
+					</div>
+				</div>
+				<br>
+				<hr>
+				<br>
 				<div class="row" th:each="acumuladoMes : ${meses1}">
 					<div class="col-12">
 						<figure class="highcharts-figure">
 							<div th:id="@{'div-back-1-' + ${acumuladoMes.ano}+''+${acumuladoMes.mes}}"></div>
 						</figure>
 					</div>
-					<div class="col-12" align="right">
-						Total:&nbsp;<strong><span th:text="${acumuladoMes.total}"></span></strong>
+					<div class="col-6">
+						Operações: &nbsp;<strong><span
+								th:text="${acumuladoMes.ganhos + acumuladoMes.stops}"></span></strong><br>
+						Ganhos:&nbsp;<strong><span th:text="${acumuladoMes.ganhos}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${acumuladoMes.ganhos * 100 / (acumuladoMes.ganhos + acumuladoMes.stops)}+'%'"></span><br>
+						Stops:&nbsp;<strong><span th:text="${acumuladoMes.stops}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${acumuladoMes.stops * 100 / (acumuladoMes.ganhos + acumuladoMes.stops)}+'%'"></span>
 					</div>
-					<br> <br> <br>
+					<div class="col-6" align="right">
+						Dias de Ganho:&nbsp;<strong><span
+								th:text="${acumuladoMes.diasDeGanho}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${acumuladoMes.diasDeGanho * 100 / (acumuladoMes.diasDeGanho + acumuladoMes.diasDePerda)}+'%'"></span><br>
+						Dias de Perda:&nbsp;<strong><span
+								th:text="${acumuladoMes.diasDePerda}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${acumuladoMes.diasDePerda * 100 / (acumuladoMes.diasDeGanho + acumuladoMes.diasDePerda)}+'%'"></span><br>
+						Maior Ganho:&nbsp;<strong><span style="color: #28a745"
+								th:text="${'+' + #numbers.formatDecimal(acumuladoMes.maiorGanhoNoDia, 1, 'POINT', 2, 'COMMA')}"></span></strong><br>
+						Maior Perda:&nbsp;<strong><span style="color: #dc3545"
+								th:text="${#numbers.formatDecimal(acumuladoMes.maiorPerdaNoDia, 1, 'POINT', 2, 'COMMA')}"></span></strong><br>
+						Resultado:&nbsp;<strong><span
+								th:text="${#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span></strong>
+					</div>
 					<div class="col-12" align="right">
+						<br> <br> <br><br> <br> <br>
 						<hr>
 					</div>
 				</div>
@@ -47,23 +90,81 @@
 							<div th:id="div-resultado-1"></div>
 						</figure>
 					</div>
-					<div class="col-12" align="right">
-						Resultado Acumulado:&nbsp;<strong><span th:text="${resultado1}"></span></strong>
+					<div class="col-6">
+						Operações: &nbsp;<strong><span th:text="${ganhos1 + stops1}"></span></strong><br>
+						Ganhos:&nbsp;<strong><span th:text="${ganhos1}"></span></strong>&nbsp;<span
+							class="badge badge-success" th:text="${ganhos1 * 100 / (ganhos1 + stops1)}+'%'"></span><br>
+						Stops:&nbsp;<strong><span th:text="${erros1}"></span></strong>&nbsp;<span
+							class="badge badge-danger" th:text="${stops1 * 100 / (ganhos1 + stops1)}+'%'"></span>
+					</div>
+					<div class="col-6" align="right">
+						Dias de Ganho:&nbsp;<strong><span th:text="${diasDeGanho1}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${diasDeGanho1 * 100 / (diasDeGanho1 + diasDePerda1)}+'%'"></span><br>
+						Dias de Perca:&nbsp;<strong><span th:text="${diasDePerda1}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${diasDePerda1 * 100 / (diasDeGanho1 + diasDePerda1)}+'%'"></span><br>
+						Resultado Acum.:&nbsp;<strong><span
+								th:text="${#numbers.formatDecimal(resultado1, 1, 'POINT', 2, 'COMMA')}"></span></strong>
+						<br><br>
 					</div>
 				</div>
 			</div>
 			<div class="col-6">
+				<div class="row">
+					<div class="col-12">
+						<h5>Resultado por mês</h5>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-2" th:each="acumuladoMes : ${meses2}" align="center">
+						<small>
+							<span
+								th:text="${T(br.app.grid.wallet.util.converter.DataConverter).nomeDoMesAbreviado(acumuladoMes.mes) + '/' + (acumuladoMes.ano % 2000)}"></span>
+						</small><br>
+						<span class="badge badge-success" th:if="${acumuladoMes.total >= 0.0}"
+							th:text="${'+'+#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span>
+						<span class="badge badge-danger" th:if="${acumuladoMes.total < 0.0}"
+							th:text="${#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span>
+					</div>
+				</div>
+				<br>
+				<hr>
+				<br>
 				<div class="row" th:each="acumuladoMes : ${meses2}">
 					<div class="col-12">
 						<figure class="highcharts-figure">
 							<div th:id="@{'div-back-2-' + ${acumuladoMes.ano}+''+${acumuladoMes.mes}}"></div>
 						</figure>
 					</div>
-					<div class="col-12">
-						Total:&nbsp;<strong><span th:text="${acumuladoMes.total}"></span></strong>
+					<div class="col-6">
+						Operações: &nbsp;<strong><span
+								th:text="${acumuladoMes.ganhos + acumuladoMes.stops}"></span></strong><br>
+						Ganhos:&nbsp;<strong><span th:text="${acumuladoMes.ganhos}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${acumuladoMes.ganhos * 100 / (acumuladoMes.ganhos + acumuladoMes.stops)}+'%'"></span><br>
+						Stops:&nbsp;<strong><span th:text="${acumuladoMes.stops}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${acumuladoMes.stops * 100 / (acumuladoMes.ganhos + acumuladoMes.stops)}+'%'"></span>
 					</div>
-					<br> <br> <br>
+					<div class="col-6" align="right">
+						Dias de Ganho:&nbsp;<strong><span
+								th:text="${acumuladoMes.diasDeGanho}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${acumuladoMes.diasDeGanho * 100 / (acumuladoMes.diasDeGanho + acumuladoMes.diasDePerda)}+'%'"></span><br>
+						Dias de Perda:&nbsp;<strong><span
+								th:text="${acumuladoMes.diasDePerda}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${acumuladoMes.diasDePerda * 100 / (acumuladoMes.diasDeGanho + acumuladoMes.diasDePerda)}+'%'"></span><br>
+						Maior Ganho:&nbsp;<strong><span style="color: #28a745"
+								th:text="${'+' + #numbers.formatDecimal(acumuladoMes.maiorGanhoNoDia, 1, 'POINT', 2, 'COMMA')}"></span></strong><br>
+						Maior Perda:&nbsp;<strong><span style="color: #dc3545"
+								th:text="${#numbers.formatDecimal(acumuladoMes.maiorPerdaNoDia, 1, 'POINT', 2, 'COMMA')}"></span></strong><br>
+						Resultado:&nbsp;<strong><span
+								th:text="${#numbers.formatDecimal(acumuladoMes.total, 1, 'POINT', 2, 'COMMA')}"></span></strong>
+					</div>
 					<div class="col-12">
+						<br> <br> <br><br> <br> <br>
 						<hr>
 					</div>
 				</div>
@@ -73,14 +174,28 @@
 							<div th:id="div-resultado-2"></div>
 						</figure>
 					</div>
-					<div class="col-12">
-						Resultado Acumulado:&nbsp;<strong><span th:text="${resultado2}"></span></strong>
+					<div class="col-6">
+						Operações: &nbsp;<strong><span th:text="${ganhos2 + stops2}"></span></strong><br>
+						Ganhos:&nbsp;<strong><span th:text="${ganhos2}"></span></strong>&nbsp;<span
+							class="badge badge-success" th:text="${ganhos2 * 100 / (ganhos2 + stops2)}+'%'"></span><br>
+						Stops:&nbsp;<strong><span th:text="${erros2}"></span></strong>&nbsp;<span
+							class="badge badge-danger" th:text="${stops2 * 100 / (ganhos2 + stops2)}+'%'"></span>
+					</div>
+					<div class="col-6" align="right">
+						Dias de Ganho:&nbsp;<strong><span th:text="${diasDeGanho2}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${diasDeGanho2 * 100 / (diasDeGanho2 + diasDePerda2)}+'%'"></span><br>
+						Dias de Perca:&nbsp;<strong><span th:text="${diasDePerda2}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${diasDePerda2 * 100 / (diasDeGanho2 + diasDePerda2)}+'%'"></span><br>
+						Resultado Acum.:&nbsp;<strong><span
+								th:text="${#numbers.formatDecimal(resultado2, 1, 'POINT', 2, 'COMMA')}"></span></strong>
+						<br><br>
 					</div>
 				</div>
 			</div>
+			<br> <br> <br>
 		</div>
-		<br> <br> <br>
-	</div>
 </body>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/series-label.js"></script>

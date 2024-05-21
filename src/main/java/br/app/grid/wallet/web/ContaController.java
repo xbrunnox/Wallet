@@ -52,7 +52,7 @@ public class ContaController {
 	
 	@GetMapping("/info/{license}")
 	public ContaInfoResponse info(@PathVariable(name = "license", required = true) String license) {
-		return service.info(license);
+		return service.info(license, request);
 	}
 	
 	@GetMapping("/excluir/{conta}")

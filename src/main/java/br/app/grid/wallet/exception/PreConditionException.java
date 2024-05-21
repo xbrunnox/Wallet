@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * <b>BusinessException</b><br>
+ * <b>PreConditionException</b><br>
  * Exceção de negócio.
  * 
  * @author Brunno José Guimarães de Almeida.

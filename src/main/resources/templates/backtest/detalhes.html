@@ -25,7 +25,7 @@
 		</a>
 	</nav>
 	<br>
-	<div class="container-fluid">
+	<div class="container">
 		<div class="row">
 			<div class="col-12">
 				<div class="row" th:each="dia : ${dias}">
@@ -34,8 +34,20 @@
 							<div th:id="@{'div-back-1-' + ${dia.data}}"></div>
 						</figure>
 					</div>
-					<div class="col-12" align="right">
-						Resultado:&nbsp;<strong><span th:text="${dia.resultado}"></span></strong>
+					<div class="col-6">
+						Operações: &nbsp;<strong><span
+								th:text="${dia.acertos + dia.erros}"></span></strong><br>
+						Ganhos:&nbsp;<strong><span th:text="${dia.acertos}"></span></strong>&nbsp;<span
+							class="badge badge-success"
+							th:text="${dia.acertos * 100 / (dia.acertos + dia.erros)}+'%'"></span><br>
+						Stops:&nbsp;<strong><span th:text="${dia.erros}"></span></strong>&nbsp;<span
+							class="badge badge-danger"
+							th:text="${dia.erros * 100 / (dia.acertos + dia.erros)}+'%'"></span>
+					</div>
+					<div class="col-6" align="right">
+						Maior Ganho:&nbsp;<strong><span style="color: #28a745" th:text="${'+' + #numbers.formatDecimal(dia.maiorGanho, 1, 'POINT', 2, 'COMMA')}"></span></strong><br>
+						Maior Stop:&nbsp;<strong><span style="color: #dc3545" th:text="${#numbers.formatDecimal(dia.maiorStop, 1, 'POINT', 2, 'COMMA')}"></span></strong><br>
+						Resultado:&nbsp;<strong><span th:text="${#numbers.formatDecimal(dia.resultado, 1, 'POINT', 2, 'COMMA')}"></span></strong>
 					</div>
 					<br> <br> <br>
 					<div class="col-12" align="right">

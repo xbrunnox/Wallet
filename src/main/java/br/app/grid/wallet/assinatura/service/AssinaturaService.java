@@ -2,6 +2,7 @@ package br.app.grid.wallet.assinatura.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,9 @@ import java.util.Objects;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import br.app.grid.wallet.afiliado.Afiliado;
 import br.app.grid.wallet.assinatura.Assinatura;
 import br.app.grid.wallet.assinatura.AssinaturaExpert;
 import br.app.grid.wallet.assinatura.AssinaturaExpertsResponse;
@@ -20,6 +24,7 @@ import br.app.grid.wallet.assinatura.repository.AssinaturaPendenciaRepository;
 import br.app.grid.wallet.assinatura.repository.AssinaturaRepository;
 import br.app.grid.wallet.assinatura.view.AssinaturaAtivaView;
 import br.app.grid.wallet.assinatura.view.AssinaturaPendenciaView;
+import br.app.grid.wallet.assinatura.view.AssinaturaResultadoView;
 import br.app.grid.wallet.assinatura.view.AssinaturaView;
 import br.app.grid.wallet.exception.BusinessException;
 import br.app.grid.wallet.licenca.Conta;
@@ -40,6 +45,7 @@ import br.app.grid.wallet.web.request.AdicionarExpertAssinaturaRequest;
 import br.app.grid.wallet.web.request.AlterarEmailRequest;
 import br.app.grid.wallet.web.request.AlterarVencimentoRequest;
 import br.app.grid.wallet.web.request.AssociarTratarPagamentoRequest;
+import br.app.grid.wallet.web.request.AtivarAssinaturaRequest;
 import br.app.grid.wallet.web.request.ExcluirAssinaturaPagamentoRequest;
 
 @Service
@@ -113,6 +119,7 @@ public class AssinaturaService {
     return contas;
   }
 
+  @Deprecated
   public Assinatura ativar(String idConta, Long idPagamento) {
     Conta conta = contaRepository.findById(idConta).get();
     Pagamento pagamento = pagamentoRepository.findById(idPagamento).get();
@@ -151,6 +158,8 @@ public class AssinaturaService {
 
     return null;
   }
+
+
 
   /**
    * Retorna o próximo servidor para alocação, ou seja, o servidor com menos usuários
@@ -201,6 +210,34 @@ public class AssinaturaService {
 
   public List<AssinaturaAtivaView> getAtivas() {
     return assinaturaAtivaRepository.getList(LocalDate.now());
+  }
+
+  /**
+   * Retorna a lista de assinaturas ativas do afiliado indicado.
+   * 
+   * @param afiliado Afiliado.
+   * @param contabilizarResultado Contabilizar resultados.
+   * @return Lista de assinaturas ativas.
+   */
+  public List<AssinaturaView> getAtivas(Afiliado afiliado, boolean contabilizarResultados) {
+    if (Objects.isNull(afiliado)) {
+      return new ArrayList<>();
+    }
+    List<AssinaturaView> assinaturas =
+        assinaturaRepository.getListView(afiliado.getId(), LocalDate.now());
+    if (contabilizarResultados) {
+      Map<String, AssinaturaView> mapaAssinaturas = new HashMap<>();
+      for (AssinaturaView assinatura : assinaturas)
+        mapaAssinaturas.put(assinatura.getConta(), assinatura);
+      List<AssinaturaResultadoView> assinaturaResultados =
+          assinaturaRepository.getListResultadosView(afiliado.getId());
+      for (AssinaturaResultadoView assinaturaResultado : assinaturaResultados) {
+        AssinaturaView assinatura = mapaAssinaturas.get(assinaturaResultado.getConta());
+        if (!Objects.isNull(assinatura))
+          assinatura.setResultado(assinaturaResultado.getResultado());
+      }
+    }
+    return assinaturas;
   }
 
   public void migrar(String origem, String destino) {
@@ -596,5 +633,100 @@ public class AssinaturaService {
     }
     assinatura.setDesabilitada(false);
     gravar(assinatura);
+  }
+
+  public List<AssinaturaView> getInativas(Afiliado afiliado, boolean contabilizarResultados) {
+    if (Objects.isNull(afiliado)) {
+      return new ArrayList<>();
+    }
+    List<AssinaturaView> assinaturas =
+        assinaturaRepository.getListInativasView(afiliado.getId(), LocalDate.now());
+    if (contabilizarResultados) {
+      Map<String, AssinaturaView> mapaAssinaturas = new HashMap<>();
+      for (AssinaturaView assinatura : assinaturas)
+        mapaAssinaturas.put(assinatura.getConta(), assinatura);
+      List<AssinaturaResultadoView> assinaturaResultados =
+          assinaturaRepository.getListResultadosView(afiliado.getId());
+      for (AssinaturaResultadoView assinaturaResultado : assinaturaResultados) {
+        AssinaturaView assinatura = mapaAssinaturas.get(assinaturaResultado.getConta());
+        if (!Objects.isNull(assinatura))
+          assinatura.setResultado(assinaturaResultado.getResultado());
+      }
+    }
+    return assinaturas;
+  }
+
+  /**
+   * Retorna a lista de assinaturas do afiliado indicado.
+   * 
+   * @param afiliado Afiliado.
+   * @return Lista de assinaturas.
+   */
+  public List<Assinatura> getList(Afiliado afiliado) {
+    if (Objects.isNull(afiliado))
+      return new ArrayList<>();
+    return assinaturaRepository.getList(afiliado);
+  }
+
+
+  public Assinatura ativarAssinatura(AtivarAssinaturaRequest ativarRequest, Afiliado afiliado) {
+    if (Objects.isNull(ativarRequest.getIdConta()))
+      throw new BusinessException("A conta não foi especificada.");
+    if (Objects.isNull(ativarRequest.getIdExpert()))
+      throw new BusinessException("A automação não foi especificada.");
+    if (Objects.isNull(ativarRequest.getIdPagamento()))
+      throw new BusinessException("O pagamento não foi especificado.");
+
+    Conta conta = contaRepository.get(ativarRequest.getIdConta());
+    if (Objects.isNull(conta)) {
+      throw new BusinessException("Conta não existe.");
+    }
+
+    Pagamento pagamento = null;
+    if (ativarRequest.getIdPagamento() > 0) {
+      pagamento = pagamentoRepository.get(ativarRequest.getIdPagamento(), afiliado);
+      if (Objects.isNull(pagamento)) {
+        throw new BusinessException("Pagamento não encontrado.");
+      }
+    }
+
+    Robo automacao = roboRepository.get(ativarRequest.getIdExpert(), afiliado);
+    if (Objects.isNull(automacao)) {
+      throw new BusinessException("Automação não encontrada.");
+    }
+    if (!automacao.getEnabled()) {
+      throw new BusinessException("Automação não está ativada.");
+    }
+
+    Assinatura assinatura =
+        Assinatura.builder().afiliado(afiliado).conta(conta).dataCadastro(LocalDateTime.now())
+            .dataVencimento(pagamento != null ? LocalDate.now().plusMonths(1) : LocalDate.now())
+            .documentoPagamento(
+                (pagamento != null ? DocumentoFormatter.format(pagamento.getCpf()) : null))
+            .emailPagamento(pagamento != null ? pagamento.getEmail().toLowerCase() : null)
+            .telefone(pagamento != null ? pagamento.getTelefone() : null).pendente(false)
+            .servidor(getServidorParaAlocacao()).pausado(true).build();
+    assinaturaRepository.save(assinatura);
+
+    // Expert
+    AssinaturaExpert expert =
+        AssinaturaExpert.builder().assinatura(assinatura).ativado(true).expert(automacao)
+            .volume(automacao.getVolume()).volumeMaximo(automacao.getVolume()).build();
+
+    assinaturaExpertRepository.save(expert);
+
+    if (pagamento != null) {
+      assinaturaPagamentoRepository.save(AssinaturaPagamento.builder().assinatura(assinatura)
+          .dataDeCadastro(LocalDateTime.now()).pagamento(pagamento).build());
+
+
+      pagamento.setAssociado(true);
+      pagamentoRepository.save(pagamento);
+    }
+    return assinatura;
+  }
+
+  public Assinatura get(String idConta, Afiliado afiliado) {
+    return assinaturaRepository.getByContaAfiliado(idConta, afiliado);
   }
 }

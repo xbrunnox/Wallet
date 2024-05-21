@@ -13,5 +13,6 @@ public class UserLoginRequest {
 	
 	private String email;
 	private String senha;
+	private String redirect;
 
 }

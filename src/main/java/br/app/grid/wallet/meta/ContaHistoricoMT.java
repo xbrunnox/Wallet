@@ -20,6 +20,8 @@ public class ContaHistoricoMT {
 	
 	private String nome;
 	
+	private Integer idAfiliado;
+	
 	private List<OperacaoMT> operacoes;
 
 }

@@ -2,11 +2,9 @@ package br.app.grid.wallet.monitor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
+import br.app.grid.wallet.client.ExpertUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,5 +27,7 @@ public class MonitorResumo {
 	private List<MonitorResumoCorretora> corretoras;
 
 	private List<MonitorResumoServidor> servidores;
+	
+	private List<ExpertUser> experts;
 
 }

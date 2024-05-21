@@ -55,17 +55,42 @@ public class BacktestController {
     System.out.println("Terminou a consulta");
     BigDecimal resultado1 = BigDecimal.ZERO;
     BigDecimal resultado2 = BigDecimal.ZERO;
+    int diasPositivos1 = 0;
+    int diasNegativos1 = 0;
+    int acertos1 = 0;
+    int erros1 = 0;
+    int diasPositivos2 = 0;
+    int diasNegativos2 = 0;
+    int acertos2 = 0;
+    int erros2 = 0;
     for (BacktestMesAnoVO mes : retorno) {
       resultado1 = resultado1.add(mes.getTotal());
+      diasPositivos1 += mes.getDiasDeGanho();
+      diasNegativos1 += mes.getDiasDePerda();
+      acertos1 += mes.getGanhos();
+      erros1 += mes.getStops();
     }
     for (BacktestMesAnoVO mes : retorno2) {
       resultado2 = resultado2.add(mes.getTotal());
+      diasPositivos2 += mes.getDiasDeGanho();
+      diasNegativos2 += mes.getDiasDePerda();
+      acertos2 += mes.getGanhos();
+      erros2 += mes.getStops();
     }
+    
     ModelAndView modelAndView = new ModelAndView("backtest/backtest-comparar");
     modelAndView.addObject("meses1", retorno);
     modelAndView.addObject("meses2", retorno2);
     modelAndView.addObject("resultado1", resultado1);
     modelAndView.addObject("resultado2", resultado2);
+    modelAndView.addObject("ganhos1", acertos1);
+    modelAndView.addObject("stops1", erros1);
+    modelAndView.addObject("diasDeGanho1", diasPositivos1);
+    modelAndView.addObject("diasDePerda1", diasNegativos1);
+    modelAndView.addObject("ganhos2", acertos2);
+    modelAndView.addObject("stops2", erros2);
+    modelAndView.addObject("diasDeGanho2", diasPositivos2);
+    modelAndView.addObject("diasDePerda2", diasNegativos2);
     return modelAndView;
   }
 

@@ -13,20 +13,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClienteUser {
 
-	private String licenca;
-	private String expiracao;
-	private String nome;
-	private String corretora;
-	private String ip;
-	private LocalDateTime dataDeConexao;
-	private LocalDateTime ultimaComunicacao;
-	private String versao;
-	private String tempoEnvio;
-	private Boolean pausado;
-	private String servidor;
-	private String maquina;
+  private String licenca;
+  private String expiracao;
+  private String nome;
+  private String corretora;
+  private String ip;
+  private Integer idAfiliado;
+  private LocalDateTime dataDeConexao;
+  private LocalDateTime ultimaComunicacao;
+  private String versao;
+  private String tempoEnvio;
+  private Boolean pausado;
+  private String servidor;
+  private String maquina;
 
 }

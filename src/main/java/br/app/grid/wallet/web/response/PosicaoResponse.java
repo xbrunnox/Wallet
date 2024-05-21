@@ -2,7 +2,6 @@ package br.app.grid.wallet.web.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +28,7 @@ public class PosicaoResponse {
 	private String ativo;
 	private BigDecimal abertura;
 	private BigDecimal profit;
+	private BigDecimal alavancagem;
 	private LocalDateTime data;
-
+	
 }

@@ -28,7 +28,9 @@
 
 <body>
 	<nav class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="/"> <img src="/vst-ia.png" height="30" class="d-inline-block align-top" alt="">
+		<a class="navbar-brand" href="/">
+			<img th:src="${'https://download.versatil-ia.com.br/' + afiliado.logo}" height="30"
+				class="d-inline-block align-top" alt="${'https://download.versatil-ia.com.br/tradingnow-favicon.png'}">
 			<span style="font-weight: 600">&nbsp;&nbsp;Status</span>
 		</a>
 	</nav>
@@ -72,10 +74,12 @@
 											class="bi bi-pause-fill"></i></span></small>
 							</td>
 							<td><span class="fonte-tabela" th:text="${user.nome}"></span><br>
-								<small><span th:text="${user.corretora}"></span></small>
+								<small><span th:text="${user.corretora}"></span>&nbsp;-&nbsp;<span
+										th:text="${user.servidor}"></span></small>
 							</td>
 							<td align="right"><span class="fonte-tabela" th:text="${user.expiracao}"></span><br>
-								<small><span th:text="${user.ip}"></span></small></td>
+								<small><span th:text="${user.ip}"></span></small>
+							</td>
 							<td align="right"><span class="fonte-tabela"
 									th:text="${#temporals.format(user.ultimaComunicacao, 'HH:mm:ss')}"></span><br>
 								<small><span

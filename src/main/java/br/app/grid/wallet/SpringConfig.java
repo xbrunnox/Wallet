@@ -37,7 +37,7 @@ public class SpringConfig {
 	public void scheduleFixedRateTask() {
 		LocalDateTime data = LocalDateTime.now();
 		try {
-			EndpointStatusResponse status = routerService.getStatus();
+			EndpointStatusResponse status = routerService.getStatusGlobal();
 			if (status != null)
 				logOnlineService.gravar(LogOnline.builder().horario(data).experts(status.getOnlineExperts().size())
 						.usuarios(status.getOnlineUsers().size()).build());

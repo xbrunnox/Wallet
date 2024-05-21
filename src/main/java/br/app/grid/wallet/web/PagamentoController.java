@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import br.app.grid.wallet.assinatura.AssinaturaPagamento;
 import br.app.grid.wallet.assinatura.service.AssinaturaService;
 import br.app.grid.wallet.exception.BusinessException;
@@ -47,10 +45,11 @@ public class PagamentoController {
     if (!UsuarioUtil.isLogged(request)) {
       return new ModelAndView("redirect:/login");
     }
-    List<Pagamento> pagamentos = pagamentoService.getList();
+    List<Pagamento> pagamentos = pagamentoService.getList(UsuarioUtil.getAfiliado(request));
     Collections.reverse(pagamentos);
     ModelAndView view = new ModelAndView("pagamento/recebido");
     view.addObject("pagamentosList", pagamentos);
+    view.addObject("afiliado", UsuarioUtil.getAfiliado(request));
     return view;
   }
 
@@ -72,6 +71,24 @@ public class PagamentoController {
       throw new BusinessException("O usuário não está logado.");
     }
     return assinaturaService.associarTratarPagamento(associarRequest);
+  }
+
+
+  @GetMapping("/nao-associados")
+  public List<Pagamento> getListNaoAssociado() {
+    if (!UsuarioUtil.isLogged(request)) {
+      throw new BusinessException("O usuário não está logado.");
+    }
+    return pagamentoService.getListNaoAssociados(UsuarioUtil.getAfiliado(request));
+  }
+  
+  @GetMapping("/nao-associados/{numeroDeRegistros}")
+  public List<Pagamento> getListNaoAssociado(@PathVariable(name = "numeroDeRegistros") int numeroDeRegistros) {
+    if (!UsuarioUtil.isLogged(request)) {
+      throw new BusinessException("O usuário não está logado.");
+    }
+    
+    return pagamentoService.getListNaoAssociados(UsuarioUtil.getAfiliado(request), numeroDeRegistros);
   }
 
 }
